@@ -50,11 +50,11 @@ Windows, you will need to follow the spirit of the instructions.
 nwh-mbpro:~ nwh$ cd
 nwh-mbpro:~ nwh$ pwd
 /Users/nwh
-nwh-mbpro:~ nwh$ mkdir CME211
+nwh-mbpro:~ nwh$ mkdir CME211    <- this makes a directory
 nwh-mbpro:~ nwh$ cd CME211/
 nwh-mbpro:CME211 nwh$ mkdir lec5
 nwh-mbpro:CME211 nwh$ cd lec5/
-nwh-mbpro:lec5 nwh$ pwd
+nwh-mbpro:lec5 nwh$ pwd         <- print out current working directory
 /Users/nwh/CME211/lec5
 ```
 
@@ -115,6 +115,8 @@ for word, count in word_dict.items():
 ```
 
 ### Test the script locally:
+
+make sure your scripts can run on farmshare
 
 ```
 nwh-mbpro:lec5 nwh$ python count_words.py
@@ -254,6 +256,7 @@ See <https://itservices.stanford.edu/service/ess/> for Mac and Windows SFTP and
 AFS clients.
 
 Text editors:
+can run emacs and vim on terminal remotely. other ones are GUI based text editors, but cannot run from terminal
 
 * emacs
 * vim
@@ -304,6 +307,7 @@ Traceback (most recent call last):
 NameError: name 'age' is not defined
 >>>
 ```
+Bad programming practice since the variable isn't defined if the "if" statement isn't executed
 
 Good practice to define/initialize variables at the same level they will be
 used:
@@ -318,11 +322,18 @@ used:
 Nick's age is None
 >>>
 ```
+None is a python type representing nothing. For strings, create an empty string using
+```py
+>>> a = ""
+```
 
 Note in the above example, it may be more appropriate to initialize the `age`
 variable to a more meaningful value.
 
 We will learn about *scope* when we talk about functions on Friday.
+
+Don't have to preallocate for a list. Use append() function. If adding to a string, use the join() method.
+
 
 ## Analysis of algorithms
 
@@ -400,7 +411,7 @@ testing has some drawbacks, namely:
 
     * for an `m` by `m` matrix, we say the input size is `m` even though the
       matrix as `m^2` entries
-    
+
     * number of non-zero entries in a sparse matrix
 
     * number of nodes in a graph or network structure
@@ -421,6 +432,7 @@ testing has some drawbacks, namely:
 ## Visualization
 
 ![order chart](lecture-5/order-chart.png)
+O(1) run time is independent of input size. For the algorithm, O(n^2) is the worst. As you go up on the chart, complexity of algorithm is greater.
 
 ## Big O notation
 
@@ -432,14 +444,17 @@ testing has some drawbacks, namely:
 ```
 2n^22 + 64n -> O(n^2)
 ```
-
+Take highest order and ignore constants (asymptotic behavior)
 * Often some simplifying assumptions will need to be made about the nature of
   the input data in order to carry out analysis
 
 ## Linear algebra examples
-
+There is a cost from
+ 1. reading from memory
+ 2. addition to the sum
+ 3. n writes
+ Memory access is expensive. Flops are almost free nowadays.
 * Adding two vectors? `O(n)`
-
 ```py
 # c = a + b
 # assume all the same length
@@ -469,7 +484,12 @@ for i in xrange(n):
 Computing one value in the output matrix requires `O(n)`
 operations, and there are `n^2` values in the output matrix.
 
+Used for training for neural networks (dense matrix-matrix multiplication)
+
+use xrange(1000) for a more efficient way of doing range(1000)
+
 ## Linear search
+Start at the first item, check, and then keep going. This is O(n) since there are n elements in the list and we go one at a time
 
 *Linear search* is searching through a sequential data container for a specified
 item.  An example of this is finding the start index of a given sub-string in a
@@ -484,6 +504,7 @@ Exercise: Find the number `x` in your data:
 ```
 
 Is it `O(1)`, or `O(n)`, or something else?
+O(n)
 
 ## Linear search: best and worst case
 
@@ -503,11 +524,12 @@ Is it `O(1)`, or `O(n)`, or something else?
 
 ## Linear search: average case
 
+
 ```
 |---+----+-----+----+-----+----+-----+-----|
 | 4 | 17 | 100 | 73 | 120 | 42 | 999 | -17 |
 |---+----+-----+----+-----+----+-----+-----|
-             
+
                     ^
                     |
                   O(n/2)
@@ -517,6 +539,8 @@ Given random data and a random input (in the range of the data) we can **on
 average** expect to search through half of the list.  This would be `O(n/2)`.
 Remember that Big O notation is not concerned with constant terms, so this
 becomes `O(n)`.
+
+We want best, worst, and average case performances. Average is for random behavior in the data.
 
 ## Binary search algorithm
 
@@ -577,6 +601,9 @@ We have found `17`.  It is time to celebrate and return the index of `2`.
 
     * Worst case: `O(log n)`
 
+    Number of times you can split the list is about log(n). In this case, it's base 2 (since we're splitting list by half every time), but doesn't really matter if it's base 2 or 10 anyways since it's the same order of magnitude.
+
+
 ## Sorting algorithms
 
 There are many sorting algorithms and this is a worthy area of study.  Here are
@@ -608,6 +635,8 @@ The internet is full of examples of how sorting algorithms work
 ![sorting algo table](lecture-5/sorting-algo-table.png)
 
 See: <https://en.wikipedia.org/wiki/Sorting_algorithm#Comparison_of_algorithms>
+
+Don't have to know all these sort algorithms for the class. Just need to know the complexity.
 
 ## Finding the maximum
 
@@ -685,10 +714,15 @@ And so on:
 
 Question: what is the order of this algorithm?
 
+It's O(n)
+
 ## Two largest values
 
 * What's the complexity to find the two largest values in an *unordered* list of `n`
 values?
+
+Can search twice O(2n)
+Or store two values and sort them (see below for algorithm). This gives O(n).
 
 ## Two largest values
 
@@ -748,12 +782,14 @@ Notes:
 * For each of n input elements you will do a comparison, potentially a
 replacement, and a sort
 
-* Time complexity is `O(n)`
+* Time complexity is `O(n)` (actually is O(2n), but we don't care about constant)
 
 Question:
 
 * Does that mean that finding the two largest values will take the same amount
 of time as finding the single largest value?
+
+No it will take more time
 
 ## `m` largest values
 
@@ -773,10 +809,12 @@ parameter `n`:
 * Time complexity for finding the `m` largest values in an unordered list of `n`
 elements could be characterized as `O(n m log m)` for a sorting algorithm that
 is `O(m log m)`
+Is keeping that sublist sorted necessary?
 
 Question:
 
 * For what m is it better just to sort the list?
+That would be a nlog(n) operation -> think about this
 
 ## Finding sub-strings
 
@@ -800,7 +838,7 @@ TGTAGAATCACTTGAAAGGCGCGCAGTCTGGGGCGCTAGTCGTGGT
 
     * `O(m)` for typical algorithms
 
-    * `O(n)` for a search that uses the Burrows-Wheeler transform
+    * `O(n)` for a search that uses the Burrows-Wheeler transform (n is the size of input string). This is a compression algorithm
 
 ## List operations in Python
 
@@ -809,7 +847,7 @@ TGTAGAATCACTTGAAAGGCGCGCAGTCTGGGGCGCTAGTCGTGGT
 >>> a.append(42)
 >>> a
 [42]
->>> a.insert(0, 7)
+>>> a.insert(0, 7)   <- put value into a list
 >>> a
 [7, 42]
 >>> a.insert(1, 19)
@@ -841,6 +879,7 @@ memory layout will look something like:
 |---+----+----+---|
 
 ```
+Python has an efficient strategy for increasing the space allocated to the list. When we do insertions, we had to move 42 over (that takes time). Appending is not as expensive as insertion since there is space in mem and ready to go, but insertion requires us to move data over. Appending is O(1), but insertion is worst case O(n) since we may have to move n values over in the list.
 
 ## List vs Set in python
 
@@ -858,7 +897,7 @@ for line in f:
     names_set.add(name)
 f.close()
 ```
-
+Testing for existence in the list in the set. Adding and testing for existence are the main.
 Run the script and enter into the interpreter:
 
 ```
@@ -874,7 +913,9 @@ False
 >>>
 ```
 
-Which container is better for insertion and existence testing?
+Which container (list, set) is better for insertion and existence testing?
+In both cases, insertion is O(1). Set is faster for testing for existence.
+Good documentation on Python for time complexities of different operations.
 
 ## Documentation
 
@@ -896,7 +937,8 @@ Which container is better for insertion and existence testing?
 
 ## Space complexity
 
-* What additional storage will I need during execution of the algorithm?
+* What additional storage will I need during execution of the algorithm? (often doesn't include input and output)
+
 
 * Doesn't include the input or output data
 
@@ -908,7 +950,7 @@ complexity
 
 ## Complexity analysis
 
-* Good framework for comparing *algorithms*
+* Good framework for comparing *algorithms* (look at highest order factor. We care about memory traffic more than flops nowadays. Analysis only works are we increase n (otherwise constant factors may dominate))
 
 * Understanding individual algorithms will help you understand performance of an
 application made up of multiple algorithms
