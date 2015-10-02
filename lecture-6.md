@@ -2,14 +2,17 @@
 
 Friday, October 2, 2015
 
+
 ## Announcements
 
 * CUDA on Campus Day
 <http://icme.stanford.edu/events/nvidia-tech-talks-and-hands-labs>
 
 * Homework 1 was due today at 2:30pm
+afs/ir/class/cme211/drop to see if submitted
 
 * Homework 2 is out today, due next Friday @ 2:30pm
+use github to submit homework from now on
 
 ## Version control with `git`
 
@@ -29,7 +32,7 @@ Today version control systems (like `git`) formally enable the following:
 
 * *merging* of concurrent work of independent developers
 
-* *remote* backup and storage of work 
+* *remote* backup and storage of work
 
 * tracking a *log* of project history
 
@@ -88,7 +91,7 @@ In CME 211 we are going to learn the following aspects in Git:
 
 * Moving back to a previous *commit*
 
-* *Pushing* to and *pulling* from a *remote* repository 
+* *Pushing* to and *pulling* from a *remote* repository
 
 Git is capable of so much more.  These basic use cases are sufficient for
 CME 211.  You  will likely want to learn more for your own work.
@@ -141,7 +144,7 @@ $ git config --global user.email nwh@stanford.edu
 This creates a file `~/.gitconfig` with the following contents:
 
 ```
-$ cat ~/.gitconfig 
+$ cat ~/.gitconfig
 [user]
 	name = Nick Henderson
 	email = nwh@stanford.edu
@@ -164,18 +167,25 @@ Initialized empty Git repository in /afs/ir.stanford.edu/users/n/w/nwh/CME211/te
 nwh@corn25:~/CME211/test-repo$
 ```
 
+"." is a reference to current directory
+in the file, do ls -al. see that .git is a folder since it is drwxr
+. means this directory
+.. mean above one
+don't modify anything in .git since that's how git maintains history
+it's okay to move entire directory as long as .git subdirectory is there
+
 #### Adding a file
 
 Let's create a text file and add it to the repo:
 
 ```
-nwh@corn25:~/CME211/test-repo$ emacs awesome_code.py 
-nwh@corn25:~/CME211/test-repo$ cat awesome_code.py 
+nwh@corn25:~/CME211/test-repo$ emacs awesome_code.py
+nwh@corn25:~/CME211/test-repo$ cat awesome_code.py
 print("oh my gosh, python is so cool")
-nwh@corn25:~/CME211/test-repo$ python awesome_code.py 
+nwh@corn25:~/CME211/test-repo$ python awesome_code.py
 oh my gosh, python is so cool
-nwh@corn25:~/CME211/test-repo$ git add awesome_code.py 
-nwh@corn25:~/CME211/test-repo$ git status 
+nwh@corn25:~/CME211/test-repo$ git add awesome_code.py
+nwh@corn25:~/CME211/test-repo$ git status
 On branch master
 
 Initial commit
@@ -197,8 +207,8 @@ nwh@corn25:~/CME211/test-repo$
 Here we edit the code and commit the change into the repo.
 
 ```
-nwh@corn25:~/CME211/test-repo$ emacs awesome_code.py 
-nwh@corn25:~/CME211/test-repo$ cat awesome_code.py 
+nwh@corn25:~/CME211/test-repo$ emacs awesome_code.py
+nwh@corn25:~/CME211/test-repo$ cat awesome_code.py
 print("oh my gosh, python is so cool")
 print("but, now I have to learn git and I just want to go home")
 nwh@corn25:~/CME211/test-repo$ git status
@@ -210,15 +220,18 @@ Changes not staged for commit:
 	modified:   awesome_code.py
 
 no changes added to commit (use "git add" and/or "git commit -a")
-nwh@corn25:~/CME211/test-repo$ git add awesome_code.py 
+nwh@corn25:~/CME211/test-repo$ git add awesome_code.py
 nwh@corn25:~/CME211/test-repo$ git commit -m "update awesome code"
 [master 7375d75] update awesome code
  1 file changed, 1 insertion(+)
 ```
 
+Thus, two staging areas: add, then commit
+using the git commit -m "blah blah" allows you to write a note to yourself
 #### Viewing the log
 
 The `$ git log` command allows us to look through the repo history:
+(goes backwards in time)
 
 ```
 nwh@corn25:~/CME211/test-repo$ git log
@@ -239,6 +252,8 @@ nwh@corn25:~/CME211/test-repo$
 #### Going back in time
 
 We can go back to a previous commit using the `git checkout` command:
+get long string from the commit number (see above) and then checkout. Then use the git checkout master command to point to the most current/newest commit to head back. In the git convention, master is the most recent commit of the main branch of your code. "Working directory clean" means nothing in the working directory has been modified and everything has been put into the repository.
+
 
 ```
 nwh@corn25:~/CME211/test-repo$ git checkout 57f0c86582ec5920f71d1382a0b4b25b08cfa65d
@@ -254,7 +269,7 @@ do so (now or later) by using -b with the checkout command again. Example:
   git checkout -b new_branch_name
 
 HEAD is now at 57f0c86... initial commit of awesome code
-nwh@corn25:~/CME211/test-repo$ cat awesome_code.py 
+nwh@corn25:~/CME211/test-repo$ cat awesome_code.py
 print("oh my gosh, python is so cool")
 ```
 
@@ -285,6 +300,8 @@ Walk through a demo in class:
 1. create a new repo in GitHub interface
 2. clone to `corn.stanford.edu`
 
+use the https clone url to get a local copy of the repo
+
 #### Syncing with the remote repo
 
 Push local changes to remote:
@@ -297,6 +314,14 @@ Pull down remote changes
 
 1. add a new file on GitHub
 2. pull changes to `corn.stanford.edu`
+
+to push the to the remote repository, use
+"git push origin master"
+
+or push my local origin to the master
+you can also directly create files in github web interface, so you neet to sync up local
+repository with the remote repo
+
 
 ## Python functions
 
@@ -318,17 +343,22 @@ Pull down remote changes
 
 ### Defining a function in Python
 
+
+
 Let's start with an example:
+
+if multiple input statements, replace "name" with "name, blah,blah"
+you can pass functins since a function is an object
 
 ```
 >>> def PrintHello(name):
 ...     print("Hello, {}".format(name))
-... 
+...
 >>> PrintHello
-<function PrintHello at 0x14d21b8>
+<function PrintHello at 0x14d21b8> <-- the numbers and letters are the memory address
 >>> PrintHello("CME 211 students")
 Hello, CME 211 students
->>> 
+>>>
 ```
 
 Anatomy of a Python function:
@@ -362,7 +392,7 @@ Use the `return` keyword to return object from a function:
 ...     for n in range(a,b+1):
 ...         total += n
 ...     return total
-... 
+...
 >>> c = summation(1, 100)
 >>> c
 5050
@@ -372,6 +402,8 @@ Use the `return` keyword to return object from a function:
 ### Return multiple values
 
 Separate multiple return values with a comma:
+it returns a tuple. if assign the function output as a single variable, the variable will be a tuple. Just unpack it using a, b. 
+
 
 ```py
 >>> def SummationAndProduct(a,b):
@@ -381,7 +413,7 @@ Separate multiple return values with a comma:
 ...         total += n
 ...         prod *= n
 ...     return total, prod
-... 
+...
 >>> a = SummationAndProduct(1,10)
 >>> a
 (55, 3628800)
@@ -408,7 +440,7 @@ Let's look at an example to start discussing variable scope:
 ...     for n in range(a, b+1):
 ...         total += n
 ...     return total
-... 
+...
 >>> a = summation(1, 100)
 >>> a
 5050
@@ -418,7 +450,7 @@ Let's look at an example to start discussing variable scope:
 Traceback (most recent call last):
 File "<stdin>", line 1, in <module>
 NameError: name 'n' is not defined
->>> 
+>>>
 ```
 
 Function bodies have a local namespace.  In this example the `summation`
@@ -434,13 +466,13 @@ Reference before assignment to a global scope variable will cause an error:
 ...     for n in range(a, b+1):
 ...         total += n
 ...     return total
-... 
+...
 >>> a = summation(1, 100)
 Traceback (most recent call last):
 File "<stdin>", line 1, in <module>
 File "<stdin>", line 3, in summation
 UnboundLocalError: local variable 'total' referenced before assignment
->>> 
+>>>
 ```
 
 ### Variable scope examples
@@ -452,10 +484,10 @@ considered bad practice:
 >>> a = ['hi', 'bye']
 >>> def func():
 ...     print(a)
-... 
+...
 >>> func()
 ['hi', 'bye']
->>> 
+>>>
 ```
 
 Even worse practice is modifying a mutable object from a higher scope:
@@ -464,11 +496,11 @@ Even worse practice is modifying a mutable object from a higher scope:
 >>> a = ['hi', 'bye']
 >>> def func():
 ...     a.append('hello')
-... 
+...
 >>> func()
 >>> a
 ['hi', 'bye', 'hello']
->>> 
+>>>
 ```
 
 Python will not let you redirect an identifier at a global scope.  Here the
@@ -478,11 +510,11 @@ function body has its own `a`:
 >>> a = ['hi', 'bye']
 >>> def func():
 ...     a = 2
-... 
+...
 >>> func()
 >>> a
 ['hi', 'bye']
->>> 
+>>>
 ```
 
 ### Accessing a global variable
@@ -496,11 +528,11 @@ case you run into it.
 ...     global total
 ...     for n in range(a, b+1):
 ...         total += n
-... 
+...
 >>> a = summation(1,100)
 >>> total
 5050
->>> 
+>>>
 ```
 
 ### Functions must be defined before they are used
@@ -522,7 +554,7 @@ def after():
 Output:
 
 ```
-$ python order1.py 
+$ python order1.py
 I am function defined before use.
 Traceback (most recent call last):
   File "order.py", line 5, in <module>
@@ -550,7 +582,7 @@ print sumofsquares(1,10)
 Output:
 
 ```
-$ python order2.py 
+$ python order2.py
 385
 $
 ```
@@ -564,12 +596,12 @@ objects refereed to by input variables
 ```py
 >>> def DoChores(a):
 ...     a.pop()
-... 
+...
 >>> b = ['feed dog', 'wash dishes']
 >>> DoChores(b)
 >>> b
 ['feed dog']
->>> 
+>>>
 ```
 
 `int`s, `float`s, and `str`ings are immutable objects and cannot be changed by a
@@ -578,7 +610,7 @@ function:
 ```py
 >>> def increment(a):
 ...     a = a + 1
-... 
+...
 >>> b = 2
 >>> increment(b)
 >>> b
