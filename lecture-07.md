@@ -550,7 +550,11 @@ When you do `import mymodule2` several things happen
 starting with your current directory followed by looking in system wide
 locations
 
+Invokes search through system directories
+
 2. Code is byte compiled from the `.py` file to a `.pyc` file
+
+Can delete .pyc files if you want or leave them there. When you update the code, it updates the .pyc file as well
 
 3. File is processed from top to bottom
 
@@ -559,8 +563,11 @@ locations
 * Searches for a module are based on directories in
 the `sys.path` list
 
-* First item in the `sys.path` list is an empty string, `''``, which is used to
-  denote the current directory
+* **First item in the `sys.path` list is an empty string, `''``, which is used to
+  denote the current directory**
+
+For example,
+  if you overwrite the math library, when you import math, because it search in the current working directory, it will invoke your function instead
 
 ```py
 $ pwd
@@ -593,6 +600,8 @@ mymodule1.py  mymodule1.pyc  mymodule2.py  mymodule2.pyc
 
 
 * `.pyc` files are faster to load, but the runtime performance once you have them loaded is exactly the same
+don't gain much by pre-byte compiling your files
+safe to delete, typically don't want to commit these files into your git repos since they are regenerated
 
 ### `__name__` and `__main__`
 
@@ -622,7 +631,7 @@ if __name__ == '__main__':
     else:
         print('FAILED')
 ```
-
+without the if name==main, whenever you import this module, everything in this block will show up. Since we don't want to see the test code every time we import, we hide it in this if statement
 ### Another try at importing
 
 ```py
@@ -672,7 +681,7 @@ if __name__ == '__main__':
     else:
         print('FAILED')
 ```
-
+Triple quotes is documentation of what the function does
 ### Accessing your documentation
 
 ```py
@@ -699,7 +708,7 @@ primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
 (END)
 ```
 ## Python Error Handling
-
+By default, python gives you traceback errors
 ### Errors in Python
 
 ```py
@@ -717,7 +726,7 @@ KeyError: 'cookies'
 ```
 
 ### Exceptions
-
+An exception is an object, and we can write code to catch exceptions to handle error
 * Errors generate exceptions
 
 * Exceptions can potentially be caught
@@ -728,6 +737,9 @@ KeyError: 'cookies'
 ### Exceptions
 
 * Python uses a try/except model for error handling
+
+if you try to open a file that doesn't exist, we can handle this error (see below). If the try block is executed by the user, the except IOError block is printed to let user know their mistake.
+Exception is a catch all statement for all exception types
 
 ```py
 >>> f = open('thisfiledoesntexist.txt')
@@ -744,6 +756,8 @@ That filename doesn't exist.
 ```
 
 ### Catching multiple exceptions
+
+The 'try' block is executed, but all the code afterwards is still executed.
 
 ```py
 >>> try:
@@ -781,6 +795,7 @@ def summation(a,b):
 ```
 
 Using:
+This one doesn't have the catch error. The Traceback error isn't as helpful to debug though, so that's why we raise a value error (above)- it's just more precise and easier to diagnose/debug later on.
 
 ```py
 >>> import mymodule4

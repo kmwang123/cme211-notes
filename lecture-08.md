@@ -12,13 +12,19 @@ Topic: Introduction to Object Oriented Programming (OOP) in Python
   <cme211-staff@lists.stanford.edu>:
 
   * GitHub user name
-  
+
   * Stanford email address
-  
+
   * Email address you used to register on GitHub
 
 * Example to show good formatting of a Python program:
   <https://github.com/nwh/cme211-notes/blob/master/examples/ngrams/ngrams.py>
+
+```python
+>>> if __name__ == "__main__":
+```
+allows you to use function in the command line, gives info on how to run the program
+
 
 ## Command line arguments
 
@@ -70,7 +76,7 @@ for i, arg in enumerate(sys.argv):
 ```
 
 Output:
-
+Try not to name files with spaces since you have to quote or \ them.
 ```
 $ python command.py a b c
 There are 4 command line argument(s).
@@ -85,7 +91,7 @@ arg 1: a
 arg 2: b
 arg 3: c
 arg 4: quote things with spaces
-$ 
+$
 ```
 
 Notes:
@@ -96,6 +102,10 @@ Notes:
 * in python, the data type is `str`, need to convert to an `int` or `float` if
   you want a number
 
+Ex: Converting a string into an int
+``` .py
+a = int('1100')
+```
 ## Introduction to OOP
 
 ### Procedural programming
@@ -144,6 +154,9 @@ performance
   of classes
 
 * Classes are blueprints for objects
+A class specifies data and functions associated with object
+Object is actual thing in memory that gets assigned
+There could be many objects in a class
 
 ![fig-08/class-object.png](fig-08/class-object.png)
 
@@ -161,11 +174,11 @@ performance
 >>> a.sort()
 >>> a
 [3, 5, 19]
->>> 
+>>>
 ```
 
 * `list()` returns an object which is an instance of the *list* class
-* `append()` and `sort()` are *methods*
+* `append()` and `sort()` are *methods* (function that is attached to the object, call using the "." notation)
 * 3, 5, 19 are the *data* maintained by the object
 
 ### Class / object examples 2: file objects
@@ -198,7 +211,7 @@ Help on built-in function open in module __builtin__:
 
 open(...)
     open(name[, mode[, buffering]]) -> file object
-    
+
     Open a file using the file() type, returns a file object.  This is the
     preferred way to open a file.  See file.__doc__ for further information.
 ```
@@ -244,7 +257,7 @@ bottom.  I wish they would swap the order.
 
 * High level languages like Python, Java, C++, etc.  include classes for working
 with files, holding data (lists and dictionaries), etc.
-
+  not true for C or fortran programmer; need to access a library in this case. standard classes make things very nice
 
 * So you do not have to design and create your own classes if someone else has
 already done the work for you
@@ -271,6 +284,8 @@ the class
 ### Creating instances
 
 * Instances of a class are created by calling the class object as a function
+
+For example, you can make multiple houses (objects) with the same blueprint (class), so each house is an instance of the blueprint (of the class)
 
 * Any arguments of the function call are passed to the special `__init__()`
   method
@@ -304,6 +319,8 @@ class Student:
 
 See the file `code-08/student1.py`
 
+7 is the id of the student, Student is the class
+
 ```py
 class Student:
     def __init__(self, id):
@@ -314,9 +331,9 @@ print(s)
 ```
 
 Output:
-
+To get access to the id field, can do s.id. On any class method, it's always (self,id)
 ```
-$ python student1.py 
+$ python student1.py
 <__main__.Student instance at 0x1069f6c20>
 $
 ```
@@ -324,7 +341,7 @@ $
 ### Let's talk about `self`
 
 See `code-08/self.py`:
-
+Self is just a reference to the object
 ```py
 class Student:
     def __init__(self, id):
@@ -339,7 +356,7 @@ print("s    = {}".format(s))
 Output:
 
 ```
-$ python self.py 
+$ python self.py
 inside __init__()
 self = <__main__.Student instance at 0x10967cc20>
 s    = <__main__.Student instance at 0x10967cc20>
@@ -357,6 +374,8 @@ variables that will be used throughout the life of the instance
 
 See `code-08/student2.py`.  Let's add an empty dictionary for the classes that
 the student is enrolled in:
+
+'self.classes={}' means a dictionary of classes (courses, not the python class) that the student has been enrolled in
 
 ```py
 class Student:
@@ -378,10 +397,14 @@ object
 
 ### Encapsulation
 
+Only care about inputs and outputs, details are hidden to make it easier to use
+
 * The *interface* of an object encapsulates the internal data and code
 
 * *encapsulation* means hiding the details of data structures and algorithms
 (internal code)
+
+As long as you don't change the interface, you don't have to change all the code that uses this interface. Just change data internal code. Adding things are fine, but changing things that you've introduced in the past causes problems
 
 ![fig-08/encapsulation.png](fig-08/encapsulation.png)
 
@@ -430,7 +453,7 @@ print(s.getId())
 Output:
 
 ```
-$ python student3.py 
+$ python student3.py
 <__main__.Student instance at 0x1038becb0>
 7
 $
@@ -461,11 +484,11 @@ id = 9
 print("id = {}".format(id))
 print("s.getId() = {}".format(s.getId()))
 ```
-
+No, changing the id=9 below doesn't change the id. We have not allowed a user to muck around with the internals of the class
 Output:
 
 ```
-$ python student4.py 
+$ python student4.py
 <__main__.Student instance at 0x10bef2cb0>
 id = 7
 id = 9
@@ -504,7 +527,7 @@ print("GPA = {}".format(s.getGPA()))
 Output:
 
 ```
-$ python student5.py 
+$ python student5.py
 GPA = 3.5
 $
 ```
@@ -580,7 +603,7 @@ print("classes = {}".format(s.getClasses()))
 Output:
 
 ```
-$ python student7.py 
+$ python student7.py
 GPA = 3.5
 classes = {'gym': 4, 'englist': 4, 'math': 3}
 $
@@ -620,7 +643,7 @@ print("s.id = {}".format(s.id))
 Output:
 
 ```
-$ python student8.py 
+$ python student8.py
 s.id = 7
 $
 ```
@@ -644,9 +667,10 @@ print("s.getId() = {}".format(s.getId()))
 ```
 
 Output:
+This may or may not be a good interface design. we might want to protect this id variable. can do this by having protected variables start with "__ ". 
 
 ```
-$ python student9.py 
+$ python student9.py
 s.getId() = 7
 s.getId() = 9
 $
@@ -675,7 +699,7 @@ print("s.id = {}".format(s.__id))
 * Output
 
 ```
-$ python student10.py 
+$ python student10.py
 s.getId() = 7
 Traceback (most recent call last):
   File "student10.py", line 10, in <module>
@@ -689,7 +713,7 @@ $
 Run `student10.py` in interactive mode:
 
 ```
-$ python -i student10.py 
+$ python -i student10.py
 s.getId() = 7
 Traceback (most recent call last):
 File "student10.py", line 10, in <module>
@@ -700,7 +724,7 @@ AttributeError: Student instance has no attribute '__id'
 >>> s._Student__id = 9
 >>> s.getId()
 9
->>> 
+>>>
 ```
 
 The "private" attribute is still accessible by prefixing it with `_<class name>`.
@@ -711,20 +735,20 @@ Python is dynamic, which is great.  But you should not do this:
 
 ```
 $ python
-Python 2.7.4 (default, Sep 26 2013, 03:20:26) 
+Python 2.7.4 (default, Sep 26 2013, 03:20:26)
 [GCC 4.7.3] on linux2
 Type "help", "copyright", "credits" or "license" for more information.
 >>> class MyClass:
 ...
 pass
-... 
+...
 >>> a = MyClass()
 >>> a.nitems = 3
 >>> a.todo = []
 >>> a.todo.append("get groceries")
 >>> a.todo
 ['get groceries']
->>> 
+>>>
 ```
 
 ### OOP Summary
