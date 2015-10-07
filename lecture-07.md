@@ -78,7 +78,7 @@ that doesn't make sense
 * Everything in Python is an object: numbers, strings, functions, etc. are all
 objects
 
-* An object is a location in memory with a type and a value
+* **An object is a location in memory with a type and a value**
 
 ### Assignment
 
@@ -114,7 +114,12 @@ True
 False
 >>>
 ```
+Another thing you can do is look at the id to see what the variable is referencing to. This is the address of where the object sits in memory.
 
+```
+>>> id(a)
+4459239544
+```
 ### Integers and references
 
 Integers are objects also and need to be created in memory:
@@ -126,12 +131,14 @@ Integers are objects also and need to be created in memory:
 True
 >>> a = 1024
 >>> b = 1024
->>> a is b
+>>> a is b <- pointing to two diff integer objects
+that happen to have the same value
 False
 >>> a = 16
 >>> b = 16
 >>> a is b
 True
+small integers are handled differently in python (see preallocated integers)
 >>>
 ```
 
@@ -207,6 +214,7 @@ it never changes
 >>> a = [42, 'hello']
 >>> b = a
 ```
+a and b point to a list. The list points to objects 42 and "hello"
 
 ![lecture-07/list-ref.png](lecture-07/list-ref.png)
 
@@ -250,11 +258,12 @@ the objects referenced in the original
 [19, {'grade': 97}]
 >>>
 ```
+Problem is that if we wanted to change value inside the dictionary, by changing a, we will change b as well
 
 ![lecture-07/shallow-copy-mutables.png](lecture-07/shallow-copy-mutables.png)
 
 ### Deep copy
-
+This will recursively copy nested data structures
 ```py
 >>> a = [19, {'grade':92}]
 >>> b = copy.deepcopy(a)
@@ -285,7 +294,7 @@ objects referenced in the original
 >>> c
 ([42, 'feed the dog', 'clean house'], [42, 'feed the dog', 'clean house'])
 ```
-
+we can change mutable object (list), but not immutable objects (tuple)
 ```py
 >>> b[0] = 7
 >>> c
@@ -319,7 +328,7 @@ point, I'm still free to change a mutable at the arrow destination
 * Unreachable objects are garbage collected
 
 * Garbage collection in Python is implemented with reference counting
-
+Last example, we have string a and b, but no variables pointing to it, so no references
 ![lecture-07/gc-2.png](lecture-07/gc-2.png)
 
 ## Python modules
@@ -343,6 +352,12 @@ point, I'm still free to change a mutable at the arrow destination
 * These modules were accessed using the import statement
 
 ### Import
+Can use
+```py
+>>> import time
+>>> dir(time)
+```
+to see the functions in the module
 
 Here is an example if importing and using a function from the `time` module:
 
@@ -360,6 +375,8 @@ TypeError: 'module' object is not callable
 <type 'builtin_function_or_method'>
 >>>
 ```
+type(time) shows us that it's a module, so you need to do time.time() to call the function that's in the module
+
 
 * Keep in mind that the module name/object is different then the function that
   exists inside of the module
@@ -378,7 +395,7 @@ True
 1381091266.353158
 >>>
 ```
-
+Can call the time.time() object with the variable t since we assigned it
 ### Import a single function
 
 We can import a single function from a module:
@@ -411,7 +428,11 @@ We can rename a function in the import statement:
 1381091498.986958
 >>>
 ```
-
+another example:
+```py
+>>>import numpy as np
+```
+so we don't have to type numpy every time
 ### Wild card import
 
 We can import everything from a module into the global namespace with:
@@ -551,7 +572,7 @@ Python 2.7.5+ (default, Feb 27 2014, 19:37:08)
 [GCC 4.8.1] on linux2
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import sys
->>> sys.path.remove('')
+>>> sys.path.remove('') <- removed the current directory path
 >>> import mymodule1
 Traceback (most recent call last):
 File "<stdin>", line 1, in <module>
@@ -571,8 +592,7 @@ mymodule1.py  mymodule1.pyc  mymodule2.py  mymodule2.pyc
 * When you import a file Python byte compiles the file
 
 
-* `.pyc` files are faster to load, but the runtime performance once you have
-* them loaded is exactly the same
+* `.pyc` files are faster to load, but the runtime performance once you have them loaded is exactly the same
 
 ### `__name__` and `__main__`
 

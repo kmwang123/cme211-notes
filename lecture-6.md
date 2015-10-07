@@ -341,6 +341,8 @@ repository with the remote repo
 
 * Analogous to mathematical functions
 
+Note: Python is pass by reference, not pass by copy, so there is little overhead cost to passing a variable as an argument to a function
+
 ### Defining a function in Python
 
 
@@ -402,7 +404,7 @@ Use the `return` keyword to return object from a function:
 ### Return multiple values
 
 Separate multiple return values with a comma:
-it returns a tuple. if assign the function output as a single variable, the variable will be a tuple. Just unpack it using a, b. 
+it returns a tuple. if assign the function output as a single variable, the variable will be a tuple. Just unpack it using a, b.
 
 
 ```py
@@ -588,7 +590,7 @@ $
 ```
 
 
-### Passing convention
+### Passing convention IMPORTANT!!
 
 Python uses pass by object reference.  Python functions can change mutable
 objects refereed to by input variables
