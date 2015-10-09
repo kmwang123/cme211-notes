@@ -38,7 +38,7 @@ $ command arg1 arg2 arg3
 For example:
 
 ```
-$ ls -l code-08/
+$ ls -l code/
 total 48
 -rw-rw-r--. 1 nwh nwh  65 Oct  7 13:23 filewrite.py
 -rw-rw-r--. 1 nwh nwh  14 Oct  7 13:23 hello.txt
@@ -64,7 +64,7 @@ total 48
 In a python scripts we can get access to the command line arguments with the
 `sys.argv` variable.  `sys.argv` is a list containing the command line arguments
 as items.  Command line arguments are separated by spaces.  See the example in
-`code-08/command.py`:
+`code/command.py`:
 
 ```py
 import sys
@@ -158,7 +158,7 @@ A class specifies data and functions associated with object
 Object is actual thing in memory that gets assigned
 There could be many objects in a class
 
-![fig-08/class-object.png](fig-08/class-object.png)
+![fig/class-object.png](fig/class-object.png)
 
 * Classes specify data and the methods to use or interact with that data
 
@@ -183,7 +183,7 @@ There could be many objects in a class
 
 ### Class / object examples 2: file objects
 
-See the file `code-08/filewrite.py`:
+See the file `code/filewrite.py`:
 
 ```py
 f = open("hello.txt", "w")
@@ -317,7 +317,7 @@ class Student:
 
 ### Class definition in action
 
-See the file `code-08/student1.py`
+See the file `code/student1.py`
 
 7 is the id of the student, Student is the class
 
@@ -340,8 +340,13 @@ $
 
 ### Let's talk about `self`
 
+<<<<<<< HEAD:lecture-08.md
 See `code-08/self.py`:
 Self is just a reference to the object
+=======
+See `code/self.py`:
+
+>>>>>>> upstream/master:lecture-08/lecture-08.md
 ```py
 class Student:
     def __init__(self, id):
@@ -372,7 +377,7 @@ variables that will be used throughout the life of the instance
 
 ### Class variable setup
 
-See `code-08/student2.py`.  Let's add an empty dictionary for the classes that
+See `code/student2.py`.  Let's add an empty dictionary for the classes that
 the student is enrolled in:
 
 'self.classes={}' means a dictionary of classes (courses, not the python class) that the student has been enrolled in
@@ -404,9 +409,13 @@ Only care about inputs and outputs, details are hidden to make it easier to use
 * *encapsulation* means hiding the details of data structures and algorithms
 (internal code)
 
+<<<<<<< HEAD:lecture-08.md
 As long as you don't change the interface, you don't have to change all the code that uses this interface. Just change data internal code. Adding things are fine, but changing things that you've introduced in the past causes problems
 
 ![fig-08/encapsulation.png](fig-08/encapsulation.png)
+=======
+![fig/encapsulation.png](fig/encapsulation.png)
+>>>>>>> upstream/master:lecture-08/lecture-08.md
 
 ### Interfaces
 
@@ -435,7 +444,7 @@ Inside of the `Student` class, we put:
 
 ### Access to id
 
-See `code-08/student3.py`:
+See `code/student3.py`:
 
 ```py
 class Student:
@@ -466,7 +475,7 @@ $
 * Is there a way somebody could accidentally change the id given the interface
 we've implemented?
 
-* Let's test it!  See `code-08/student4.py`:
+* Let's test it!  See `code/student4.py`:
 
 ```py
 class Student:
@@ -502,7 +511,7 @@ $
 
 ### Adding classes / grades
 
-See: `code-08/student5.py`:
+See: `code/student5.py`:
 
 ```py
 class Student:
@@ -534,7 +543,7 @@ $
 
 ### Getting classes
 
-See `code-08/student6.py`:
+See `code/student6.py`:
 
 ```py
 class Student:
@@ -571,7 +580,7 @@ $
 ### Getting classes
 
 If a method returns a reference to a mutable object, then changing that object
-"outside" of the class will change the data "inside" of the class.  See `code-08/student7.py`
+"outside" of the class will change the data "inside" of the class.  See `code/student7.py`
 
 ```py
 class Student:
@@ -625,7 +634,7 @@ have strong encapsulation
 * Default behavior is that all attributes are public, i.e. accessible using dot
 notation
 
-`code-08/student8.py`:
+`code/student8.py`:
 
 ```py
 class Student:
@@ -650,7 +659,7 @@ $
 
 ### Public attributes
 
-`code-08/student9.py`:
+`code/student9.py`:
 
 ```py
 class Student:
@@ -681,7 +690,7 @@ $
 * Attributes can be made private by using a double underscore prefix for the
 name
 
-* See `code-08/student10.py`:
+* See `code/student10.py`:
 
 ```py
 class Student:

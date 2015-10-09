@@ -15,7 +15,8 @@ Topics:
 * CUDA on Campus Day
 <http://icme.stanford.edu/events/nvidia-tech-talks-and-hands-labs>
 
-* Get your GitHub accounts!  You need this to submit assignments from here on.  We will not process last minute requests.
+* Get your GitHub accounts!  You need this to submit assignments from here on.
+  We will not process last minute requests.
 
 ## Python object model
 
@@ -50,7 +51,7 @@ in mind:
 In this example, `a` is a reference to the list object initially set to `[42,
 19, 73]`.  The variable `b` also references the same list.
 
-![lecture-07/references.png](lecture-07/references.png)
+![fig/references.png](fig/references.png)
 
 ### Analogy
 
@@ -94,11 +95,11 @@ objects
 
 ### Example
 
-![lecture-07/references-example.png](lecture-07/references-example.png)
+![fig/references-example.png](fig/references-example.png)
 
 ### Example
 
-![lecture-07/references-example-2.png](lecture-07/references-example-2.png)
+![fig/references-example-2.png](fig/references-example-2.png)
 
 ### Checking references
 
@@ -216,7 +217,7 @@ it never changes
 ```
 a and b point to a list. The list points to objects 42 and "hello"
 
-![lecture-07/list-ref.png](lecture-07/list-ref.png)
+![fig/list-ref.png](fig/list-ref.png)
 
 ### Copying a list
 
@@ -237,7 +238,7 @@ original?
 >>> b = copy.copy(a)
 ```
 
-![lecture-07/shallow-copy.png](lecture-07/shallow-copy.png)
+![fig/shallow-copy.png](fig/shallow-copy.png)
 
 * Constructs a new list and inserts references to
 the objects referenced in the original
@@ -260,7 +261,7 @@ the objects referenced in the original
 ```
 Problem is that if we wanted to change value inside the dictionary, by changing a, we will change b as well
 
-![lecture-07/shallow-copy-mutables.png](lecture-07/shallow-copy-mutables.png)
+![fig/shallow-copy-mutables.png](fig/shallow-copy-mutables.png)
 
 ### Deep copy
 This will recursively copy nested data structures
@@ -279,7 +280,7 @@ This will recursively copy nested data structures
 >>>
 ```
 
-![lecture-07/deep-copy-mutables.png](lecture-07/deep-copy-mutables.png)
+![fig/deep-copy-mutables.png](fig/deep-copy-mutables.png)
 
 * Constructs a new list and inserts copies of the
 objects referenced in the original
@@ -312,7 +313,7 @@ TypeError: 'tuple' object does not support item assignment
 >>>
 ```
 
-![lecture-07/tuples-and-immutability.png](lecture-07/tuples-and-immutability.png)
+![fig/tuples-and-immutability.png](fig/tuples-and-immutability.png)
 
 The immutable property of tuples only means I can't change where the arrows
 point, I'm still free to change a mutable at the arrow destination
@@ -321,15 +322,20 @@ point, I'm still free to change a mutable at the arrow destination
 
 * What happens to those objects that are no longer referenced?
 
-![lecture-07/gc-1.png](lecture-07/gc-1.png)
+![fig/gc-1.png](fig/gc-1.png)
 
 ### Garbage collection
 
 * Unreachable objects are garbage collected
 
 * Garbage collection in Python is implemented with reference counting
+<<<<<<< HEAD:lecture-07.md
 Last example, we have string a and b, but no variables pointing to it, so no references
 ![lecture-07/gc-2.png](lecture-07/gc-2.png)
+=======
+
+![fig/gc-2.png](fig/gc-2.png)
+>>>>>>> upstream/master:lecture-07/lecture-07.md
 
 ## Python modules
 
@@ -484,7 +490,7 @@ t = time()
 
 ### Writing your first module
 
-See file `lecture-07/mymodule1.py`:
+See file `code/mymodule1.py`:
 
 ```py
 def summation(a,b):
@@ -510,7 +516,7 @@ primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
 
 ### Improving your module
 
-Add test code in file `lecture-07/mymodule2.py`:
+Add test code in file `code/mymodule2.py`:
 
 ```py
 def summation(a,b):
@@ -612,7 +618,7 @@ safe to delete, typically don't want to commit these files into your git repos s
 
 ### "Hiding" code during import
 
-See `lecture-07/mymodule3.py`
+See `code/mymodule3.py`
 
 ```py
 def summation(a,b):
@@ -654,7 +660,7 @@ $
 
 ### Documenting the module
 
-See `lecture-07/mymodule4.py`:
+See `code/mymodule4.py`:
 
 ```py
 """
@@ -775,7 +781,7 @@ Zero division error
 
 ### Raising exceptions
 
-From `lecture-07/mymodule5.py`:
+From `code/mymodule5.py`:
 
 ```py
 import types
