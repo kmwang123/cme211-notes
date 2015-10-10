@@ -340,6 +340,8 @@ $
 
 ### Let's talk about `self`
 
+First argument to any method is 'self'-- this is usually just for convention. Represents object that is calling the particular method
+
 <<<<<<< HEAD:lecture-08.md
 See `code-08/self.py`:
 Self is just a reference to the object
@@ -347,6 +349,7 @@ Self is just a reference to the object
 See `code/self.py`:
 
 >>>>>>> upstream/master:lecture-08/lecture-08.md
+
 ```py
 class Student:
     def __init__(self, id):
@@ -357,7 +360,7 @@ class Student:
 s = Student(7)
 print("s    = {}".format(s))
 ```
-
+We see from the output that we get the same thing. Self is just a reference to the object
 Output:
 
 ```
@@ -513,6 +516,12 @@ $
 
 See: `code/student5.py`:
 
+Problems: need to initialize gpa (to zero or NaN) otherwise this doesn't exist (try out by yourself)
+
+id = arguments passed to the class
+
+Should not add attributes to a class
+
 ```py
 class Student:
     def __init__(self, id):
@@ -617,7 +626,7 @@ GPA = 3.5
 classes = {'gym': 4, 'englist': 4, 'math': 3}
 $
 ```
-
+Iterface leaks out mutable states (dictionary) and now they are out of sync
 ### Interfaces and references
 
 * It is easy to accidentally let a method provide a reference to a mutable data
@@ -659,6 +668,7 @@ $
 
 ### Public attributes
 
+
 `code/student9.py`:
 
 ```py
@@ -676,7 +686,7 @@ print("s.getId() = {}".format(s.getId()))
 ```
 
 Output:
-This may or may not be a good interface design. we might want to protect this id variable. can do this by having protected variables start with "__ ". 
+This may or may not be a good interface design. we might want to protect this id variable. can do this by having protected variables start with "__ ".
 
 ```
 $ python student9.py
@@ -686,6 +696,16 @@ $
 ```
 
 ### Private attributes
+can prefixing with 2 underscores, so instead of "self.id", it's "self._ id"
+
+no extra computational cost to making it private
+
+Note: can use pass to make script run and put in code body later
+```py
+if True:
+  pass
+```
+***Don't add attributes after an object has been created***
 
 * Attributes can be made private by using a double underscore prefix for the
 name

@@ -12,6 +12,9 @@ Topic: More Object Oriented Programming (OOP) in Python
 
 * `code/names.py`:
 
+methods can be called inside the initialization method
+
+
 ```py
 class NameClassifier:
     def __init__(self, femalefile, malefile):
@@ -24,13 +27,13 @@ class NameClassifier:
         for line in f:
             self.namedata[line.split()[0]] = 1.0
         f.close()
-            
+
         f = open(malefile,'r')
         for line in f:
             name = line.split()[0]
         if name in self.namedata:
             # Just assume a 50/50 distribution for names on both lists
-            self.namedata[name] = 0.5 
+            self.namedata[name] = 0.5
         else:
             self.namedata[name] = 0.0
         f.close()
@@ -62,7 +65,7 @@ for name in testdata:
 * Output:
 
 ```
-$ python main.py 
+$ python main.py
 PETER: 1.0
 LOIS: 1.0
 STEWIE: 0.5
@@ -76,6 +79,11 @@ CHRIS: 1.0
 Let's inspect a `Student` object:
 
 * `code/student1.py`:
+
+They return copy.deepcopy(self.classes)
+THe thing that's returned cannot come back and change internal state of the student object
+Often a good thing to do if you want to return a bunch of data from inside your class (Maintains strong encapsulation)
+
 
 ```py
 import copy
@@ -128,6 +136,11 @@ operators
 ### String representation method
 
 * `code/student2.py`:
+
+all same except we added a "repr" method. this returns String representation of the method
+before, when we did print(s), we got instance of memory, but now it prints out a nice thing
+
+We've overloaded some default python funcitonality
 
 ```py
 import copy
@@ -209,7 +222,7 @@ p_purple = p_blue + p_red
 ```
 
 ### Particle class
-
+"self" is the left hand side and "other" is the RHS
 `code/particle.py`:
 
 ```py
@@ -263,7 +276,7 @@ $ python -i badoverloading.py
 ```
 
 Is this intuitive?
-
+No, you shouldn't overload this one- it doesn't make sense for the user to have a length. Operator should make sense
 ### Inheritance
 
 * Inheritance is a way for a class to inherit attributes from another class
@@ -292,7 +305,7 @@ class User:
 class MovieWatcher(User):
     pass
 ```
-
+moviewatcher inherits from user class ...(User) means we are inheriting all attributes of User
 Output:
 
 ```
@@ -306,6 +319,8 @@ $ python -i inheritance1.py
 ### Overriding a method
 
 `code/inheritance2.py`:
+
+In this case, the moviewatcher has additional info. need to call initialization from parent class (use name of parent class and . method)
 
 ```py
 class User:
@@ -328,6 +343,8 @@ class MovieWatcher(User):
 ### Sibling classes
 
 `code/inheritance3.py`:
+
+both cookieeater and moviewatcher has inherited from user
 
 ```py
 class User:
@@ -368,6 +385,8 @@ operations
 ### Shapes
 
 `code/shapes.py`:
+
+Better implementation is if Shape knows it's posisition, then Circle and Rectangle inherits it
 
 ```py
 import math
