@@ -33,6 +33,9 @@ Topics:
 * Python OOP: defining classes, data attributes, methods
 * Basics of complexity analysis (as covered in lecture)
 
+Won't quiz on exceptions
+No details on modules
+
 Book chapters:
 
 * Chapter 5: Numeric Types
@@ -69,6 +72,14 @@ digits (bits)
 
 ![fig](fig/model-computer.png)
 
+large sequence of bytes: call that memory or DRAM. In diagram, each box represents a single byte, each byte in memory has an address; usually 0x00 (hexadecimal, base 16)
+fast computations done in registers
+communication across memory bus is very slow compared to communication from register to alu
+nearby data is also brought along in memory bus, so it's ready to go in register
+temporal locality: likely i want data soon
+spatial locality: likely i want data nearby
+
+
 ### Converting between bases
 
 * One can easily convert numbers between different bases such as binary (base 2)
@@ -86,6 +97,8 @@ and decimal (base 10)
 |       6 |    110 |
 |       7 |    111 |
 ```
+if we have 8 bits, then largest number is 2^7+2^6...+2^0 = 255, so we have a range from 0-255 or can represent 256.
+For negative number, use negative two's compliment
 
 ### Common prefixes
 
@@ -111,11 +124,16 @@ symbols KB / KiB / Kbytes for base 2
 * American Standard Code for Information Interchange (ASCII) is typically used
 to encode text information
 
+Assigns binary number to each letter, each character represents 7 bits, represent 128 characters
+
 * Characters, numbers, symbols, etc. are encoded using 7 bits (although on
 modern computers they would typically use 8 bits)
 
   * `A` maps to `1000001` in binary or 65 in decimal
   * `B` maps to `1000010` in binary or 66 in decimal
+
+  python 2: strings are ascii
+  python 3: strings in unicode format, up to 32 bits
 
 ### Computer storage of a number
 
@@ -132,12 +150,16 @@ numbers
 
 ![fig/bits.png](fig/bits.png)
 
+all floating point numbers take same amount of memory (same bits)
 ### Integer representation
 
 * At the hardware level computers typically handle integers using 8, 16, 32, or
 64 bits
 
 ![fig/dec-bin-table.png](fig/dec-bin-table.png)
+
+bit shift to left = multiplying the number
+bit shift to right = divide, but might lose remainder
 
 ### Integer range
 
@@ -155,6 +177,9 @@ numbers
 ### Sign bit
 
 * Use one bit for sign and remaining bits for magnitude
+cuts your positive values by a power of 2
+two representations of 0 and -0, not good
+causes hardware implementation to be more complicated
 
 ![fig/sign-bit.png](fig/sign-bit.png)
 
@@ -168,6 +193,8 @@ decimal
 ![fig/sign-offset.png](fig/sign-offset.png)
 
 * Again, effectively reduces the range of the magnitude
+
+LOOK at two's compliment- what's actually used in computers
 
 ### Unsigned integers
 
@@ -191,6 +218,18 @@ type will result in underflow
 * Overflow or underflow tend to cause wraparound, e.g. if adding together two
 signed numbers causes overflow the result is likely to be a negative number
 
+overflow causes 128+1 = -127; same problem with -127-1 = 128
+
+```py
+>>> a = numpy.zeros(1,dtype=numpy.uint32)
+>>> a
+array([0], dtype=uint32)
+>>> a-1
+array([4294967295], dtype=uint32)
+```
+using numpy, give uint (unsigned integer of 32 bits, and subtract 1 to get largest value)
+shows that it wraps around
+
 ### Range of integer types
 
 ![fig/int-range.png](fig/int-range.png)
@@ -200,6 +239,7 @@ signed numbers causes overflow the result is likely to be a negative number
 * How do I represent a floating point value using bits?
 
 ![fig/float.png](fig/float.png)
+10-6 default, up to 6 accuracy
 
 ### Floating point standard
 
@@ -238,10 +278,16 @@ Goldberg
 61405107689148645376L
 >>>
 ```
+python automatically converts from int to long when number gets too large, so it doesn't overflow
+"L" specifies a long integer, as incremented python allocates more memory for it
 
 * Floating point numbers are double precision (64-bit)
 
+numpy behaves like fixed width integers
+
 ## Performance comparison
+
+sums integers from 0 to a million and time it
 
 `code/summation.cpp`:
 
@@ -281,7 +327,7 @@ print("time = {}".format(t1-t0))
 Output:
 
 ```
-$ python summation1.py 
+$ python summation1.py
 1000000
 time = 0.17532491684
 $
@@ -291,6 +337,8 @@ $ ./summation
 time = 9.53674e-07
 $
 ```
+python is a lot slower than C++
+can try using xrange to be faster in python
 
 Compile the C++ code with: `$ g++ summation.cpp -o summation`
 
@@ -302,9 +350,13 @@ or other lower level languages
 
 ![fig](fig/python-v-compiled.png)
 
+C++ sits much closer to hardwares; C compilers will inspect code and optimize it
+
 ### Object overhead
 
 ![fig](fig/object-overhead.png)
+
+everything in python is an object, and this creates lots of overhead
 
 ### Options
 
@@ -331,6 +383,7 @@ of the interpreter and compiled modules that come with Python
 
 ![fig](fig/python-compiled-modules.png)
 
+
 ### Extension modules
 
 * The same Python C API used by the developers of Python itself also allows
@@ -344,6 +397,8 @@ API
 
 ### NumPy, SciPy, matplotlib
 
+use compiled code for fast tasks
+
 * NumPy - multidimensional arrays and fundamental operations on them
 
 * SciPy - Various math functionality (linear solvers, FFT, optimization, etc.)
@@ -355,11 +410,12 @@ utilizing NumPy arrays
 like GNU Octave
 
 ### Python software stack
+numpy is a bit like compiled modules
 
 ![fig](fig/python-stack.png)
 
 ### NumPy
-
+use to represent arrays of number
 ```py
 >>> import numpy
 >>> a = numpy.array([7, 42, -3])
@@ -374,7 +430,8 @@ array([ 7, 19, -3])
 ```
 
 ### Arrays are not lists
-
+only store a SINGLE type of data; FIXED TYPE; allows most efficient code and mem representation
+we don't have append method to this array. you can concatenate it though
 ```py
 >>> a[0] = "hello"
 Traceback (most recent call last):
@@ -384,7 +441,7 @@ ValueError: invalid literal for long() with base 10: 'hello'
 Traceback (most recent call last):
 File "<stdin>", line 1, in <module>
 AttributeError: 'numpy.ndarray' object has no attribute 'append'
->>> 
+>>>
 ```
 
 ### NumPy arrays
@@ -404,6 +461,14 @@ AttributeError: 'numpy.ndarray' object has no attribute 'append'
     * 32, 64, 128 bit (numpy.float32, numpy.float64, etc.)
 
 * Complex, strings, and Python object references also supported
+      -but these cause overhead
+
+Data is compactly stored, so we can quickly access next number in the array. Stores in a consecutive block of memory, so quicker
+
+**contiguous memory**
+
+C stores row major ordering
+Fortran stores column major ordering
 
 ### Data type examples
 
@@ -424,7 +489,9 @@ array([-75,
 7, 19], dtype=int8)
 >>>
 ```
-
+be careful to specify the type of array
+can represent infinity
+division by 0 gives warning, but doesn't stop code
 ### Multidimensional arrays
 
 * Arrays can have multiple dimensions called *axes*
@@ -437,8 +504,7 @@ array([-75,
 >>> a = numpy.array([(7, 19, -3), (4, 8, 17)], dtype=numpy.float64)
 >>> a
 array([[ 7., 19., -3.],
-[ 4.,
-8., 17.]])
+[ 4., 8., 17.]])
 >>> a.ndim
 2
 >>> a.dtype
@@ -449,12 +515,19 @@ dtype('float64')
 6
 >>>
 ```
-
+same as matlab, first index is column, next is rows
+last index is contiguous in mem
 ### Internal representation
 
 ![fig](fig/numpy-representation.png)
 
+contiguous block of memory- data is together, so high performance
+
 ### Creating arrays
+
+.empty doesn't create empty matrix, just random numbers
+need to pass zeros as a tuple
+shape gives tuple of shape of dimensions
 
 ```py
 >>> a = numpy.empty((3,3))
@@ -477,10 +550,11 @@ array([[ 1.,  1.,  1.],
 array([[ 1.,  0.,  0.],
        [ 0.,  1.,  0.],
        [ 0.,  0.,  1.]])
->>> 
+>>>
 ```
 
 ### Creating more arrays
+can reshape matrix
 
 ```py
 >>> a = numpy.arange(9, dtype=numpy.float64)
@@ -491,17 +565,29 @@ array([ 0., 1., 2., 3., 4., 5., 6., 7., 8.])
 array([[ 0., 1., 2.],
 [ 3., 4., 5.],
 [ 6., 7., 8.]])
->>> 
+>>>
 ```
-
+### Fortran ordering
+default is that array orders by row, but if we do fortran ordering,columns will be contiguous
+```py
+>>> a = numpy.arange(9,dtype=numpy.float64).reshape((3,3))
+>>> a
+array([[ 0., 1., 2.],
+       [ 3., 4., 5.],
+       [ 6., 7., 8.]])
+>>> a = numpy.arange(9,dtype=numpy.float64).reshape((3,3)),order='F')
+array([[ 0., 3., 6.],
+       [ 1., 4., 7.],
+       [ 2., 5., 8.]])
+```
 ### Creating more arrays
 
 ```
-$ cat numbers.txt 
+$ cat numbers.txt
 7. 19. -3.
 4. 8. 17.
 $ python
-Python 2.7.5+ (default, Feb 27 2014, 19:37:08) 
+Python 2.7.5+ (default, Feb 27 2014, 19:37:08)
 [GCC 4.8.1] on linux2
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import numpy
@@ -534,7 +620,7 @@ array([[0],
 array([0, 1, 2])
 >>> b.shape
 (3,)
->>> 
+>>>
 ```
 
 ### Array operations
@@ -572,7 +658,7 @@ array([ 0., 1., 2., 3., 4., 5., 6., 7., 8.])
 >>> total = 0.
 >>> for n in range(len(a)):
 ...   total += a[n]*a[n]
-... 
+...
 >>> math.sqrt(total)
 14.2828568570857
 >>> # better idea
@@ -764,15 +850,15 @@ array([ 0.        ,  1.        ,  1.41421356,  1.73205081,  2.        ,
 matrix operations:
 
     * Searching, sorting, and counting within arrays
-    
+
     * FFT (Fast Fourier Transform)
-    
+
     * Linear Algebra
-    
+
     * Statistics
-    
+
     * Polynomials
-    
+
     * Random number generation
 
 * SciPy has largely replaced much of this functionality,
