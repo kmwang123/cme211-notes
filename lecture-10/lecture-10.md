@@ -554,7 +554,8 @@ array([[ 1.,  0.,  0.],
 ```
 
 ### Creating more arrays
-can reshape matrix
+can reshape matrix- change rank; product of dimensions should match (can't change amount of data)
+By default, they use C ordering (rows are contiguous in memory)
 
 ```py
 >>> a = numpy.arange(9, dtype=numpy.float64)
@@ -599,10 +600,12 @@ array([[ 7., 19., -3.],
 >>> numpy.savetxt('numbers2.txt', a)
 >>>
 ```
+savetxt dumps info to disk
 
 ### Remove single dimension entry
 
 ```py
+>>> import numpy as np <-- usually standard to import as this
 >>> a = numpy.arange(3)
 >>> a
 array([0, 1, 2])
@@ -615,13 +618,19 @@ array([[0],
 [2]])
 >>> b.shape
 (3, 1)
->>> b = numpy.squeeze(b)
+>>> b = numpy.squeeze(b)  <-- squeeze function gets rid of singleton dimensions
 >>> b
 array([0, 1, 2])
 >>> b.shape
-(3,)
->>>
+(3,)     <-- created a 1D numpy array, this is a python tuple with single element
+>>> b = np.arrange(3).reshape(3,1)
+>>> b.shape
+(3,1)
+>>> b.ndim   
+2
 ```
+array broadcasting: system with a bunch of rules (for example, outer product addition)
+  -keep in mind in case you get unexpected behavior
 
 ### Array operations
 
@@ -629,9 +638,9 @@ array([0, 1, 2])
 >>> a = numpy.arange(9, dtype=numpy.float64)
 >>> a
 array([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.])
->>> a[3:7]
+>>> a[3:7] <--- can slice to get subarray
 array([ 3.,  4.,  5.,  6.])
->>> a[3:7] = 0
+>>> a[3:7] = 0 <--- can assign to a subsequence (modify array)
 >>> a
 array([ 0.,  1.,  2.,  0.,  0.,  0.,  0.,  7.,  8.])
 >>> 2*a
@@ -646,6 +655,17 @@ array([  0.,   1.,   4.,   0.,   0.,   0.,   0.,  49.,  64.])
 8.0
 >>>
 ```
+Slicing operation returns a ref to subarray rather than a subarray
+```py
+>>> b=a[3:7]
+>>> b[0]=0
+>>> b
+array([0,4,5,6])
+>>> a
+array([0,1,2,3,4,5,6,7,8])
+
+```
+if we change b, it changes a
 
 ### Array operations
 
@@ -669,11 +689,10 @@ array([ 0., 1., 2., 3., 4., 5., 6., 7., 8.])
 14.282856857085701
 >>>
 ```
-
+better for performance to use norm
 ### Speed of array operations
 
 `code/summation2.py`:
-
 ```py
 import numpy
 import time
@@ -717,6 +736,7 @@ $ python summation3.py
 time = 0.00641703605652
 $
 ```
+Conclusion: sum versus numpy.sum-> use numpy.sum to achieve best results (faster)
 
 ### Loops vs. array operations
 
@@ -765,7 +785,7 @@ differences between a 2D array and a matrix
 other NumPy functions, SciPy, matplotlib, etc.
 
 * See here for more details:
-
+<http://mathesaurus.sourceforge.net/matlab-numpy.html>
 <http://www.scipy.org/NumPy_for_Matlab_Users>
 
 (`array' or `matrix'? Which should I use?)
@@ -826,6 +846,7 @@ array([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.])
 ```
 
 ### Universal functions (ufuncs)
+Need to call the numpy.sqrt() instead of the math module one
 
 ```py
 >>> import numpy
