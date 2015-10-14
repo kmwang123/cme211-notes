@@ -4,6 +4,14 @@ Monday, October 14, 2015
 
 Topics: SciPy and matplotlib
 
+On friday, bring laptop and have iPython ready to go so we can play around with pandas
+
+## Future Homeworks
+Line length should only be ~80 characters, don't go any longer.
+Watch out- don't have soft wrap on
+Go to a new line when it's too long
+Will take off style points
+
 ## SciPy
 
 See: <http://scipy.org/>
@@ -13,6 +21,8 @@ software for mathematics, science, and engineering. In particular, these are
 some of the core packages:
 
 ![fig](fig/scipy-packages.png)
+
+pandas has stuff similar to R
 
 Actively developed:
 
@@ -68,6 +78,7 @@ print(data)
 print(data['a'])
 ```
 
+
 Note: SciPy submodules must be specifically imported.  For example the `io`
 module is not imported with `import scipy`.  Need to `import scipy.io`.
 
@@ -93,6 +104,8 @@ of data
   (NetCDF 4 is based on HDF5)
 
 ### Image Processing
+
+edge detector for images
 
 ```{.python .input}
 import numpy
@@ -131,6 +144,8 @@ print(scipy.integrate.quad(line, 0., 1.))
 print(scipy.integrate.quad(line, -1., 1.))
 ```
 
+This returns answer and then the error
+
 ### Optimization
 
 Numerical optimization methods attempt to solve the problem:
@@ -154,9 +169,9 @@ def rosenbrock(xy):
     return f
 
 xy0 = numpy.array([0., 0.])
-min = scipy.optimize.fmin(rosenbrock, xy0)
-print(min)
-print(rosenbrock(min))
+fstar = scipy.optimize.fmin(rosenbrock, xy0)
+print(fstar)
+print(rosenbrock(fstar))
 ```
 
 ### Linear algebra
@@ -172,6 +187,7 @@ print(rosenbrock(min))
 
 Here is a $3 \times 3$ system of linear equations:
 
+Can run this tex using shift-enter?
 $$
 \begin{align}
 y + 2x - z &= 8 \\
@@ -186,7 +202,7 @@ $$
 \begin{pmatrix}
 1 & 2 & -1 \\
 2 & -1 & -3 \\
--2 & 2 & 1 
+-2 & 2 & 1
 \end{pmatrix}
 \begin{pmatrix}
 x \\ y \\ z
@@ -229,24 +245,24 @@ Compressed Row Storage (CRS), sometimes also called Compressed Sparse Row (CSR)
 ### Compressed Row Storage
 
 Dense matrix :
-
 $$
 \begin{bmatrix}
 10 & 0 & 0 & 0 \\
  3 & 9 & 0 & 0 \\
  0 & 7 & 8 & 7 \\
- 0 & 0 & 3 & 7 
+ 0 & 0 & 3 & 7
 \end{bmatrix}
 $$
 
 Sparse matrix storage with 0-based indexing:
+Essentially, we keep track of nonzero and position of it in the matrix
+Check out http://www.cise.ufl.edu/research/sparse/matrices/
 
 ```
 val: 10 3 9 7 8 7 3 7
 col_ind: 0 0 1 1 2 3 2 3
 row_ptr: 0 1 3 6 8
 ```
-
 Question: what is the storage complexity for these different storage methods?
 
 ### Matrix Market files
@@ -360,6 +376,9 @@ print(a)
 a = pylab.arange(9, dtype=pylab.float64).reshape(3,3)
 print(a)
 ```
+from pylab import *
+this imports a bunch of symbols into the default python namespace (imports numpy and matplotlib)
+
 
 ### `matplotlib.pyplot`
 
@@ -380,6 +399,7 @@ import numpy as np
 %matplotlib inline
 %config InlineBackend.figure_format = 'svg'
 ```
+svg makes plot render nicely in the browser (vector grahics)
 
 A simple plot:
 
@@ -391,6 +411,8 @@ plt.plot(2*np.arange(5))
 
 The `savefig` function saves the most recent plot to disk.  The file type is
 determined by the extension:
+
+Need to do it in the same cell
 
 ```{.python .input}
 plt.savefig('figure1.jpg')
@@ -413,6 +435,9 @@ plt.show(block=False)
 ```
 
 ### Controlling the line type
+
+Can do plt.plot(time, signal, 'bx',markersize=20) to change the markersize
+
 
 ```{.python .input}
 plt.figure(3)
