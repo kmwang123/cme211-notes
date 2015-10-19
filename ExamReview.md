@@ -242,23 +242,9 @@ File "<stdin>", line 1, in <module>
 TypeError: 'str' object does not support item assignment
 >>>
 ```
-Concatenate strings with +
-and check if string is a number or character (pg 211)
-
-```py
->>> b = 'j' + a[1:]
->>> b
-'jello'
-
->>> s='2'    
->>> s.isalnum()
-True
->>> s.isalpha()
-False
-```
 
 ## String functions / methods 	
-
+lower,upper,find,rstrip,strip,split,replace,list,join,isalnum,isalpha
 ```py
 >>> name = 'Leland'
 >>> len(name)
@@ -278,7 +264,7 @@ d
 'LELAND'
 >>> name.find('lan')
 2
->>> name.find('lan', 1, 4)
+>>> name.find('lan', 1, 4) <-- looks at 1 up to but not including 4
 -1
 >>> name*3   <--- repeat
 'LelandLelandLeland'
@@ -309,6 +295,20 @@ Changing String by making it into a list:
 >>> string=''.join(a)
 >>> string
 'hexxo'
+```
+
+Concatenate strings with +
+and check if string is a number or character (pg 211)
+```py
+>>> b = 'j' + a[1:]
+>>> b
+'jello'
+
+>>> s='2'    
+>>> s.isalnum()
+True
+>>> s.isalpha()
+False
 ```
 ## String formatting Learning Python pg 225
 String formatting:
@@ -401,12 +401,6 @@ else:
 ## Boolean logic 	
 
 ```py
->>> 2 == 2
-True
->>> 2 == 3
-False
->>> 2 != 3
-True
 >>> a = 2
 >>> b = 3
 >>> a == 2 and b == 3
@@ -461,7 +455,7 @@ else:
 
 ## `while` loop 	
 
-* The `for` loop is associated with executing a loop body a known number of times
+* The `for` loop is associated with executing a loop body a **known** number of times
 
 * What if we’re unsure how many times we’ll need to execute the loop?
 
@@ -555,42 +549,33 @@ Use `ctrl-c` to interrupt the interpreter!
 
 The continue statement allows you to skip the remainder of a loop body and
 continue with the next iteration:
-
->>> for n in range(10):!
+```py
+>>> for n in range(10):
+...   if n>3:
+...     continue
+...   print n
 ...
-if n > 3:
-!
-...
-continue!
-...
-print n!
-... !
-0!
-1!
-2!
-3!
->>> !
-
+0
+1
+2
+3
+```
 ## `break`
 
 The break statement allows one to immediately
 exit from a for or while loop
 
-
->>> for n in range(10):!
+```py
+>>>> for n in range(10):
+...    if n>3:
+...      break
+...    print n
 ...
-if n > 3:!
-...
-break!
-...
-print n!
-... !
-0!
-1!
-2!
-3!
->>>
-
+0
+1
+2
+3
+```
 ## Innermost loop
 
 `continue` and `break` only apply to the innermost loop being executed:
@@ -831,8 +816,37 @@ list may be accessed via a slice:
 [9.4, 'some text', 55]
 >>> my_list[1:]
 [9.4, 'some text', 55]
+
+>>> L = ['hi','hello','yo']
+>>> L[-2]
+'hello'
+>>> L[2]
+'yo'
+```
+Note that the multiplication and concatenation also works:
+```py
+>>> list=[1,2,3]
+>>> list+list
+[1, 2, 3, 1, 2, 3]
+>>> list*3
+[1, 2, 3, 1, 2, 3, 1, 2, 3]
 ```
 
+Check values in a list:
+```py
+>>> s=[1,2,3]
+>>> 3 in s
+True
+```
+Print items in list:
+```py
+>>> for n in s:
+...    print(n)
+...
+1
+2
+3
+```
 Lists are mutable.  You may change the elements in a list:
 
 ```py
