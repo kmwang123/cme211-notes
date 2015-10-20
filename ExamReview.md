@@ -848,6 +848,11 @@ Multiplication and concatenation also works:
 [1, 2, 3, 1, 2, 3]
 >>> list*3
 [1, 2, 3, 1, 2, 3, 1, 2, 3]
+
+#can preallocate list
+>>> list=[0]*3
+>>> list
+[0, 0, 0]
 ```
 
 Check values in a list:
@@ -1264,6 +1269,8 @@ see how it works.
 See Chapter 9 in **Learning Python** for information on accessing files with
 Python.  The relevant information starts on page 282.
 
+![Learning Python Files](MidtermRev/FileMethods.png)
+
 ### Open a file
 
 We open a file with the built-in `open` function:
@@ -1278,16 +1285,6 @@ The syntax is `open(filename,mode)` where `filename` is a string with the
 filename to open and `mode` is the mode to open the file.  For now, the mode
 should be `'r'` for reading a file and `'w'` for writing a file.  The `open`
 function returns a *file object*, which we will use to read and write data.
-
-Note what happens if you try to open a file that does not exist:
-
-```py
->>> bad_file = open("no-file.txt","r")
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-IOError: [Errno 2] No such file or directory: 'no-file.txt'
->>>
-```
 
 ### Reading from files
 
@@ -1306,7 +1303,6 @@ It is always a good idea to close a file when you are done with it.  We will
 take off points if you neglect to do this.
 
 You can read an entire file at once with the `read()` method:
-
 ```py
 >>> f = open("humpty-dumpty.txt","r")
 >>> poem = f.read()
@@ -1315,12 +1311,9 @@ Humpty Dumpty sat on a wall,
 Humpty Dumpty had a great fall.
 All the king's horses and all the king's men
 Couldn't put Humpty together again.
-
 >>> f.close()
 ```
-
 You can very easily iterate over lines in a file with:
-
 ```py
 >>> f = open("humpty-dumpty.txt","r")
 >>> for line in f:
@@ -1336,27 +1329,11 @@ Couldn't put Humpty together again.
 
 >>> f.close()
 ```
+To suppress the extra newline character generated:  
+- slicing `line` with `print(line[:-1])`
+- or do line.strip().  
 
-Note, on your own, try to suppress the extra newline character generated.  You
-can do with with adding a comment after print: `print(line),` or slicing `line`
-with `print(line[:-1])`.  Note that `line` is a variable name.  The following
-works in the same manner:
-
-```py
->>> f = open("humpty-dumpty.txt","r")
->>> for my_line in f:
-...     print(my_line)
-...
-Humpty Dumpty sat on a wall,
-
-Humpty Dumpty had a great fall.
-
-All the king's horses and all the king's men
-
-Couldn't put Humpty together again.
-
->>> f.close()
-```
+Note that `line` is a variable name.  
 
 Let's say we wanted to process all words in a file.  The following example would
 get us started:
@@ -1529,10 +1506,10 @@ The `__add__` method is called when the `+` operator is called on lists:
 
     - Create a dictionary with some data: `ages = {"brad": 51, "angelina": 40}`
 
-- Values can be any python object: numbers, strings, lists, other dictionaries
+- Values can be **any** python object: numbers, strings, lists, other dictionaries, tuples, sets
 
-- Keys can be any immutable object: numbers, strings, tuples (containing
-  immutable data)
+- Keys can be any **immutable** object: numbers, strings, tuples (containing
+  immutable data), NO SETS
 
 - No sense of order in a python dictionary.  When used in a loop, the key-value
   pairs may come out in any order.
@@ -1542,7 +1519,7 @@ The `__add__` method is called when the `+` operator is called on lists:
 
 ### Create a dictionary
 
-Use {},zip,fromkeys,
+Use {}, zip, fromkeys
 
 ```py
 >>> ages = {} # or ages = dict()
@@ -1561,7 +1538,7 @@ Use {},zip,fromkeys,
 >>> keyslist
 ['Bob', 'Kyle', 'Sally']
 >>> dict.fromkeys(keyslist)      #initialize dict from a keys list
-{'Bob': None, 'Sally': None, 'Kyle': None}
+{'Bob': None, 'Sally': None, 'Kyle': None} #can do fromkeys(keyslist,0) to initialize everything to 0
 ```
 
 ### Access items
@@ -1578,16 +1555,20 @@ Use {},zip,fromkeys,
 Or you can use the `get()`,'pop()',or 'popitem()' methods:
 
 ```py
->>> temp = ages.get('brad')
+>>> temp = ages.get('brad') #returns NONE if key doesn't exist instead of giving error
 >>> print(temp)
 51
 >>> temp = ages.get('helen')
 >>> print(temp)
 None
+>>> D
+{'Bob': 1, 'Sally': 2, 'Kyle': 54}
+>>> D.get('Karen',0)     #if not there, return 0
+0
 
 >>> D
 {'Karen': 20, 'Bob': 1, 'Sally': 2, 'Kyle': 54}
->>> D.pop('Karen')  #can also use pop, although it removes key from dict
+>>> D.pop('Karen')  #can also use pop, although it removes key from dict, can pop last thing from dict by just pop()
 20
 >>> D
 {'Bob': 1, 'Sally': 2, 'Kyle': 54}
@@ -1600,7 +1581,7 @@ None
 {'Bob': 1, 'Sally': 2, 'Kyle': 54}
 ```
 ## Other Functions
-key in dict, keys(),values(),items(),clear(),update(), del
+key in dict, keys(), values(), items(), clear(), update(), del
 ```py
 >>> D  #check if key is in dict
 {'Bob': 1, 'Sally': 2, 'Kyle': 54}
@@ -1622,7 +1603,7 @@ True
 >>> D
 {'Bob': 1, 'Sally': 2, 'Kyle': 54}
 >>> Z={'Karen':20}
->>> D.update(Z)   #append a dictionary to another dictionary
+>>> D.update(Z)   #merge a dictionary to another dictionary (overwrites values if there is same key)
 >>> D
 {'Karen': 20, 'Bob': 1, 'Sally': 2, 'Kyle': 54}
 
@@ -1657,6 +1638,25 @@ Copy
 >>> C
 {'A': [1, 20], 'B': [3, 4]} #but then C value changed as well!
 ```
+### Find Key from value
+```py
+#Method 1
+>>> D
+{'Bob': 1, 'Sally': 2, 'Kyle': 54}
+>>> want=D['Bob']
+>>> want
+1
+>>> [key for (key,value) in D.items() if value == want]
+['Bob']
+
+#Method 2
+>>> D
+{'Bob': 1, 'Sally': 2, 'Kyle': 54}
+>>> want=D['Bob']
+>>> want
+1
+>>> [key for key in D.keys() if D[key] == want]
+['Bob']
 
 ### Iteration
 
@@ -1800,6 +1800,8 @@ object such as a list, the contained object may be modified)
 
 ### Tuple examples
 
+Note: concatenation (+), repitition (\*), and slicing still work
+
 Basic usage:
 
 ```py
@@ -1835,16 +1837,26 @@ TypeError: 'tuple' object does not support item assignment
 
 ![tuple diagram](fig/tuple-modifiability.png)
 
-### Tuple-list conversion
-
+### Tuple/list conversion
 ```py
->>> days_list = list(days)
->>> days_list
-['Su', 'M', 'Tu', 'W', 'Th', 'F', 'Sa']
->>> days_tup = tuple(days_list)
->>> days_tup
-('Su', 'M', 'Tu', 'W', 'Th', 'F', 'Sa')
->>>
+#Tuple to List
+>>> T=('a','d','c')
+>>> list(T)
+['a', 'd', 'c']
+
+#List to Tuple
+>>> L=[1,2,3]
+>>> tuple(L)
+(1, 2, 3)
+```
+### Other Methods
+Index(), count()
+```py
+>>> T=('A','B','A','C')
+>>> T.index('C')   #find index of an element
+3
+>>> T.count('A')  #how many A's are there in the tuple?
+2
 ```
 
 ### A note on (im)mutability
