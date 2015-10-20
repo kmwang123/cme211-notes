@@ -73,14 +73,12 @@ and floating point numbers.  For now:
 0.6
 >>> 3/5.
 0.6
->>> 3%5
+>>> 3%5 #`%` operator returns the remainder for integer division.
 3
 >>>
 ```
 
-The `%` operator is called the *modulus* operator and returns the remainder for
-integer division.
-
+![operators and precedence](MidtermRev/Operators.png)
 
 ## Modules
 
@@ -244,7 +242,7 @@ TypeError: 'str' object does not support item assignment
 ```
 
 ## String functions / methods 	
-lower,upper,find,rstrip,strip,split,replace,list,join,isalnum,isalpha
+lower, upper, find, rstrip, strip, split, replace, list, join, isalnum, isalpha
 ```py
 >>> name = 'Leland'
 >>> len(name)
@@ -258,41 +256,41 @@ l
 a
 n
 d
->>> name.lower()
+>>> name.lower()  #change to all lowercase
 'leland'
->>> name.upper()
+>>> name.upper() #change to all uppercase
 'LELAND'
->>> name.find('lan')
+>>> name.find('lan') #find string and return first index
 2
->>> name.find('lan', 1, 4) <-- looks at 1 up to but not including 4
+>>> name.find('lan', 1, 4)  #looks at 1 up to but not including 4
 -1
->>> name*3   <--- repeat
+>>> name*3   #repeat
 'LelandLelandLeland'
 ```
-Other methods (strip,split,replace):
+Other methods (strip, split, replace):
 ```py
 >>> string='   hello i am Karen\n'
->>> string.rstrip()
+>>> string.rstrip()           #remove whitespace at end of line
 '   hello i am Karen'
->>> string.strip()
+>>> string.strip()           #remove whitespace at beg and end of line
 'hello i am Karen'
->>> string.replace('hello','goodbye')
+>>> string.replace('hello','goodbye') #replace string with something else
 '   goodbye i am Karen\n'
->>> string.split()               <-- can also split by commas, like .split(',')
+>>> string.split()               #can also split by commas, like .split(',')
 ['hello', 'i', 'am', 'Karen']
->>> 'hello' in string
+>>> 'hello' in string     #see if string is in another string
 True
->>> 'a$b$c$'.replace('$','HI')
+>>> 'a$b$c$'.replace('$','HI') #replace multiple
 'aHIbHIcHI'
 ```
 Changing String by making it into a list:
 ```py
->>> string='hello'
->>> a = list(string)
+>>> string='hello'       #string is immutable
+>>> a = list(string)     #break up letters into list so it's mutable
 ['h', 'e', 'l', 'l', 'o']
 >>> a[2]='x'
 >>> a[3]='x'
->>> string=''.join(a)
+>>> string=''.join(a)   #put string back together
 >>> string
 'hexxo'
 ```
@@ -805,6 +803,8 @@ object.  Here is a list containing some numbers and strings:
 Python lists (and other sequential data types) use 0-base indexing.  Data in a
 list may be accessed via a slice:
 
+Note: Slicing creates a new list
+
 ```py
 >>> my_list[0]
 4
@@ -840,7 +840,7 @@ Clever slicing
 ```
 
 Multiplication and concatenation also works:
-#Note that concatenation of list creates NEW object, while append() method changes list in place#
+**Note that concatenation of list creates NEW object, while append() method changes list in place**
 
 ```py
 >>> list=[1,2,3]
@@ -887,7 +887,60 @@ You can get the length of a list with:
 
 See `help(list)` from the Python interpreter for summary of methods that can
 operate on a list.
-Other Methods: extend,append,insert,pop,index,remove,count,reverse
+
+## List methods
+
+See `>>> help(list)` to get a list of the list methods.  This should open a
+"pager" in your python interpreter.  The "pager" allows you to view the help text
+one page at a time.  On my computer the pager is the `less` program.  Hitting
+the key `g` goes back to the top of the help text.  Hitting the space bar moves
+one page forward in the help documentation.  For reference here are the built-in
+methods for Python `list` objects:
+```
+append(...)
+    L.append(object) -- append object to end
+
+count(...)
+    L.count(value) -> integer -- return number of occurrences of value
+
+extend(...)
+    L.extend(iterable) -- extend list by appending elements from the iterable
+
+index(...)
+    L.index(value, [start, [stop]]) -> integer -- return first index of value.
+    Raises ValueError if the value is not present.
+
+insert(...)
+    L.insert(index, object) -- insert object before index
+
+pop(...)
+    L.pop([index]) -> item -- remove and return item at index (default last).
+    Raises IndexError if list is empty or index is out of range.
+
+remove(...)
+    L.remove(value) -- remove first occurrence of value.
+    Raises ValueError if the value is not present.
+
+reverse(...)
+    L.reverse() -- reverse *IN PLACE*
+
+sort(...)
+    L.sort(cmp=None, key=None, reverse=False) -- stable sort *IN PLACE*;
+    cmp(x, y) -> -1, 0, 1
+```
+
+The methods in the help documentation that start and end with underscores (for
+example, `__add__`) refer to methods that are called through python operators.
+The `__add__` method is called when the `+` operator is called on lists:
+
+```py
+>>> cme211_tas + ['loek']
+['josh', 'evan', 'oliver', 'swaroop', 'loek']
+>>> cme211_tas.__add__(['loek'])
+['josh', 'evan', 'oliver', 'swaroop', 'loek']
+>>>
+```
+## Example of above methods
 
 ```py
 >>> L=[4,1,9]
@@ -930,8 +983,6 @@ Other Methods: extend,append,insert,pop,index,remove,count,reverse
 [1, 2, 3, 4]
 >>> list(reversed(L)) #can assign to an object
 [4, 3, 2, 1]
-
-
 ```
 More on sorting IN PLACE:
 ```py
@@ -1288,7 +1339,7 @@ function returns a *file object*, which we will use to read and write data.
 
 ### Reading from files
 
-Use the `readline()` method to read lines from a file:
+Use the **`readline()`** method to read lines from a file:
 
 ```py
 >>> f = open("humpty-dumpty.txt","r")
@@ -1299,10 +1350,7 @@ Use the `readline()` method to read lines from a file:
 >>> f.close()
 ```
 
-It is always a good idea to close a file when you are done with it.  We will
-take off points if you neglect to do this.
-
-You can read an entire file at once with the `read()` method:
+You can read an entire file at once with the **`read()`** method:
 ```py
 >>> f = open("humpty-dumpty.txt","r")
 >>> poem = f.read()
@@ -1313,7 +1361,7 @@ All the king's horses and all the king's men
 Couldn't put Humpty together again.
 >>> f.close()
 ```
-You can very easily iterate over lines in a file with:
+You can very easily **iterate** over lines in a file with:
 ```py
 >>> f = open("humpty-dumpty.txt","r")
 >>> for line in f:
@@ -1351,6 +1399,8 @@ f.close()
 
 To open a file for writing and write a single line:
 
+**Note: when writing out, everything MUST be a string**
+
 ```py
 >>> f = open("output.txt","w")
 >>> f.write("blah blah blah\n")
@@ -1375,25 +1425,58 @@ a mighty fine day
 ends with a great big party
 thank you, it's friday
 ```
-
 Note, the `\n` is still required in the strings that make up the list passed to
 `writelines`.  The `"w"` file mode will overwrite the file you open, deleting
-all of the old data.  Be careful!  If you would like to append to an existing
-file use the `"a"` mode.
+all of the old data.  Be careful!  
 
-### Buffering
+##If you would like to append to an existing file use the `"a"` mode.
+```py
+f=open("output.txt","a")
+```
+## Playing Around
 
-Be mindful of file buffering.  We will see a demo in class.
+```py
+>>> a,b,c=1,2,3
+>>> D={'x':32,'y':100}
+>>> L=[10,11,12]
+
+>>> fout = open('Playing','w')
+>>> fout.write("{} {} {}".format(a,b,c))
+>>> fout.write('\n')
+>>> fout.write(str(D)+'\n')
+>>> fout.write(str(L)+'\n')
+>>> fout.write('write out list again\n')
+>>> fout.write('{} {} {}'.format(L[0],L[1],L[2]))
+>>> fout.close()
+```
+Shows up as:
+cat Playing
+```
+1 2 3
+{'y': 100, 'x': 32}
+[10, 11, 12]
+write out list again
+10 11 12
+```
+```py
+>>> fout=open('Playing','a')
+>>> fout.write('write out dict\n')
+>>> fout.write('{} {}, {} {}'.format(D.keys()[0],D.values()[0],D.keys()[1],D.values()[1]))
+>>> fout.close()
+```
+Show up as:
+cat Playing
+```
+1 2 3
+{'y': 100, 'x': 32}
+[10, 11, 12]
+write out list again
+10 11 12write out dict
+y 100, x 32
+```
 # CME 211 Lecture 4: Python containers
 
 Monday, September 28, 2015
-
-## Announcements
-
-- Screencasts posted to Piazza
-- Course schedule posted
-- 11 spots in the class now open (waiting for registrar to update)
-- Will update on open spots Wednesday, Friday as well
 
 ## Container review
 
@@ -1401,99 +1484,6 @@ Monday, September 28, 2015
 
 - *Containers* are sometimes called "collections" or "data structures"
 
-- In lecture 3, we spent sometime looking at the Python `list` container
-
-- Today we will see Dictionaries and Tuples
-
-## List review
-
-- Python lists store objects in a specified sequence
-
-```py
->>> cme211_tas = ["josh", "evan", "oliver", "swaroop"]
-```
-
-- Accessing a single item is done via square brackets
-
-```py
->>> cme211_tas[2]
-'oliver'
-```
-
-- You can get a sub-list with a slice:
-
-```py
->>> cme211_tas[1:3]
-['evan', 'oliver']
-```
-
-- Note that slicing creates a new list:
-
-```py
->>> two_tas = cme211_tas[1:3]
->>> two_tas
-['evan', 'oliver']
->>> two_tas[0] = 'bob'
->>> two_tas
-['bob', 'oliver']
->>> cme211_tas
-['josh', 'evan', 'oliver', 'swaroop']
->>>
-```
-
-## List methods
-
-See `>>> help(list)` to get a list of the list methods.  This should open a
-"pager" in your python interpreter.  The "pager" allows you to view the help text
-one page at a time.  On my computer the pager is the `less` program.  Hitting
-the key `g` goes back to the top of the help text.  Hitting the space bar moves
-one page forward in the help documentation.  For reference here are the built-in
-methods for Python `list` objects:
-
-```
-append(...)
-    L.append(object) -- append object to end
-
-count(...)
-    L.count(value) -> integer -- return number of occurrences of value
-
-extend(...)
-    L.extend(iterable) -- extend list by appending elements from the iterable
-
-index(...)
-    L.index(value, [start, [stop]]) -> integer -- return first index of value.
-    Raises ValueError if the value is not present.
-
-insert(...)
-    L.insert(index, object) -- insert object before index
-
-pop(...)
-    L.pop([index]) -> item -- remove and return item at index (default last).
-    Raises IndexError if list is empty or index is out of range.
-
-remove(...)
-    L.remove(value) -- remove first occurrence of value.
-    Raises ValueError if the value is not present.
-
-reverse(...)
-    L.reverse() -- reverse *IN PLACE*
-
-sort(...)
-    L.sort(cmp=None, key=None, reverse=False) -- stable sort *IN PLACE*;
-    cmp(x, y) -> -1, 0, 1
-```
-
-The methods in the help documentation that start and end with underscores (for
-example, `__add__`) refer to methods that are called through python operators.
-The `__add__` method is called when the `+` operator is called on lists:
-
-```py
->>> cme211_tas + ['loek']
-['josh', 'evan', 'oliver', 'swaroop', 'loek']
->>> cme211_tas.__add__(['loek'])
-['josh', 'evan', 'oliver', 'swaroop', 'loek']
->>>
-```
 
 ## Dictionaries
 
@@ -2184,53 +2174,21 @@ for name in testdata:
     print("{}: {}".format(name, ret))
 ```
 
-## Coming up this week:
+## Summary of objects
+Object Type:       Mutable?
+numbers            no
+strings            no
+lists              yes
+dictionaries       yes
+tuples             no
+files              n/a
+sets               yes
 
-- Wednesday: complexity analysis
-- Friday: python data model, functions
-- Assignment due Friday @ 2:30pm
-- Next assignment out on Friday also
+
+
 # CME 211 Lecture 5: Complexity Analysis
 
 Wednesday, September 30, 2015
-
-## Announcements
-
-* If you are on the wait list: submit homework by deadline.  We will grade
-  if/when you make it into the class.
-
-* We will be using [GitHub][GitHub] for version control and managing assignment
-  submissions in this course. If you haven't already done so, please create a
-  personal Github account at <https://github.com/>. Feel free to link the
-  account to whatever email that you prefer (i.e. it does not need to be your
-  `stanford.edu` email). Afterward, please fill out the [Google form][gh-form].
-
-* Note: *SUNetID* refers to the first part of your stanford email address.  My
-  SUNetID is `nwh`.  Please do not put your student ID number in the above form.
-
-* Goal: we need to associate your GitHub username with your stanford username
-  (SUNetID)
-
-* In class I've shown IPython (Jupyter) notebooks and recommended the install of
-  Anaconda Python.  We recommend that you use the web and each other for tech
-  support related to these packages.  Computers and software are complicated
-  things.  In this class, we must standardize and can only support your code
-  running on the Farmshare systems.  Feel free to ask us for help, but we may
-  decline based on time or requests from other students.  We will help you with
-  farmshare issues.
-
-[GitHub]: https://github.com/
-[gh-form]: https://docs.google.com/forms/d/1JyNmmn2Ur6WTwUrI4jvCSpDNv6jph48mFUXu6lF-G2Q/viewform
-
-## Farmshare review
-
-Your first assignment must run on and be submitted through the farmshare
-servers.  Let's walk through the process of creating a Python script and data
-file locally then move it over to farmshare.  We will use the same conventions
-as homework 1.
-
-Please note that these instructions will work best on Mac OS X.  If you are on
-Windows, you will need to follow the spirit of the instructions.
 
 ### Create a local directory structure for the class
 
@@ -2249,13 +2207,6 @@ nwh-mbpro:CME211 nwh$ cd lec5/
 nwh-mbpro:lec5 nwh$ pwd         <- print out current working directory
 /Users/nwh/CME211/lec5
 ```
-
-Notes:
-
-* `cd` by itself moves to your home directory
-* `~` is an alias for your home directory
-* Homework 1 requires that your files be placed in `~/CME211/hw1` on farmshare
-
 ### Exercise
 
 Let's write a short python script to count unique words in a data file.  The
@@ -2322,55 +2273,6 @@ nwh-mbpro:lec5 nwh$ python count_words.py
 'day' appeared 1 time(s)
 ```
 
-### Move onto Farmshare with WebAFS
-
-Log into <https://afs.stanford.edu/>.  You will see your farmshare files.  With
-this interface you can create directories and upload files.
-
-![web afs interface](fig/web-afs.png)
-
-Create a new folder:
-
-![web afs new folder](fig/web-afs-new-folder.png)
-
-Upload files:
-
-![web afs upload](fig/web-afs-upload.png)
-
-Final result:
-
-![files uploaded](fig/web-afs-files-uploaded.png)
-
-### Test the program on Farmshare
-
-```
-nwh-mbpro:lec5 nwh$ ssh nwh@corn.stanford.edu
-nwh@corn26:~$ cd CME211/lec5/
-nwh@corn26:~/CME211/lec5$ ls
-count_words.py	words.txt
-nwh@corn26:~/CME211/lec5$ python count_words.py
-'a' appeared 2 time(s)
-'rainy' appeared 1 time(s)
-'short' appeared 1 time(s)
-'this' appeared 2 time(s)
-'is' appeared 2 time(s)
-'also' appeared 1 time(s)
-'file' appeared 1 time(s)
-'day' appeared 1 time(s)
-# edit the data file
-nwh@corn26:~/CME211/lec5$ emacs words.txt
-nwh@corn26:~/CME211/lec5$ python count_words.py
-'a' appeared 2 time(s)
-'rainy' appeared 4 time(s)
-'short' appeared 1 time(s)
-'this' appeared 2 time(s)
-'is' appeared 2 time(s)
-'also' appeared 1 time(s)
-'file' appeared 1 time(s)
-'day' appeared 1 time(s)
-nwh@corn26:~/CME211/lec5$
-```
-
 ### Other method to copy files: `scp`
 
 ```
@@ -2407,59 +2309,12 @@ Enter a passcode or select one of the following options:
 
 Passcode or option (1-3): 1
 Connected to corn.stanford.edu.
-sftp> help
-Available commands:
-bye                                Quit sftp
-cd path                            Change remote directory to 'path'
-chgrp grp path                     Change group of file 'path' to 'grp'
-chmod mode path                    Change permissions of file 'path' to 'mode'
-chown own path                     Change owner of file 'path' to 'own'
-df [-hi] [path]                    Display statistics for current directory or
-                                   filesystem containing 'path'
-exit                               Quit sftp
-get [-Ppr] remote [local]          Download file
-help                               Display this help text
-lcd path                           Change local directory to 'path'
-lls [ls-options [path]]            Display local directory listing
-lmkdir path                        Create local directory
-ln [-s] oldpath newpath            Link remote file (-s for symlink)
-lpwd                               Print local working directory
-ls [-1afhlnrSt] [path]             Display remote directory listing
-lumask umask                       Set local umask to 'umask'
-mkdir path                         Create remote directory
-progress                           Toggle display of progress meter
-put [-Ppr] local [remote]          Upload file
-pwd                                Display remote working directory
-quit                               Quit sftp
-rename oldpath newpath             Rename remote file
-rm path                            Delete remote file
-rmdir path                         Remove remote directory
-symlink oldpath newpath            Symlink remote file
-version                            Show SFTP version
-!command                           Execute 'command' in local shell
-!                                  Escape to local shell
-?                                  Synonym for help
-sftp>
 ```
 
 ### Other software
 
 See <https://itservices.stanford.edu/service/ess/> for Mac and Windows SFTP and
 AFS clients.
-
-Text editors:
-can run emacs and vim on terminal remotely. other ones are GUI based text editors, but cannot run from terminal
-
-* emacs
-* vim
-* [TextWrangler](http://www.barebones.com/products/textwrangler/)
-* [Sublime Text](http://www.sublimetext.com/)
-* [Atom](https://atom.io/)
-
-Key: learn a tool, learn it well
-
-Note: very helpful to become comfortable with a text editor you can use from the
-terminal.
 
 ### Learn more about unix systems and interacting with the shell
 
@@ -2523,9 +2378,6 @@ Note in the above example, it may be more appropriate to initialize the `age`
 variable to a more meaningful value.
 
 We will learn about *scope* when we talk about functions on Friday.
-
-Don't have to preallocate for a list. Use append() function. If adding to a string, use the join() method.
-
 
 ## Analysis of algorithms
 
