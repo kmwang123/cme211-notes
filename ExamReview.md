@@ -823,7 +823,25 @@ list may be accessed via a slice:
 >>> L[2]
 'yo'
 ```
-Note that the multiplication and concatenation also works:
+Clever slicing
+```py
+#add to front of list
+>>> A=[1,2,3]
+>>> L=[4,5,6]
+>>> L[:0]=A
+>>> L
+[1, 2, 3, 4, 5, 6]
+
+#Use L[i:j]=[] (includes i,j) to get portion of list
+>>> L=['B','C','Z']
+>>> L[2:]=[]
+>>> L
+['B', 'C']
+```
+
+Multiplication and concatenation also works:
+#Note that concatenation of list creates NEW object, while append() method changes list in place#
+
 ```py
 >>> list=[1,2,3]
 >>> list+list
@@ -864,7 +882,80 @@ You can get the length of a list with:
 
 See `help(list)` from the Python interpreter for summary of methods that can
 operate on a list.
+Other Methods: extend,append,insert,pop,index,remove,count,reverse
 
+```py
+>>> L=[4,1,9]
+>>> L.extend([10,3]) #extend list
+>>> L
+[4, 1, 9, 10, 3]
+>>> L.append(8)    #add 8 to end of list
+
+>>> L=[1,2,3,4,5]
+>>> L.insert(2,'hi')  #insert at index 2
+>>> L
+[1, 2, 'hi', 3, 4, 5]
+
+>>> L=[1,2,3,4]
+>>> L.pop()     #return last item in list
+4
+>>> grades
+['A', 'A+', 'A', 'A-']
+>>> grades.pop(3)      #returns item in index 3
+'A-'
+
+
+>>> grades=['A','C','A+','A','A-']
+>>> grades.index('C')  #returns first index found
+1
+>>> grades.remove('C')
+>>> grades
+['A', 'A+', 'A', 'A-']
+
+>>> grades=['A','C','A+','A','A-']
+>>> grades.count('A')
+2
+
+>>> L=[1,2,3,4]
+>>> L.reverse()  #in place reverse
+>>> L
+[4, 3, 2, 1]
+
+>>> L
+[1, 2, 3, 4]
+>>> list(reversed(L)) #can assign to an object
+[4, 3, 2, 1]
+
+
+```
+More on sorting IN PLACE:
+```py
+>>> L
+[4, 1, 9, 10, 3, 8]
+>>> L.sort()         
+>>> L
+[1, 3, 4, 8, 9, 10]
+
+>>> L=['e','z','a','Y']
+>>> L.sort()    
+>>> L
+['Y', 'a', 'e', 'z']     #upper case goes first
+
+>>> L=['e','z','a','Y']
+>>> L.sort(key=str.lower)  #sort by lower case
+
+>>> L.sort(key=str.lower,reverse=True)
+>>> L
+['z', 'Y', 'e', 'a']
+```
+More on sorting METHOD (new reference):
+```py
+>>> L=['abc','ABD','aBe']
+>>> sorted(L,key=str.lower)
+['abc', 'ABD', 'aBe']
+>>> sorted([x.lower() for x in L])
+['abc', 'abd', 'abe']
+```
 ## Python's data model
 
 Variables in Python are actually a reference to an object in memory.  Here is a
@@ -1451,6 +1542,8 @@ The `__add__` method is called when the `+` operator is called on lists:
 
 ### Create a dictionary
 
+Use {},zip,fromkeys,
+
 ```py
 >>> ages = {} # or ages = dict()
 >>> ages['brad'] = 51
@@ -1459,6 +1552,16 @@ The `__add__` method is called when the `+` operator is called on lists:
 >>> ages['bruce'] = 60
 >>> ages
 {'bruce': 60, 'angelina': 40, 'leo': 40, 'brad': 51}
+
+>>> keyslist=['Bob','Kyle','Sally']   #make dict form keys,values lists
+>>> valueslist=[1,54,2]
+>>> dict(zip(keyslist,valueslist))
+{'Bob': 1, 'Sally': 2, 'Kyle': 54}
+
+>>> keyslist
+['Bob', 'Kyle', 'Sally']
+>>> dict.fromkeys(keyslist)      #initialize dict from a keys list
+{'Bob': None, 'Sally': None, 'Kyle': None}
 ```
 
 ### Access items
@@ -1466,19 +1569,13 @@ The `__add__` method is called when the `+` operator is called on lists:
 ```py
 >>> ages['leo']
 40
+
+>>> B={'movies':{'A':'Land of Dead','B':'Dinos'}} #access in nested dict
+>>> B['movies']['A']
+'Land of Dead'
 ```
 
-When the key does not exist:
-
-```py
->>> ages['helen']
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-KeyError: 'helen'
->>>
-```
-
-Or you can use the `get()` method:
+Or you can use the `get()`,'pop()',or 'popitem()' methods:
 
 ```py
 >>> temp = ages.get('brad')
@@ -1487,6 +1584,78 @@ Or you can use the `get()` method:
 >>> temp = ages.get('helen')
 >>> print(temp)
 None
+
+>>> D
+{'Karen': 20, 'Bob': 1, 'Sally': 2, 'Kyle': 54}
+>>> D.pop('Karen')  #can also use pop, although it removes key from dict
+20
+>>> D
+{'Bob': 1, 'Sally': 2, 'Kyle': 54}
+
+>>> D
+{'Karen': 20, 'Bob': 1, 'Sally': 2, 'Kyle': 54} #returns tuple of key,value pair and removes from dict
+>>> D.popitem()
+('Karen', 20)
+>>> D
+{'Bob': 1, 'Sally': 2, 'Kyle': 54}
+```
+## Other Functions
+key in dict, keys(),values(),items(),clear(),update(), del
+```py
+>>> D  #check if key is in dict
+{'Bob': 1, 'Sally': 2, 'Kyle': 54}
+>>> 'Bob' in D
+True
+>>> D.keys() #get keys only
+['Bob', 'Sally', 'Kyle']
+>>> D.values() #get values only
+[1, 2, 54]
+>>> D.items() #get key,value tuples
+[('Bob', 1), ('Sally', 2), ('Kyle', 54)]
+
+>>> Z
+{'Bob': 1, 'Sally': 2, 'Kyle': 54}
+>>> Z.clear() #clear everything in dict
+>>> Z
+{}
+
+>>> D
+{'Bob': 1, 'Sally': 2, 'Kyle': 54}
+>>> Z={'Karen':20}
+>>> D.update(Z)   #append a dictionary to another dictionary
+>>> D
+{'Karen': 20, 'Bob': 1, 'Sally': 2, 'Kyle': 54}
+
+>>> D
+{'Karen': 20, 'Bob': 1, 'Sally': 2, 'Kyle': 54}
+>>> del D['Karen']    #delete entries by key
+>>> D
+{'Bob': 1, 'Sally': 2, 'Kyle': 54}
+
+```
+
+## Copy
+Copy
+```py
+#top level copy or shallow copy
+>>> B=D.copy()  
+>>> B
+{'Bob': 1, 'Sally': 2, 'Kyle': 54}
+>>> B['Bob'] = 5
+>>> B
+{'Bob': 5, 'Sally': 2, 'Kyle': 54}
+>>> D
+{'Bob': 1, 'Sally': 2, 'Kyle': 54}
+#top level copy or shallow copy
+>>> alist=[1,2]
+>>> blist=[3,4]
+>>> C={'A':alist,'B':blist}
+>>> C
+{'A': [1, 2], 'B': [3, 4]} #this is what C is
+>>> B=C.copy()             #made a shallow copy into B
+>>> B['A'][1]=20           #changed B value
+>>> C
+{'A': [1, 20], 'B': [3, 4]} #but then C value changed as well!
 ```
 
 ### Iteration
