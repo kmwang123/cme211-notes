@@ -3895,7 +3895,7 @@ point, I'm still free to change a mutable at the arrow destination
 * Garbage collection in Python is implemented with reference counting
 
 Last example, we have string a and b, but no variables pointing to it, so no references
-![lecture-07/gc-2.png](lecture-07/gc-2.png)
+![lecture-07/gc-2.png](lecture-07/fig/gc-2.png)
 
 ## Python modules
 
