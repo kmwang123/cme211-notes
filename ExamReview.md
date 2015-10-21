@@ -5275,7 +5275,7 @@ Let's inspect a `Student` object:
 * `code/student1.py`:
 
 Notes: It returns copy.deepcopy(self.classes), so the thing that's returned cannot come back and change internal state of the student object since it's a deep copy of it.
-  -This is often a good thing to do if you want to return a bunch of data from inside your class (Maintains strong encapsulation)
+  - This is often a good thing to do if you want to return a bunch of data from inside your class (Maintains strong encapsulation)
 
 
 ```py
@@ -5569,7 +5569,7 @@ class CookieEater(User):
 
 ### Polymorphism
 Meaning of operation depends on objects being operated on
-- ex. 4*5 means multiplication but 'string'* 5 means repetition
+- ex. `4 * 5` means multiplication but `'string'* 5` means repetition
 *polymorphic* means function works on arbitrary types, as long as they support the expected object interface
 
 * Different types of objects have methods with the same name that take the same
