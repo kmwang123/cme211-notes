@@ -3441,2232 +3441,2226 @@ Python will not let you redirect an identifier at a global scope.  Here the func
 ```
 ### Accessing a global variable
 
-    This is bad practice, do not do this.  We will take off points.  We show you in
-    case you run into it.
+This is bad practice, do not do this.  We will take off points.  We show you in
+case you run into it.
 
-    ```py
-    >>> total = 0
-    >>> def summation(a,b):
-    ...     global total
-    ...     for n in range(a, b+1):
-    ...         total += n
-    ...
-    >>> a = summation(1,100)
-    >>> total
-    5050
-    >>>
-    ```
+```py
+>>> total = 0
+>>> def summation(a,b):
+...     global total
+...     for n in range(a, b+1):
+...         total += n
+...
+>>> a = summation(1,100)
+>>> total
+5050
+>>>
+```
 
-    ### Functions must be defined before they are used
+### Functions must be defined before they are used
 
-    In scripts (and the interpreter), functions must be defined before they are
-    used!  See the file `lecture-6/order1.py`:
+In scripts (and the interpreter), functions must be defined before they are
+used!  See the file `lecture-6/order1.py`:
 
-    ```py
-    def before():
-        print("I am function defined before use.")
+```py
+def before():
+    print("I am function defined before use.")
 
-    before()
+before()
+after()
+
+def after():
+    print("I am function defined after use.")
+```
+
+Output:
+
+```
+$ python order1.py
+I am function defined before use.
+Traceback (most recent call last):
+  File "order.py", line 5, in <module>
     after()
+NameError: name 'after' is not defined
+$
+```
 
-    def after():
-        print("I am function defined after use.")
-    ```
+A function may refer to another function defined later in the file.  The rule is
+that functions must be defined before they are actually invoked/called.
 
-    Output:
+```py
+def sumofsquares(a, b):
+    total = 0
+    for n in range(a, b+1):
+        total += squared(n)
+    return total
 
-    ```
-    $ python order1.py
-    I am function defined before use.
-    Traceback (most recent call last):
-      File "order.py", line 5, in <module>
-        after()
-    NameError: name 'after' is not defined
-    $
-    ```
+def squared(n):
+    return n*n
 
-    A function may refer to another function defined later in the file.  The rule is
-    that functions must be defined before they are actually invoked/called.
+print sumofsquares(1,10)
+```
 
-    ```py
-    def sumofsquares(a, b):
-        total = 0
-        for n in range(a, b+1):
-            total += squared(n)
-        return total
+Output:
 
-    def squared(n):
-        return n*n
-
-    print sumofsquares(1,10)
-    ```
-
-    Output:
-
-    ```
-    $ python order2.py
-    385
-    $
-    ```
+```
+$ python order2.py
+385
+$
+```
 
 
-    ### Passing convention IMPORTANT!!
+### Passing convention IMPORTANT!!
 
-    Python uses pass by object reference.  Python functions can change mutable
-    objects refereed to by input variables
+Python uses pass by object reference.  Python functions can change mutable
+objects refereed to by input variables
 
-    ```py
-    >>> def DoChores(a):
-    ...     a.pop()
-    ...
-    >>> b = ['feed dog', 'wash dishes']
-    >>> DoChores(b)
-    >>> b
-    ['feed dog']
-    >>>
-    ```
+```py
+>>> def DoChores(a):
+...     a.pop()
+...
+>>> b = ['feed dog', 'wash dishes']
+>>> DoChores(b)
+>>> b
+['feed dog']
+>>>
+```
 
-    `int`s, `float`s, and `str`ings are immutable objects and cannot be changed by a
-    function:
+`int`s, `float`s, and `str`ings are immutable objects and cannot be changed by a
+function:
 
-    ```py
-    >>> def increment(a):
-    ...     a = a + 1
-    ...
-    >>> b = 2
-    >>> increment(b)
-    >>> b
-    2
-    ```
+```py
+>>> def increment(a):
+...     a = a + 1
+...
+>>> b = 2
+>>> increment(b)
+>>> b
+2
+```
 
-    ### Pass by object reference
+### Pass by object reference
 
-    * Python uses what is sometimes called pass by object reference when calling
-    functions
+* Python uses what is sometimes called pass by object reference when calling
+functions
 
-    * If the reference is to a mutable object (e.g. lists, dictionaries, etc.), that
-    object might be modified upon return from the function
+* If the reference is to a mutable object (e.g. lists, dictionaries, etc.), that
+object might be modified upon return from the function
 
-    * For references to immutable objects (e.g. numbers, strings), by definition the
-    original object being referenced cannot be modified
+* For references to immutable objects (e.g. numbers, strings), by definition the
+original object being referenced cannot be modified
 
-    ### Example of a bad function
+### Example of a bad function
 
-    ```
-    def add(a, b):
-        # I wrote this function because Nick
-        # is mean and is making us write three functions
-        return a + b
-    ```
+```
+def add(a, b):
+    # I wrote this function because Nick
+    # is mean and is making us write three functions
+    return a + b
+```
 
-    ## Recommended Reading
+## Recommended Reading
 
-    From **Learning Python, Fifth Edition** by Mark Lutz
+From **Learning Python, Fifth Edition** by Mark Lutz
 
-    * Chapter 6: The Dynamic Typing Interlude (i.e. references and objects)
+* Chapter 6: The Dynamic Typing Interlude (i.e. references and objects)
 
-    * Chapter 16: Function Basics
+* Chapter 16: Function Basics
 
-    * Chapter 17: Scopes
+* Chapter 17: Scopes
 
-    * Chapter 18: Arguments
+* Chapter 18: Arguments
+
 # CME 211: Lecture 7
 
-    Monday, October 5, 2015
+Monday, October 5, 2015
+
+Topics:
+
+* Review: Python object model
+
+* Python modules
+
+* Python exceptions
+
+## Announcements
+
+* CUDA on Campus Day
+<http://icme.stanford.edu/events/nvidia-tech-talks-and-hands-labs>
+
+* Get your GitHub accounts!  You need this to submit assignments from here on.
+  We will not process last minute requests.
 
 ## Python object model
 
-    Let's review and elaborate on Python's object model.  Key things to always keep
-    in mind:
+Let's review and elaborate on Python's object model.  Key things to always keep
+in mind:
 
-    * everything in Python is an object
+* everything in Python is an object
 
-    * variables in Python are references to objects
+* variables in Python are references to objects
 
 ### Starting example
 
-    ```py
-    >>> a = [42, 19, 73]
-    >>> b = a
-    >>> a
-    [42, 19, 73]
-    >>> b
-    [42, 19, 73]
-    >>> b[0] = 7   # (1.)
-    >>> b
-    [7, 19, 73]    # (2.)
-    >>> a
-    [7, 19, 73]    # (2.)
-    >>>
-    ```
+```py
+>>> a = [42, 19, 73]
+>>> b = a
+>>> a
+[42, 19, 73]
+>>> b
+[42, 19, 73]
+>>> b[0] = 7   # (1.)
+>>> b
+[7, 19, 73]    # (2.)
+>>> a
+[7, 19, 73]    # (2.)
+>>>
+```
 
-    1. Item `b[0]` is modified
+1. Item `b[0]` is modified
 
-    2. This action affect the object referenced by both `a` and `b`
+2. This action affect the object referenced by both `a` and `b`
 
-    In this example, `a` is a reference to the list object initially set to `[42,
-    19, 73]`.  The variable `b` also references the same list.
+In this example, `a` is a reference to the list object initially set to `[42,
+19, 73]`.  The variable `b` also references the same list.
 
-    [fig/references.png](lecture-07/fig/references.png)
+![fig/references.png](fig/references.png)
 
-    ### Analogy
+### Analogy
 
-    * This room is like an object
+* This room is like an object
 
-    * "Geology Corner Auditorium" is an identifier that references this room
+* "Geology Corner Auditorium" is an identifier that references this room
 
-    * "320-105" is also an identifier that references this same room
+* "320-105" is also an identifier that references this same room
 
-    ### Objects and references
+### Objects and references
 
-    * Names or identifiers point to or reference an object
+* Names or identifiers point to or reference an object
 
-    * Identifiers are untyped and dynamic (an identifier can reference an integer,
-    and then reference a string)
+* Identifiers are untyped and dynamic (an identifier can reference an integer,
+and then reference a string)
 
-    ```py
-    >>> a = 5
-    >>> a = 'hi'
-    ```
+```py
+>>> a = 5
+>>> a = 'hi'
+```
 
-    * But Python is also strongly typed: you can't add a number and a string because
-    that doesn't make sense
+* But Python is also strongly typed: you can't add a number and a string because
+that doesn't make sense
 
-    * Everything in Python is an object: numbers, strings, functions, etc. are all
-    objects
+* Everything in Python is an object: numbers, strings, functions, etc. are all
+objects
 
-    * **An object is a location in memory with a type and a value**
+* **An object is a location in memory with a type and a value**
 
-    ### Assignment
+### Assignment
 
-    * The assignment operation, `=`, can be interpreted as setting up the reference
+* The assignment operation, `=`, can be interpreted as setting up the reference
 
-    ```py
-    >>> a = 'hello'
-    ```
+```py
+>>> a = 'hello'
+```
 
-    1) Create a string object containing `'hello'`
+1) Create a string object containing `'hello'`
 
-    2) Point the identifier a to the newly created string object
+2) Point the identifier a to the newly created string object
 
-    ### Example
+### Example
 
-    [fig/references-example.png](lecture-07/fig/references-example.png)
+![fig/references-example.png](fig/references-example.png)
 
-    ### Example
+### Example
 
-    [fig/references-example-2.png](lecture-07/fig/references-example-2.png)
+![fig/references-example-2.png](fig/references-example-2.png)
 
-    ### Checking references
+### Checking references
 
-    We can check if two names reference the same object with the `is` operator:
+We can check if two names reference the same object with the `is` operator:
 
-    ```py
-    >>> a = [42, 19, 73]
-    >>> b = a
-    >>> a is b
-    True
-    >>> b = [42, 19, 73]
-    >>> a is b
-    False
-    >>>
-    ```
-    Another thing you can do is look at the id to see what the variable is referencing to. This is the address of where the object sits in memory.
+```py
+>>> a = [42, 19, 73]
+>>> b = a
+>>> a is b
+True
+>>> b = [42, 19, 73]
+>>> a is b
+False
+>>>
+```
+Another thing you can do is look at the id to see what the variable is referencing to. This is the address of where the object sits in memory.
 
-    ```
-    >>> id(a)
-    4459239544
-    ```
-    ### Integers and references
+```
+>>> id(a)
+4459239544
+```
+### Integers and references
 
-    Integers are objects also and need to be created in memory:
+Integers are objects also and need to be created in memory:
 
-    ```py
-    >>> a = 1024
-    >>> b = a
-    >>> a is b
-    True
-    >>> a = 1024
-    >>> b = 1024
-    >>> a is b <- pointing to two diff integer objects
-    that happen to have the same value
-    False
-    >>> a = 16
-    >>> b = 16
-    >>> a is b
-    True
-    small integers are handled differently in python (see preallocated integers)
-    >>>
-    ```
+```py
+>>> a = 1024
+>>> b = a
+>>> a is b
+True
+>>> a = 1024
+>>> b = 1024
+>>> a is b <- pointing to two diff integer objects
+that happen to have the same value
+False
+>>> a = 16
+>>> b = 16
+>>> a is b
+True
+small integers are handled differently in python (see preallocated integers)
+>>>
+```
 
-    ### Preallocated integers
+### Preallocated integers
 
-    * For interactive usage, Python preallocates permanent integer objects for the
-      values `-5` to `256`
+* For interactive usage, Python preallocates permanent integer objects for the
+  values `-5` to `256`
 
-    * Instead of constantly creating / destroying these objects they are
-      permanently maintained
+* Instead of constantly creating / destroying these objects they are
+  permanently maintained
 
-    * Integers outside this range are created / destroyed as needed
+* Integers outside this range are created / destroyed as needed
 
-    ```py
-    >>> a = -6
-    >>> b = -6
-    >>> a is b
-    False
-    >>> a = -5
-    >>> b = -5
-    >>> a is b
-    True
-    >>> a = 256
-    >>> b = 256
-    >>> a is b
-    True
-    >>> a = 257
-    >>> b = 257
-    >>> a is b
-    False
-    >>>
-    ```
+```py
+>>> a = -6
+>>> b = -6
+>>> a is b
+False
+>>> a = -5
+>>> b = -5
+>>> a is b
+True
+>>> a = 256
+>>> b = 256
+>>> a is b
+True
+>>> a = 257
+>>> b = 257
+>>> a is b
+False
+>>>
+```
 
-    ### String reuse
+### String reuse
 
-    String objects may be "reused" internally:
+String objects may be "reused" internally:
 
-    ```py
-    >>> a = 'hello'
-    >>> b = 'hello'
-    >>> a is b
-    True
-    >>>
-    ```
+```py
+>>> a = 'hello'
+>>> b = 'hello'
+>>> a is b
+True
+>>>
+```
+
 ### Why immutables?
 
-    * It's a design decision not uncommon in other languages (e.g. strings are
-      immutable in Java)
+* It's a design decision not uncommon in other languages (e.g. strings are
+  immutable in Java)
 
-    * Allows for performance optimizations
+* Allows for performance optimizations
 
-    * Can setup storage for a string once because
-    it never changes
+* Can setup storage for a string once because
+it never changes
 
-    * Dictionary keys required to be immutable for performance optimizations to
-      quickly locate keys
+* Dictionary keys required to be immutable for performance optimizations to
+  quickly locate keys
 
-    ### Containers and element references
+### Containers and element references
 
-    * The elements in a list, or the key and value pairs in a dictionary, contain
-      references to objects
+* The elements in a list, or the key and value pairs in a dictionary, contain
+  references to objects
 
-    * Those references can be to "simple" data types like a number or string, or
-      more complicated data types like other containers
+* Those references can be to "simple" data types like a number or string, or
+  more complicated data types like other containers
 
-    * There are some restrictions, for example the key objects in a dictionary must
-      be immutable (e.g. numbers, strings, or tuples)
+* There are some restrictions, for example the key objects in a dictionary must
+  be immutable (e.g. numbers, strings, or tuples)
 
-    ### Containers and element references
+### Containers and element references
 
-    ```py
-    >>> a = [42, 'hello']
-    >>> b = a
-    ```
-    a and b point to a list. The list points to objects 42 and "hello"
+```py
+>>> a = [42, 'hello']
+>>> b = a
+```
+a and b point to a list. The list points to objects 42 and "hello"
 
-    ![fig/list-ref.png](lecture-07/fig/list-ref.png)
+![fig/list-ref.png](fig/list-ref.png)
 
-    ### Copying a list
+### Copying a list
 
-    * Simple assignment does not give us a copy
-    of a list, only an additional reference to the
-    same list
+* Simple assignment does not give us a copy
+of a list, only an additional reference to the
+same list
 
 
-    * What if we really want an additional copy
-    that can be modified without changing the
-    original?
+* What if we really want an additional copy
+that can be modified without changing the
+original?
 
-    ### Shallow copy
+### Shallow copy
 
-    ```py
-    >>> a = [42, 'hello']
-    >>> import copy
-    >>> b = copy.copy(a)
-    ```
+```py
+>>> a = [42, 'hello']
+>>> import copy
+>>> b = copy.copy(a)
+```
 
-    ![fig/shallow-copy.png](lecture-07/fig/shallow-copy.png)
+![fig/shallow-copy.png](fig/shallow-copy.png)
 
-    * Constructs a new list and inserts references to
-    the objects referenced in the original
+* Constructs a new list and inserts references to
+the objects referenced in the original
 
-    ### Shallow copies and mutables
+### Shallow copies and mutables
 
-    ```py
-    >>> a = [19, {'grade':92}]
-    >>> b = copy.copy(a)
-    >>> a
-    [19, {'grade': 92}]
-    >>> b
-    [19, {'grade': 92}]
-    >>> a[1]['grade'] = 97
-    >>> a
-    [19, {'grade': 97}]
-    >>> b
-    [19, {'grade': 97}]
-    >>>
-    ```
-    Problem is that if we wanted to change value inside the dictionary, by changing a, we will change b as well
+```py
+>>> a = [19, {'grade':92}]
+>>> b = copy.copy(a)
+>>> a
+[19, {'grade': 92}]
+>>> b
+[19, {'grade': 92}]
+>>> a[1]['grade'] = 97
+>>> a
+[19, {'grade': 97}]
+>>> b
+[19, {'grade': 97}]
+>>>
+```
+Problem is that if we wanted to change value inside the dictionary, by changing a, we will change b as well
 
-    ![fig/shallow-copy-mutables.png](lecture-07/fig/shallow-copy-mutables.png)
+![fig/shallow-copy-mutables.png](fig/shallow-copy-mutables.png)
 
-    ### Deep copy
-    This will recursively copy nested data structures
-    ```py
-    >>> a = [19, {'grade':92}]
-    >>> b = copy.deepcopy(a)
-    >>> a
-    [19, {'grade': 92}]
-    >>> b
-    [19, {'grade': 92}]
-    >>> a[1]['grade'] = 97
-    >>> a
-    [19, {'grade': 97}]
-    >>> b
-    [19, {'grade': 92}]
-    >>>
-    ```
+### Deep copy
+This will recursively copy nested data structures
+```py
+>>> a = [19, {'grade':92}]
+>>> b = copy.deepcopy(a)
+>>> a
+[19, {'grade': 92}]
+>>> b
+[19, {'grade': 92}]
+>>> a[1]['grade'] = 97
+>>> a
+[19, {'grade': 97}]
+>>> b
+[19, {'grade': 92}]
+>>>
+```
 
-    ![fig/deep-copy-mutables.png](lecture-07/fig/deep-copy-mutables.png)
+![fig/deep-copy-mutables.png](fig/deep-copy-mutables.png)
 
-    * Constructs a new list and inserts copies of the
-    objects referenced in the original
+* Constructs a new list and inserts copies of the
+objects referenced in the original
 
-    ### Tuples and immutability
+### Tuples and immutability
 
-    ```py
-    >>> a = [42, 'feed the dog', 'clean house']
-    >>> import copy
-    >>> b = copy.copy(a)
-    >>> c = (a,b)
-    >>> c
-    ([42, 'feed the dog', 'clean house'], [42, 'feed the dog', 'clean house'])
-    ```
-    we can change mutable object (list), but not immutable objects (tuple)
-    ```py
-    >>> b[0] = 7
-    >>> c
-    ([42, 'feed the dog', 'clean house'], [7, 'feed the dog', 'clean house'])
-    >>> c[0][0] = 7
-    >>> c
-    ([7, 'feed the dog', 'clean house'], [7, 'feed the dog', 'clean house'])
-    ```
+```py
+>>> a = [42, 'feed the dog', 'clean house']
+>>> import copy
+>>> b = copy.copy(a)
+>>> c = (a,b)
+>>> c
+([42, 'feed the dog', 'clean house'], [42, 'feed the dog', 'clean house'])
+```
+we can change mutable object (list), but not immutable objects (tuple)
+```py
+>>> b[0] = 7
+>>> c
+([42, 'feed the dog', 'clean house'], [7, 'feed the dog', 'clean house'])
+>>> c[0][0] = 7
+>>> c
+([7, 'feed the dog', 'clean house'], [7, 'feed the dog', 'clean house'])
+```
 
-    ```py
-    >>> c[0] = [73, 'wash dishes', 'do laundry']
-    Traceback (most recent call last):
-    File "<stdin>", line 1, in <module>
-    TypeError: 'tuple' object does not support item assignment
-    >>>
-    ```
+```py
+>>> c[0] = [73, 'wash dishes', 'do laundry']
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+TypeError: 'tuple' object does not support item assignment
+>>>
+```
 
-    ![fig/tuples-and-immutability.png](lecture-07/fig/tuples-and-immutability.png)
+![fig/tuples-and-immutability.png](fig/tuples-and-immutability.png)
 
-    The immutable property of tuples only means I can't change where the arrows
-    point, I'm still free to change a mutable at the arrow destination
+The immutable property of tuples only means I can't change where the arrows
+point, I'm still free to change a mutable at the arrow destination
 
-    ### Memory management
+### Memory management
 
-    * What happens to those objects that are no longer referenced?
+* What happens to those objects that are no longer referenced?
 
-    ![fig/gc-1.png](lecture-07/fig/gc-1.png)
+![fig/gc-1.png](fig/gc-1.png)
 
-    ### Garbage collection
+### Garbage collection
 
-    * Unreachable objects are garbage collected
+* Unreachable objects are garbage collected
 
-    * Garbage collection in Python is implemented with reference counting
-    <<<<<<< HEAD:lecture-07.md
-    Last example, we have string a and b, but no variables pointing to it, so no references
-    ![lecture-07/gc-2.png](lecture-07/fig/gc-2.png)
+* Garbage collection in Python is implemented with reference counting
+<<<<<<< HEAD:lecture-07.md
+Last example, we have string a and b, but no variables pointing to it, so no references
+![lecture-07/gc-2.png](lecture-07/gc-2.png)
+=======
+
+![fig/gc-2.png](fig/gc-2.png)
+>>>>>>> upstream/master:lecture-07/lecture-07.md
 
 ## Python modules
 
 ### Organization
 
-    * Your code should be organized in some way
+* Your code should be organized in some way
 
-    * Code should often be split across multiple files for ease of maintenance and
-      reuse
+* Code should often be split across multiple files for ease of maintenance and
+  reuse
 
-    * For large projects you will probably have multiple directories each with
-      multiple files
+* For large projects you will probably have multiple directories each with
+  multiple files
 
-    ### Modules
+### Modules
 
-    * Code in Python can be organized and accessed as modules
+* Code in Python can be organized and accessed as modules
 
-    * We've already used some modules that are part of Python (math, time, etc.)
+* We've already used some modules that are part of Python (math, time, etc.)
 
-    * These modules were accessed using the import statement
+* These modules were accessed using the import statement
 
-    ### Import
-    Can use
-    ```py
-    >>> import time
-    >>> dir(time)
-    ```
-    to see the functions in the module
+### Import
+Can use
+```py
+>>> import time
+>>> dir(time)
+```
+to see the functions in the module
 
-    Here is an example if importing and using a function from the `time` module:
+Here is an example if importing and using a function from the `time` module:
 
-    ```py
-    >>> import time
-    >>> time.time()
-    1381091212.070504
-    >>> time()
-    Traceback (most recent call last):
-    File "<stdin>", line 1, in <module>
-    TypeError: 'module' object is not callable
-    >>> type(time)
-    <type 'module'>
-    >>> type(time.time)
-    <type 'builtin_function_or_method'>
-    >>>
-    ```
-    type(time) shows us that it's a module, so you need to do time.time() to call the function that's in the module
+```py
+>>> import time
+>>> time.time()
+1381091212.070504
+>>> time()
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+TypeError: 'module' object is not callable
+>>> type(time)
+<type 'module'>
+>>> type(time.time)
+<type 'builtin_function_or_method'>
+>>>
+```
+type(time) shows us that it's a module, so you need to do time.time() to call the function that's in the module
 
 
-    * Keep in mind that the module name/object is different then the function that
-      exists inside of the module
+* Keep in mind that the module name/object is different then the function that
+  exists inside of the module
 
-    ### Reference to a function
+### Reference to a function
 
-    Functions are also objects and may be assigned to a variable:
+Functions are also objects and may be assigned to a variable:
 
-    ```py
-    >>> t = time.time
-    >>> type(t)
-    <type 'builtin_function_or_method'>
-    >>> t is time.time
-    True
-    >>> t()
-    1381091266.353158
-    >>>
-    ```
-    Can call the time.time() object with the variable t since we assigned it
-    ### Import a single function
+```py
+>>> t = time.time
+>>> type(t)
+<type 'builtin_function_or_method'>
+>>> t is time.time
+True
+>>> t()
+1381091266.353158
+>>>
+```
+Can call the time.time() object with the variable t since we assigned it
+### Import a single function
 
-    We can import a single function from a module:
+We can import a single function from a module:
 
-    ```py
-    >>> from time import time
-    >>> type(time)
-    <type 'builtin_function_or_method'>
-    >>> time()
-    1381091470.26926
-    >>> import time
-    >>> type(time)
-    <type 'module'>
-    >>> time.time()
-    1381091483.548532
-    >>>
-    ```
+```py
+>>> from time import time
+>>> type(time)
+<type 'builtin_function_or_method'>
+>>> time()
+1381091470.26926
+>>> import time
+>>> type(time)
+<type 'module'>
+>>> time.time()
+1381091483.548532
+>>>
+```
 
-    Another example is `from math import sqrt`.
+Another example is `from math import sqrt`.
 
-    ### Import and rename
+### Import and rename
 
-    We can rename a function in the import statement:
+We can rename a function in the import statement:
 
-    ```py
-    >>> from time import time as timer
-    >>> type(timer)
-    <type 'builtin_function_or_method'>
-    >>> timer()
-    1381091498.986958
-    >>>
-    ```
-    another example:
-    ```py
-    >>>import numpy as np
-    ```
-    so we don't have to type numpy every time
-    ### Wild card import
+```py
+>>> from time import time as timer
+>>> type(timer)
+<type 'builtin_function_or_method'>
+>>> timer()
+1381091498.986958
+>>>
+```
+another example:
+```py
+>>>import numpy as np
+```
+so we don't have to type numpy every time
+### Wild card import
 
-    We can import everything from a module into the global namespace with:
+We can import everything from a module into the global namespace with:
 
-    ```py
-    >>> from time import *
-    >>> type(time)
-    <type 'builtin_function_or_method'>
-    >>> time()
-    1381091614.217997
-    >>>
-    ```
+```py
+>>> from time import *
+>>> type(time)
+<type 'builtin_function_or_method'>
+>>> time()
+1381091614.217997
+>>>
+```
 
-    This is normally not a good idea, because you may unknowingly overwrite some
-    symbols that have been defined elsewhere.
+This is normally not a good idea, because you may unknowingly overwrite some
+symbols that have been defined elsewhere.
 
-    ### Modules and namespaces
+### Modules and namespaces
 
-    * Not only do modules allow you to separate code into multiple files, but they
-      also provide distinct namespaces
+* Not only do modules allow you to separate code into multiple files, but they
+  also provide distinct namespaces
 
-    * Namespaces are particularly important in larger projects where reuse of common
-      terms could be confusing at best
+* Namespaces are particularly important in larger projects where reuse of common
+  terms could be confusing at best
 
-    * Attribute renaming and/or wild card imports can make code less readable and
-      more difficult to debug
+* Attribute renaming and/or wild card imports can make code less readable and
+  more difficult to debug
 
-    ### Example
+### Example
 
-    Here we know where `time()` is coming from:
+Here we know where `time()` is coming from:
 
-    ```py
-    import time
-    import mymodule
-    ...
-    t = time.time()
-    ```
+```py
+import time
+import mymodule
+...
+t = time.time()
+```
 
-    Does `time()` come from `time` or `mymodule`?
+Does `time()` come from `time` or `mymodule`?
 
-    ```py
-    from time import *
-    from mymodule import *
-    ...
-    t = time()
-    ```
+```py
+from time import *
+from mymodule import *
+...
+t = time()
+```
 
-    **Recommendation:** be explicit when using module functions!
+**Recommendation:** be explicit when using module functions!
 
-    ### Writing your first module
+### Writing your first module
 
-    See file `code/mymodule1.py`:
+See file `code/mymodule1.py`:
 
-    ```py
-    def summation(a,b):
-        total = 0
-        for n in range(a,b+1):
-            total += n
-        return total
+```py
+def summation(a,b):
+    total = 0
+    for n in range(a,b+1):
+        total += n
+    return total
 
-    primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
-    ```
+primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+```
 
-    ### Using your first module
+### Using your first module
 
-    ```py
-    >>> import mymodule1
-    >>> mymodule1.summation(1,100)
-    5050
-    >>> mymodule1.primes
-    [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37,
-    41, 43, 47]
-    >>>
-    ```
+```py
+>>> import mymodule1
+>>> mymodule1.summation(1,100)
+5050
+>>> mymodule1.primes
+[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37,
+41, 43, 47]
+>>>
+```
 
-    ### Improving your module
+### Improving your module
 
-    Add test code in file `code/mymodule2.py`:
+Add test code in file `code/mymodule2.py`:
 
-    ```py
-    def summation(a,b):
-        total = 0
-        for n in range(a,b+1):
-            total += n
-        return total
+```py
+def summation(a,b):
+    total = 0
+    for n in range(a,b+1):
+        total += n
+    return total
 
-    primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
 
+print('Testing function summation():...'),
+total = summation(1,100)
+if (total == 5050):
+    print('OK')
+else:
+    print('FAILED')
+```
+
+### Testing your new module
+
+```py
+>>> import mymodule2
+Testing function summation():... OK
+>>> mymodule2.summation(1,100)
+5050
+>>> mymodule2.primes
+[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37,
+41, 43, 47]
+>>>
+```
+
+### Import process
+
+When you do `import mymodule2` several things happen
+
+1. Python interpreter looks for a `.py` file with the same name as the module,
+starting with your current directory followed by looking in system wide
+locations
+
+Invokes search through system directories
+
+2. Code is byte compiled from the `.py` file to a `.pyc` file
+
+Can delete .pyc files if you want or leave them there. When you update the code, it updates the .pyc file as well
+
+3. File is processed from top to bottom
+
+### Locating modules
+
+* Searches for a module are based on directories in
+the `sys.path` list
+
+* **First item in the `sys.path` list is an empty string, `''``, which is used to
+  denote the current directory**
+
+For example,
+  if you overwrite the math library, when you import math, because it search in the current working directory, it will invoke your function instead
+
+```py
+$ pwd
+/home/nwh/git/cme211-notes/lecture-07
+$ ls *.py
+mymodule1.py  mymodule2.py
+$ python
+Python 2.7.5+ (default, Feb 27 2014, 19:37:08)
+[GCC 4.8.1] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sys
+>>> sys.path.remove('') <- removed the current directory path
+>>> import mymodule1
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+ImportError: No module named mymodule1
+>>> sys.path.insert(0,'')
+>>> import mymodule1
+>>>
+```
+
+### .pyc files
+
+```
+$ ls *.py*
+mymodule1.py  mymodule1.pyc  mymodule2.py  mymodule2.pyc
+```
+
+* When you import a file Python byte compiles the file
+
+
+* `.pyc` files are faster to load, but the runtime performance once you have them loaded is exactly the same
+don't gain much by pre-byte compiling your files
+safe to delete, typically don't want to commit these files into your git repos since they are regenerated
+
+### `__name__` and `__main__`
+
+* Special variable `__name__` is equal to `__main__` if the file is being
+  executed as the main program
+
+* `__name__` will not be equal to `__main__` if the file is being imported
+
+### "Hiding" code during import
+
+See `code/mymodule3.py`
+
+```py
+def summation(a,b):
+    total = 0
+    for n in range(a,b+1):
+        total += n
+    return total
+
+primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+
+if __name__ == '__main__':
     print('Testing function summation():...'),
     total = summation(1,100)
     if (total == 5050):
         print('OK')
     else:
         print('FAILED')
-    ```
+```
+without the if name==main, whenever you import this module, everything in this block will show up. Since we don't want to see the test code every time we import, we hide it in this if statement
+### Another try at importing
 
-    ### Testing your new module
+```py
+>>> import mymodule3
+>>> mymodule3.summation(1,100)
+5050
+>>> mymodule3.primes
+[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37,
+41, 43, 47]
+>>>
+```
 
-    ```py
-    >>> import mymodule2
-    Testing function summation():... OK
-    >>> mymodule2.summation(1,100)
-    5050
-    >>> mymodule2.primes
-    [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37,
-    41, 43, 47]
-    >>>
-    ```
+### Running the test code
 
-    ### Import process
+```
+$ python mymodule3.py
+Testing function summation()... OK
+$
+```
 
-    When you do `import mymodule2` several things happen
+### Documenting the module
 
-    1. Python interpreter looks for a `.py` file with the same name as the module,
-    starting with your current directory followed by looking in system wide
-    locations
+See `code/mymodule4.py`:
 
-    Invokes search through system directories
+```py
+"""
+My module of misc code.
+"""
 
-    2. Code is byte compiled from the `.py` file to a `.pyc` file
-
-    Can delete .pyc files if you want or leave them there. When you update the code, it updates the .pyc file as well
-
-    3. File is processed from top to bottom
-
-    ### Locating modules
-
-    * Searches for a module are based on directories in
-    the `sys.path` list
-
-    * **First item in the `sys.path` list is an empty string, `''``, which is used to
-      denote the current directory**
-
-    For example,
-      if you overwrite the math library, when you import math, because it search in the current working directory, it will invoke your function instead
-
-    ```py
-    $ pwd
-    /home/nwh/git/cme211-notes/lecture-07
-    $ ls *.py
-    mymodule1.py  mymodule2.py
-    $ python
-    Python 2.7.5+ (default, Feb 27 2014, 19:37:08)
-    [GCC 4.8.1] on linux2
-    Type "help", "copyright", "credits" or "license" for more information.
-    >>> import sys
-    >>> sys.path.remove('') <- removed the current directory path
-    >>> import mymodule1
-    Traceback (most recent call last):
-    File "<stdin>", line 1, in <module>
-    ImportError: No module named mymodule1
-    >>> sys.path.insert(0,'')
-    >>> import mymodule1
-    >>>
-    ```
-
-    ### .pyc files
-
-    ```
-    $ ls *.py*
-    mymodule1.py  mymodule1.pyc  mymodule2.py  mymodule2.pyc
-    ```
-
-    * When you import a file Python byte compiles the file
-
-
-    * `.pyc` files are faster to load, but the runtime performance once you have them loaded is exactly the same
-    don't gain much by pre-byte compiling your files
-    safe to delete, typically don't want to commit these files into your git repos since they are regenerated
-
-    ### `__name__` and `__main__`
-
-    * Special variable `__name__` is equal to `__main__` if the file is being
-      executed as the main program
-
-    * `__name__` will not be equal to `__main__` if the file is being imported
-
-    ### "Hiding" code during import
-
-    See `code/mymodule3.py`
-
-    ```py
-    def summation(a,b):
-        total = 0
-        for n in range(a,b+1):
-            total += n
-        return total
-
-    primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
-
-    if __name__ == '__main__':
-        print('Testing function summation():...'),
-        total = summation(1,100)
-        if (total == 5050):
-            print('OK')
-        else:
-            print('FAILED')
-    ```
-    without the if name==main, whenever you import this module, everything in this block will show up. Since we don't want to see the test code every time we import, we hide it in this if statement
-    ### Another try at importing
-
-    ```py
-    >>> import mymodule3
-    >>> mymodule3.summation(1,100)
-    5050
-    >>> mymodule3.primes
-    [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37,
-    41, 43, 47]
-    >>>
-    ```
-
-    ### Running the test code
-
-    ```
-    $ python mymodule3.py
-    Testing function summation()... OK
-    $
-    ```
-
-    ### Documenting the module
-
-    See `code/mymodule4.py`:
-
-    ```py
+def summation(a,b):
     """
-    My module of misc code.
-    """
-
-    def summation(a,b):
-        """
-        Returns the sum of numbers between, and including, a and b.
-        """
-
-        total = 0
-        for n in range(a,b+1):
-            total += n
-        return total
-
-    primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
-
-    if __name__ == '__main__':
-        print('Testing function summation():...'),
-        total = summation(1,100)
-        if (total == 5050):
-            print('OK')
-        else:
-            print('FAILED')
-    ```
-    Triple quotes is documentation of what the function does
-    ### Accessing your documentation
-
-    ```py
-    >>> import mymodule4
-    >>> help(mymodule4)
-    ```
-
-    ```
-    Help on module mymodule4:
-
-    NAME
-    mymodule4 - My module of misc code.
-
-    FILE
-    /afs/.ir.stanford.edu/users/p/l/plegresl/CME211/Lecture07/mymodule4.py
-
-    FUNCTIONS
-    summation(a, b)
     Returns the sum of numbers between, and including, a and b.
+    """
 
-    DATA
-    primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+    total = 0
+    for n in range(a,b+1):
+        total += n
+    return total
 
-    (END)
-    ```
-    ## Python Error Handling
-    By default, python gives you traceback errors
-    ### Errors in Python
+primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
 
-    ```py
-    >>> a = [3, 7]
-    >>> a[2]
-    Traceback (most recent call last):
-    File "<stdin>", line 1, in <module>
-    IndexError: list index out of range
-    >>> b = {'cupcakes' : 7, 'brownies' : 2}
-    >>> b['cookies']
-    Traceback (most recent call last):
-    File "<stdin>", line 1, in <module>
-    KeyError: 'cookies'
-    >>>
-    ```
+if __name__ == '__main__':
+    print('Testing function summation():...'),
+    total = summation(1,100)
+    if (total == 5050):
+        print('OK')
+    else:
+        print('FAILED')
+```
+Triple quotes is documentation of what the function does
+### Accessing your documentation
 
-    ### Exceptions
-    An exception is an object, and we can write code to catch exceptions to handle error
-    * Errors generate exceptions
+```py
+>>> import mymodule4
+>>> help(mymodule4)
+```
 
-    * Exceptions can potentially be caught
+```
+Help on module mymodule4:
 
-    * Uncaught exceptions propagate up to the interpreter, which halts execution and
-      displays the information in a traceback
+NAME
+mymodule4 - My module of misc code.
 
-    ### Exceptions
+FILE
+/afs/.ir.stanford.edu/users/p/l/plegresl/CME211/Lecture07/mymodule4.py
 
-    * Python uses a try/except model for error handling
+FUNCTIONS
+summation(a, b)
+Returns the sum of numbers between, and including, a and b.
 
-    if you try to open a file that doesn't exist, we can handle this error (see below). If the try block is executed by the user, the except IOError block is printed to let user know their mistake.
-    Exception is a catch all statement for all exception types
+DATA
+primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
 
-    ```py
-    >>> f = open('thisfiledoesntexist.txt')
-    Traceback (most recent call last):
-    File "<stdin>", line 1, in <module>
-    IOError: [Errno 2] No such file or directory: 'thisfiledoesntexist.txt'
-    >>> try:
-    ...     f = open('thisfiledoesntexist.txt')
-    ... except IOError:
-    ...     print 'That filename doesn't exist.'
-    ...
-    That filename doesn't exist.
-    >>>
-    ```
+(END)
+```
+## Python Error Handling
+By default, python gives you traceback errors
+### Errors in Python
 
-    ### Catching multiple exceptions
+```py
+>>> a = [3, 7]
+>>> a[2]
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+IndexError: list index out of range
+>>> b = {'cupcakes' : 7, 'brownies' : 2}
+>>> b['cookies']
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+KeyError: 'cookies'
+>>>
+```
 
-    The 'try' block is executed, but all the code afterwards is still executed.
+### Exceptions
+An exception is an object, and we can write code to catch exceptions to handle error
+* Errors generate exceptions
 
-    ```py
-    >>> try:
-    ...     5/0
-    ... except IOError, e:
-    ...     print('I/O error')
-    ... except ZeroDivisionError, e:
-    ...     print('Zero division error')
-    ... except Exception, e:
-    ...     print(e)
-    ...
-    Zero division error
-    >>>
-    ```
+* Exceptions can potentially be caught
 
-    ### Raising exceptions
+* Uncaught exceptions propagate up to the interpreter, which halts execution and
+  displays the information in a traceback
 
-    From `code/mymodule5.py`:
+### Exceptions
 
-    ```py
-    import types
+* Python uses a try/except model for error handling
 
-    def summation(a,b):
-        """
-        Returns the sum of numbers between, and including, a and b.
-        """
+if you try to open a file that doesn't exist, we can handle this error (see below). If the try block is executed by the user, the except IOError block is printed to let user know their mistake.
+Exception is a catch all statement for all exception types
 
-        if (type(a) != types.IntType or type(b) != types.IntType):
-            raise ValueError, 'Expected integers'
+```py
+>>> f = open('thisfiledoesntexist.txt')
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+IOError: [Errno 2] No such file or directory: 'thisfiledoesntexist.txt'
+>>> try:
+...     f = open('thisfiledoesntexist.txt')
+... except IOError:
+...     print 'That filename doesn't exist.'
+...
+That filename doesn't exist.
+>>>
+```
 
-        total = 0
-        for n in range(a,b+1):
-            total += n
-        return total
-    ```
+### Catching multiple exceptions
 
-    Using:
-    This one doesn't have the catch error. The Traceback error isn't as helpful to debug though, so that's why we raise a value error (above)- it's just more precise and easier to diagnose/debug later on.
+The 'try' block is executed, but all the code afterwards is still executed.
 
-    ```py
-    >>> import mymodule4
-    >>> mymodule4.summation(1,'hello')
-    Traceback (most recent call last):
-      File "<stdin>", line 1, in <module>
-      File "mymodule4.py", line 11, in summation
-        for n in range(a,b+1):
-    TypeError: cannot concatenate 'str' and 'int' objects
-    >>> import mymodule5
-    >>> mymodule5.summation(1,'hello')
-    Traceback (most recent call last):
-      File "<stdin>", line 1, in <module>
-      File "mymodule5.py", line 13, in summation
+```py
+>>> try:
+...     5/0
+... except IOError, e:
+...     print('I/O error')
+... except ZeroDivisionError, e:
+...     print('Zero division error')
+... except Exception, e:
+...     print(e)
+...
+Zero division error
+>>>
+```
+
+### Raising exceptions
+
+From `code/mymodule5.py`:
+
+```py
+import types
+
+def summation(a,b):
+    """
+    Returns the sum of numbers between, and including, a and b.
+    """
+
+    if (type(a) != types.IntType or type(b) != types.IntType):
         raise ValueError, 'Expected integers'
-    ValueError: Expected integers
-    >>>
-    ```
 
-    ### Recommended Reading
+    total = 0
+    for n in range(a,b+1):
+        total += n
+    return total
+```
 
-    * Chapter 6: The Dynamic Typing Interlude
+Using:
+This one doesn't have the catch error. The Traceback error isn't as helpful to debug though, so that's why we raise a value error (above)- it's just more precise and easier to diagnose/debug later on.
 
-    * Chapter 22: Modules: The Big Picture
+```py
+>>> import mymodule4
+>>> mymodule4.summation(1,'hello')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "mymodule4.py", line 11, in summation
+    for n in range(a,b+1):
+TypeError: cannot concatenate 'str' and 'int' objects
+>>> import mymodule5
+>>> mymodule5.summation(1,'hello')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "mymodule5.py", line 13, in summation
+    raise ValueError, 'Expected integers'
+ValueError: Expected integers
+>>>
+```
 
-    * Chapter 23: Module Coding Basics
+### Recommended Reading
 
-    * Chapter 33: Exception Basics
+* Chapter 6: The Dynamic Typing Interlude
 
-    * Chapter 34: Exception Coding Details
+* Chapter 22: Modules: The Big Picture
+
+* Chapter 23: Module Coding Basics
+
+* Chapter 33: Exception Basics
+
+* Chapter 34: Exception Coding Details
 
 # CME 211: Lecture 8
 
-    Wednesday, October 7, 2015
+Wednesday, October 7, 2015
 
-    Topic: Introduction to Object Oriented Programming (OOP) in Python
+Topic: Introduction to Object Oriented Programming (OOP) in Python
 
+## Announcements
+* Example to show good formatting of a Python program:
+  <https://github.com/nwh/cme211-notes/blob/master/examples/ngrams/ngrams.py>
 
-    * Example to show good formatting of a Python program:
-      <https://github.com/nwh/cme211-notes/blob/master/examples/ngrams/ngrams.py>
-
-    ```python
-    >>> if __name__ == "__main__":
-    ```
-    allows you to use function in the command line, gives info on how to run the program
-
-
-    ## Command line arguments
-
-    In Python it is easy to pass command line arguments into a program.  For
-    review, a shell command looks like this:
-
-    ```
-    $ command arg1 arg2 arg3
-    ```
-
-    For example:
-
-    ```
-    $ ls -l code/
-    total 48
-    -rw-rw-r--. 1 nwh nwh  65 Oct  7 13:23 filewrite.py
-    -rw-rw-r--. 1 nwh nwh  14 Oct  7 13:23 hello.txt
-    -rw-rw-r--. 1 nwh nwh 184 Oct  7 13:23 self.py
-    -rw-rw-r--. 1 nwh nwh 230 Oct  7 13:23 student10.py
-    -rw-rw-r--. 1 nwh nwh   0 Oct  7 13:23 student11.py
-    -rw-rw-r--. 1 nwh nwh  89 Oct  7 13:23 student1.py
-    -rw-rw-r--. 1 nwh nwh   0 Oct  7 13:23 student2.py
-    -rw-rw-r--. 1 nwh nwh 176 Oct  7 13:23 student3.py
-    -rw-rw-r--. 1 nwh nwh 279 Oct  7 13:23 student4.py
-    -rw-rw-r--. 1 nwh nwh 469 Oct  7 13:23 student5.py
-    -rw-rw-r--. 1 nwh nwh 568 Oct  7 13:23 student6.py
-    -rw-rw-r--. 1 nwh nwh 618 Oct  7 13:23 student7.py
-    -rw-rw-r--. 1 nwh nwh 182 Oct  7 13:23 student8.py
-    -rw-rw-r--. 1 nwh nwh 243 Oct  7 13:23 student9.py
-    ```
-
-    * The command is: `ls`
-    * The first argument is `-l` which tells `ls` to output detailed information for
-      each file
-    * The second argument is the directory I want to list
-
-    In a python scripts we can get access to the command line arguments with the
-    `sys.argv` variable.  `sys.argv` is a list containing the command line arguments
-    as items.  Command line arguments are separated by spaces.  See the example in
-    `code/command.py`:
-
-    ```py
-    import sys
-
-    print("There are {} command line argument(s).".format(len(sys.argv)))
-
-    for i, arg in enumerate(sys.argv):
-        print("arg {}: {}".format(i,arg))
-    ```
-
-    Output:
-    Try not to name files with spaces since you have to quote or \ them.
-    ```
-    $ python command.py a b c
-    There are 4 command line argument(s).
-    arg 0: command.py
-    arg 1: a
-    arg 2: b
-    arg 3: c
-    $ python command.py a b c "quote things with spaces"
-    There are 5 command line argument(s).
-    arg 0: command.py
-    arg 1: a
-    arg 2: b
-    arg 3: c
-    arg 4: quote things with spaces
-    $
-    ```
-
-    Notes:
-
-    * `sys.argv[0]` is the name of the python script
-    * arguments are separated by spaces
-    * need to quote a string containing spaces
-    * in python, the data type is `str`, need to convert to an `int` or `float` if
-      you want a number
-
-    Ex: Converting a string into an int
-    ``` .py
-    a = int('1100')
-    ```
-    ## Introduction to OOP
-
-    ### Procedural programming
-
-    * In procedural programming you implement your computation in terms of variables
-    (integers, doubles, etc.), data structures (arrays, lists, dictionaries, etc.),
-    and procedures (functions, subroutines, etc.)
+```python
+>>> if __name__ == "__main__":
+```
+allows you to use function in the command line, gives info on how to run the program
 
 
-    * Python, C++, Fortran, Java, MATLAB, and many other languages have procedural
-    aspects to them but also support Object Oriented Programming (OOP)
+## Command line arguments
 
-    ### Why OOP?
+In Python it is easy to pass command line arguments into a program.  For
+review, a shell command looks like this:
 
-    * Concept of OOP has been around since 1960s
+```
+$ command arg1 arg2 arg3
+```
+In a python scripts we can get access to the command line arguments with the
+`sys.argv` variable.  `sys.argv` is a list containing the command line arguments
+as items.  Command line arguments are separated by spaces.  See the example in
+`code/command.py`:
 
-    * Gained popularity in the 1980s and 1990s with the development and
-    standardization of C++, and faster computers that mitigated the overhead of the
-    abstractions
+```py
+import sys
 
-    * Abstraction, modularity, and reusability are some of the most commonly cited
-    reasons for using OOP
+print("There are {} command line argument(s).".format(len(sys.argv)))
 
-    * Almost all new software development uses some degree of OOP
+for i, arg in enumerate(sys.argv):
+    print("arg {}: {}".format(i,arg))
+```
 
-    ### Abstraction
+Output:
+Try not to name files with spaces since you have to quote or \ them.
+```
+$ python command.py a b c
+There are 4 command line argument(s).
+arg 0: command.py
+arg 1: a
+arg 2: b
+arg 3: c
+$ python command.py a b c "quote things with spaces"
+There are 5 command line argument(s).
+arg 0: command.py
+arg 1: a
+arg 2: b
+arg 3: c
+arg 4: quote things with spaces
+$
+```
 
-    * Represent data and computations in a familiar form
+Notes:
 
-        * Car object, with an engine object, and tire objects
+* `sys.argv[0]` is the name of the python script
+* arguments are separated by spaces
+* need to quote a string containing spaces
+* in python, the data type is `str`, need to convert to an `int` or `float` if
+  you want a number
 
-    * Make programmers more productive
+Ex: Converting a string into an int
+``` .py
+a = int('1100')
+```
+## Introduction to OOP
 
-        * Salaries are expensive compared to computers
+### Procedural programming
 
-    * Too much abstraction can be a bad thing if it has a significant impact on
-    performance
+* In procedural programming you implement your computation in terms of variables
+(integers, doubles, etc.), data structures (arrays, lists, dictionaries, etc.),
+and procedures (functions, subroutines, etc.)
 
-        * Desktop computers really are cheap
 
-        * Supercomputers are not cheap
+* Python, C++, Fortran, Java, MATLAB, and many other languages have procedural
+aspects to them but also support Object Oriented Programming (OOP)
 
-    ### Objects
+### Why OOP?
 
-    * In OOP you express your computations in terms of objects, which are instances
-      of classes
+* Concept of OOP has been around since 1960s
 
-    * Classes are blueprints for objects
-    A class specifies data and functions associated with object
-    Object is actual thing in memory that gets assigned
-    There could be many objects in a class
+* Gained popularity in the 1980s and 1990s with the development and
+standardization of C++, and faster computers that mitigated the overhead of the
+abstractions
 
-    ![fig/class-object.png](lecture-08/fig/class-object.png)
+* Abstraction, modularity, and reusability are some of the most commonly cited
+reasons for using OOP
 
-    * Classes specify data and the methods to use or interact with that data
+* Almost all new software development uses some degree of OOP
 
-    ### Class / object example 1: list
+### Abstraction
 
-    ```py
-    >>> a = list()
-    >>> a.append(5)
-    >>> a.append(19)
-    >>> a.append(3)
-    >>> a
-    [5, 19, 3]
-    >>> a.sort()
-    >>> a
-    [3, 5, 19]
-    >>>
-    ```
+* Represent data and computations in a familiar form
 
-    * `list()` returns an object which is an instance of the *list* class
-    * `append()` and `sort()` are *methods* (function that is attached to the object, call using the "." notation)
-    * 3, 5, 19 are the *data* maintained by the object
+    * Car object, with an engine object, and tire objects
+
+* Make programmers more productive
+
+    * Salaries are expensive compared to computers
+
+* Too much abstraction can be a bad thing if it has a significant impact on
+performance
+
+    * Desktop computers really are cheap
+
+    * Supercomputers are not cheap
+
+### Objects
+
+* In OOP you express your computations in terms of objects, which are instances
+  of classes
+
+* Classes are blueprints for objects
+A class specifies data and functions associated with object
+Object is actual thing in memory that gets assigned
+There could be many objects in a class
+
+![fig/class-object.png](lecture-08/fig/class-object.png)
+
+* Classes specify data and the methods to use or interact with that data
+
+### Class / object example 1: list
+
+```py
+>>> a = list()
+>>> a.append(5)
+>>> a.append(19)
+>>> a.append(3)
+>>> a
+[5, 19, 3]
+>>> a.sort()
+>>> a
+[3, 5, 19]
+>>>
+```
+
+* `list()` returns an object which is an instance of the *list* class
+* `append()` and `sort()` are *methods* (function that is attached to the object, call using the "." notation)
+* 3, 5, 19 are the *data* maintained by the object
 
 ### Class / object examples 2: file objects
+
 See the file `code/filewrite.py`:
-    ```py
-    f = open("hello.txt", "w")
-    f.write("hello cme211!\n")
-    f.close()
-    ```
+
+```py
+f = open("hello.txt", "w")
+f.write("hello cme211!\n")
+f.close()
+```
+
 * The `open()` function returns an *object* which is an instance of the *file
   class*
 
 * `write()` and `close()` are methods of the *file class*
 
-    If we run the code in *interactive* mode, we can inspect these things in
-    Python's online help:
+If we run the code in *interactive* mode, we can inspect these things in
+Python's online help:
 
-    ```
-    $ python -i filewrite.py
-    >>> help(open)
-    ```
+```
+$ python -i filewrite.py
+>>> help(open)
+```
 
-    Output:
+Output:
 
-    ```
-    Help on built-in function open in module __builtin__:
+```
+Help on built-in function open in module __builtin__:
 
-    open(...)
-        open(name[, mode[, buffering]]) -> file object
+open(...)
+    open(name[, mode[, buffering]]) -> file object
 
-        Open a file using the file() type, returns a file object.  This is the
-        preferred way to open a file.  See file.__doc__ for further information.
-    ```
+    Open a file using the file() type, returns a file object.  This is the
+    preferred way to open a file.  See file.__doc__ for further information.
+```
 
-    Now let's look at the file object with `>>> help(f)`:
+Now let's look at the file object with `>>> help(f)`:
 
-    ```
-    Help on file object:
+```
+Help on file object:
 
-    class file(object)
-     |  file(name[, mode[, buffering]]) -> file object
-     |  
-     |  Open a file.  The mode can be 'r', 'w' or 'a' for reading (default),
-     |  writing or appending.  The file will be created if it doesn't exist
-     |  when opened for writing or appending; it will be truncated when
-     |  opened for writing.  Add a 'b' to the mode for binary files.
-     |  Add a '+' to the mode to allow simultaneous reading and writing.
-     |  If the buffering argument is given, 0 means unbuffered, 1 means line
-     |  buffered, and larger numbers specify the buffer size.  The preferred way
-     |  to open a file is with the builtin open() function.
-     |  Add a 'U' to mode to open the file for input with universal newline
-     |  support.  Any line ending in the input file will be seen as a '\n'
-     |  in Python.  Also, a file so opened gains the attribute 'newlines';
-     |  the value for this attribute is one of None (no newline read yet),
-     |  '\r', '\n', '\r\n' or a tuple containing all the newline types seen.
-     |  
-     |  'U' cannot be combined with 'w' or '+' mode.
-     |  
-     |  Methods defined here:
-     |  
-     |  __delattr__(...)
-     |      x.__delattr__('name') <==> del x.name
-     |  
-     |  __enter__(...)
-     |      __enter__() -> self.
-     |  
-    ```
+class file(object)
+ |  file(name[, mode[, buffering]]) -> file object
+ |  
+ |  Open a file.  The mode can be 'r', 'w' or 'a' for reading (default),
+ |  writing or appending.  The file will be created if it doesn't exist
+ |  when opened for writing or appending; it will be truncated when
+ |  opened for writing.  Add a 'b' to the mode for binary files.
+ |  Add a '+' to the mode to allow simultaneous reading and writing.
+ |  If the buffering argument is given, 0 means unbuffered, 1 means line
+ |  buffered, and larger numbers specify the buffer size.  The preferred way
+ |  to open a file is with the builtin open() function.
+ |  Add a 'U' to mode to open the file for input with universal newline
+ |  support.  Any line ending in the input file will be seen as a '\n'
+ |  in Python.  Also, a file so opened gains the attribute 'newlines';
+ |  the value for this attribute is one of None (no newline read yet),
+ |  '\r', '\n', '\r\n' or a tuple containing all the newline types seen.
+ |  
+ |  'U' cannot be combined with 'w' or '+' mode.
+ |  
+ |  Methods defined here:
+ |  
+ |  __delattr__(...)
+ |      x.__delattr__('name') <==> del x.name
+ |  
+ |  __enter__(...)
+ |      __enter__() -> self.
+ |  
+```
 
-    The help documentation continues.  The public interface methods are at the
-    bottom.  I wish they would swap the order.
+The help documentation continues.  The public interface methods are at the
+bottom.  I wish they would swap the order.
 
-    ### Modularity and reusability
+### Modularity and reusability
 
-    * High level languages like Python, Java, C++, etc.  include classes for working
-    with files, holding data (lists and dictionaries), etc.
-      not true for C or fortran programmer; need to access a library in this case. standard classes make things very nice
+* High level languages like Python, Java, C++, etc.  include classes for working
+with files, holding data (lists and dictionaries), etc.
+  not true for C or fortran programmer; need to access a library in this case. standard classes make things very nice
 
-    * So you do not have to design and create your own classes if someone else has
-    already done the work for you
+* So you do not have to design and create your own classes if someone else has
+already done the work for you
 
 
-    * But you might want to create classes that are specialized to the needs of your
-    applications, so they can be used (and reused) by yourself and others
+* But you might want to create classes that are specialized to the needs of your
+applications, so they can be used (and reused) by yourself and others
 
 ### OOP in Python
 
-    * New kinds of objects can be created in Python by defining your own classes
+* New kinds of objects can be created in Python by defining your own classes
 
-    * Classes are the blueprint for creating objects which are known as instances of
-    the class
+* Classes are the blueprint for creating objects which are known as instances of
+the class
 
-    * Classes have *attributes*
+* Classes have *attributes*
 
-        * Variables (data) are called class *variables*
+    * Variables (data) are called class *variables*
 
-        * Functions for interacting with the class are called *methods*
+    * Functions for interacting with the class are called *methods*
 
-        * Attributes are accessed using *dot notation*
+    * Attributes are accessed using *dot notation*
 
-    ### Creating instances
+### Creating instances
 
-    * Instances of a class are created by calling the class object as a function
+* Instances of a class are created by calling the class object as a function
 
-    For example, you can make multiple houses (objects) with the same blueprint (class), so each house is an instance of the blueprint (of the class)
+For example, you can make multiple houses (objects) with the same blueprint (class), so each house is an instance of the blueprint (of the class)
 
-    * Any arguments of the function call are passed to the special `__init__()`
-      method
+* Any arguments of the function call are passed to the special `__init__()`
+  method
 
-    ### Python class definition
+### Python class definition
 
-    ```py
-    class Student:
-        def __init__(self, id):
-            self.id = id
-    ```
+```py
+class Student:
+    def __init__(self, id):
+        self.id = id
+```
 
-    * Classes are defined with the `class` keyword
-    * Followed by the class name and a colon (`:`)
-    * Followed by the indented class body, containing class *attributes*
+* Classes are defined with the `class` keyword
+* Followed by the class name and a colon (`:`)
+* Followed by the indented class body, containing class *attributes*
 
-    ### Object initialization
+### Object initialization
 
-    ```py
-        def __init__(self, id):
-            self.id = id
-    ```
+```py
+    def __init__(self, id):
+        self.id = id
+```
 
-    * `__init__` is the special name for the initialization method
-    * `self` is a reference to the specific instance (object) that is calling this
-      method
-    * `id` is the input argument from the call to create a new instance
-    * `self.id = id` stores the input `id` in the object
+* `__init__` is the special name for the initialization method
+* `self` is a reference to the specific instance (object) that is calling this
+  method
+* `id` is the input argument from the call to create a new instance
+* `self.id = id` stores the input `id` in the object
 
-    ### Class definition in action
+### Class definition in action
 
-    See the file `code/student1.py`
+See the file `code/student1.py`
 
-    7 is the id of the student, Student is the class
+7 is the id of the student, Student is the class
 
-    ```py
-    class Student:
-        def __init__(self, id):
-            self.id = id
+```py
+class Student:
+    def __init__(self, id):
+        self.id = id
 
-    s = Student(7)
-    print(s)
-    ```
+s = Student(7)
+print(s)
+```
 
-    Output:
-    To get access to the id field, can do s.id. On any class method, it's always (self,id)
-    ```
-    $ python student1.py
-    <__main__.Student instance at 0x1069f6c20>
-    $
-    ```
+Output:
+To get access to the id field, can do s.id. On any class method, it's always (self,id)
+```
+$ python student1.py
+<__main__.Student instance at 0x1069f6c20>
+$
+```
 
-    ### Let's talk about `self`
+### Let's talk about `self`
 
-    First argument to any method is 'self'-- this is usually just for convention. Represents object that is calling the particular method
+First argument to any method is 'self'-- this is usually just for convention. Represents object that is calling the particular method
+See `code-08/self.py`:
+Self is just a reference to the object
 
-    <<<<<<< HEAD:lecture-08.md
-    See `code-08/self.py`:
-    Self is just a reference to the object
-    =======
-    See `code/self.py`:
 
-    >>>>>>> upstream/master:lecture-08/lecture-08.md
+```py
+class Student:
+    def __init__(self, id):
+        print("inside __init__()")
+        print("self = {}".format(self))
+        self.id = id
 
-    ```py
-    class Student:
-        def __init__(self, id):
-            print("inside __init__()")
-            print("self = {}".format(self))
-            self.id = id
+s = Student(7)
+print("s    = {}".format(s))
+```
+We see from the output that we get the same thing. Self is just a reference to the object
+Output:
 
-    s = Student(7)
-    print("s    = {}".format(s))
-    ```
-    We see from the output that we get the same thing. Self is just a reference to the object
-    Output:
+```
+$ python self.py
+inside __init__()
+self = <__main__.Student instance at 0x10967cc20>
+s    = <__main__.Student instance at 0x10967cc20>
+$
+```
 
-    ```
-    $ python self.py
-    inside __init__()
-    self = <__main__.Student instance at 0x10967cc20>
-    s    = <__main__.Student instance at 0x10967cc20>
-    $
-    ```
+### Object setup
 
-    ### Object setup
+* The optional initialization method is typically used to do setup of class
+variables that will be used throughout the life of the instance
 
-    * The optional initialization method is typically used to do setup of class
-    variables that will be used throughout the life of the instance
+* What kind of class variables might we want to setup for a student class?
 
-    * What kind of class variables might we want to setup for a student class?
+### Class variable setup
 
-    ### Class variable setup
+See `code/student2.py`.  Let's add an empty dictionary for the classes that
+the student is enrolled in:
 
-    See `code/student2.py`.  Let's add an empty dictionary for the classes that
-    the student is enrolled in:
+'self.classes={}' means a dictionary of classes (courses, not the python class) that the student has been enrolled in
 
-    'self.classes={}' means a dictionary of classes (courses, not the python class) that the student has been enrolled in
+```py
+class Student:
+    def __init__(self, id):
+        self.id = id
+        self.classes = {}
 
-    ```py
-    class Student:
-        def __init__(self, id):
-            self.id = id
-            self.classes = {}
+s = Student(7)
+```
 
-    s = Student(7)
-    ```
+### Architecting our object
 
-    ### Architecting our object
+* Our object has data about `id` and `classes`
 
-    * Our object has data about `id` and `classes`
+* But how do we do anything with it?
 
-    * But how do we do anything with it?
+* We need to create additional methods for interacting or *interfacing* with the
+object
 
-    * We need to create additional methods for interacting or *interfacing* with the
-    object
+### Encapsulation
 
-    ### Encapsulation
+Only care about inputs and outputs, details are hidden to make it easier to use
 
-    Only care about inputs and outputs, details are hidden to make it easier to use
+* The *interface* of an object encapsulates the internal data and code
 
-    * The *interface* of an object encapsulates the internal data and code
+* *encapsulation* means hiding the details of data structures and algorithms
+(internal code)
 
-    * *encapsulation* means hiding the details of data structures and algorithms
-    (internal code)
+<<<<<<< HEAD:lecture-08.md
+As long as you don't change the interface, you don't have to change all the code that uses this interface. Just change data internal code. Adding things are fine, but changing things that you've introduced in the past causes problems
 
-    <<<<<<< HEAD:lecture-08.md
-    As long as you don't change the interface, you don't have to change all the code that uses this interface. Just change data internal code. Adding things are fine, but changing things that you've introduced in the past causes problems
+![fig-08/encapsulation.png](lecture-08/fig/encapsulation.png)
+![fig/encapsulation.png](lecture-08/fig/encapsulation.png)
 
-    ![fig-08/encapsulation.png](lecture-08/fig/encapsulation.png)
-    =======
+### Interfaces
 
-    ### Interfaces
+* Interfaces protect the user of the class from internal implementation details
 
-    * Interfaces protect the user of the class from internal implementation details
+* Found a better way to implement the internal representation of the data? No
+problem
 
-    * Found a better way to implement the internal representation of the data? No
-    problem
+* New algorithm for the internal processing of that data? No problem
 
-    * New algorithm for the internal processing of that data? No problem
+* Screwed up your interface and now need to make changes to the interface?
+Problem
 
-    * Screwed up your interface and now need to make changes to the interface?
-    Problem
+### Defining a regular method
 
-    ### Defining a regular method
+Inside of the `Student` class, we put:
 
-    Inside of the `Student` class, we put:
+```py
+    def getId(self):
+        return self.id
+```
 
-    ```py
-        def getId(self):
-            return self.id
-    ```
+* just like defining a Python function
 
-    * just like defining a Python function
+* `self` is a reference to the specific instance that is calling this method
 
-    * `self` is a reference to the specific instance that is calling this method
+### Access to id
 
-    ### Access to id
+See `code/student3.py`:
 
-    See `code/student3.py`:
+```py
+class Student:
+    def __init__(self, id):
+        self.id = id
+        self.classes = {}
+    def getId(self):
+        return self.id
 
-    ```py
-    class Student:
-        def __init__(self, id):
-            self.id = id
-            self.classes = {}
-        def getId(self):
-            return self.id
+s = Student(7)
+print(s)
+print(s.getId())
+```
 
-    s = Student(7)
-    print(s)
-    print(s.getId())
-    ```
+Output:
 
-    Output:
+```
+$ python student3.py
+<__main__.Student instance at 0x1038becb0>
+7
+$
+```
 
-    ```
-    $ python student3.py
-    <__main__.Student instance at 0x1038becb0>
-    7
-    $
-    ```
+### Check up
 
-    ### Check up
+* How are we doing with interface design?
 
-    * How are we doing with interface design?
+* Is there a way somebody could accidentally change the id given the interface
+we've implemented?
 
-    * Is there a way somebody could accidentally change the id given the interface
-    we've implemented?
+* Let's test it!  See `code/student4.py`:
 
-    * Let's test it!  See `code/student4.py`:
+```py
+class Student:
+    def __init__(self, id):
+        self.id = id
+        self.classes = {}
+    def getId(self):
+        return self.id
 
-    ```py
-    class Student:
-        def __init__(self, id):
-            self.id = id
-            self.classes = {}
-        def getId(self):
-            return self.id
+s = Student(7)
+print(s)
+id = s.getId()
+print("id = {}".format(id))
+id = 9
+print("id = {}".format(id))
+print("s.getId() = {}".format(s.getId()))
+```
+No, changing the id=9 below doesn't change the id. We have not allowed a user to muck around with the internals of the class
+Output:
 
-    s = Student(7)
-    print(s)
-    id = s.getId()
-    print("id = {}".format(id))
-    id = 9
-    print("id = {}".format(id))
-    print("s.getId() = {}".format(s.getId()))
-    ```
-    No, changing the id=9 below doesn't change the id. We have not allowed a user to muck around with the internals of the class
-    Output:
+```
+$ python student4.py
+<__main__.Student instance at 0x10bef2cb0>
+id = 7
+id = 9
+s.getId() = 7
+$
+```
 
-    ```
-    $ python student4.py
-    <__main__.Student instance at 0x10bef2cb0>
-    id = 7
-    id = 9
-    s.getId() = 7
-    $
-    ```
+* The reference returned by `getId()` cannot be used to change the assignment of
+  the reference within the object.
 
-    * The reference returned by `getId()` cannot be used to change the assignment of
-      the reference within the object.
 
+### Adding classes / grades
 
-    ### Adding classes / grades
+See: `code/student5.py`:
 
-    See: `code/student5.py`:
+Problems: need to initialize gpa (to zero or NaN) otherwise this doesn't exist (try out by yourself)
 
-    Problems: need to initialize gpa (to zero or NaN) otherwise this doesn't exist (try out by yourself)
+id = arguments passed to the class
 
-    id = arguments passed to the class
+Should not add attributes to a class
 
-    Should not add attributes to a class
+```py
+class Student:
+    def __init__(self, id):
+        self.id = id
+        self.classes = {}
+    def getId(self):
+        return self.id
+    def addClass(self, name, gradepoint):
+        self.classes[name] = gradepoint
+        sumgradepoints = float(sum(self.classes.values()))
+        self.gpa = sumgradepoints/len(self.classes)
+    def getGPA(self):
+        return self.gpa
 
-    ```py
-    class Student:
-        def __init__(self, id):
-            self.id = id
-            self.classes = {}
-        def getId(self):
-            return self.id
-        def addClass(self, name, gradepoint):
-            self.classes[name] = gradepoint
-            sumgradepoints = float(sum(self.classes.values()))
-            self.gpa = sumgradepoints/len(self.classes)
-        def getGPA(self):
-            return self.gpa
+s = Student(7)
+s.addClass("gym", 4)
+s.addClass("math", 3)
+print("GPA = {}".format(s.getGPA()))
+```
 
-    s = Student(7)
-    s.addClass("gym", 4)
-    s.addClass("math", 3)
-    print("GPA = {}".format(s.getGPA()))
-    ```
+Output:
 
-    Output:
+```
+$ python student5.py
+GPA = 3.5
+$
+```
 
-    ```
-    $ python student5.py
-    GPA = 3.5
-    $
-    ```
+### Getting classes
 
-    ### Getting classes
+See `code/student6.py`:
 
-    See `code/student6.py`:
+```py
+class Student:
+    def __init__(self, id):
+        self.id = id
+        self.classes = {}
+    def getId(self):
+        return self.id
+    def addClass(self, name, gradepoint):
+        self.classes[name] = gradepoint
+        sumgradepoints = float(sum(self.classes.values()))
+        self.gpa = sumgradepoints/len(self.classes)
+    def getGPA(self):
+        return self.gpa
+    def getClasses(self):
+        return self.classes
 
-    ```py
-    class Student:
-        def __init__(self, id):
-            self.id = id
-            self.classes = {}
-        def getId(self):
-            return self.id
-        def addClass(self, name, gradepoint):
-            self.classes[name] = gradepoint
-            sumgradepoints = float(sum(self.classes.values()))
-            self.gpa = sumgradepoints/len(self.classes)
-        def getGPA(self):
-            return self.gpa
-        def getClasses(self):
-            return self.classes
+s = Student(7)
+s.addClass("gym", 4)
+s.addClass("math", 3)
+print("GPA = {}".format(s.getGPA()))
+print("classes = {}".format(s.getClasses()))
+```
 
-    s = Student(7)
-    s.addClass("gym", 4)
-    s.addClass("math", 3)
-    print("GPA = {}".format(s.getGPA()))
-    print("classes = {}".format(s.getClasses()))
-    ```
+Output:
 
-    Output:
+```
+$ python student6.py
+GPA = 3.5
+classes = {'gym': 4, 'math': 3}
+$
+```
 
-    ```
-    $ python student6.py
-    GPA = 3.5
-    classes = {'gym': 4, 'math': 3}
-    $
-    ```
+### Getting classes
 
-    ### Getting classes
+If a method returns a reference to a mutable object, then changing that object
+"outside" of the class will change the data "inside" of the class.  See `code/student7.py`
 
-    If a method returns a reference to a mutable object, then changing that object
-    "outside" of the class will change the data "inside" of the class.  See `code/student7.py`
+```py
+class Student:
+    def __init__(self, id):
+        self.id = id
+        self.classes = {}
+    def getId(self):
+        return self.id
+    def addClass(self, name, gradepoint):
+        self.classes[name] = gradepoint
+        sumgradepoints = float(sum(self.classes.values()))
+        self.gpa = sumgradepoints/len(self.classes)
+    def getGPA(self):
+        return self.gpa
+    def getClasses(self):
+        return self.classes
 
-    ```py
-    class Student:
-        def __init__(self, id):
-            self.id = id
-            self.classes = {}
-        def getId(self):
-            return self.id
-        def addClass(self, name, gradepoint):
-            self.classes[name] = gradepoint
-            sumgradepoints = float(sum(self.classes.values()))
-            self.gpa = sumgradepoints/len(self.classes)
-        def getGPA(self):
-            return self.gpa
-        def getClasses(self):
-            return self.classes
+s = Student(7)
+s.addClass("gym", 4)
+s.addClass("math", 3)
 
-    s = Student(7)
-    s.addClass("gym", 4)
-    s.addClass("math", 3)
+classes = s.getClasses()
+classes["englist"] = 4
 
-    classes = s.getClasses()
-    classes["englist"] = 4
+print("GPA = {}".format(s.getGPA()))
+print("classes = {}".format(s.getClasses()))
+```
 
-    print("GPA = {}".format(s.getGPA()))
-    print("classes = {}".format(s.getClasses()))
-    ```
+Output:
 
-    Output:
+```
+$ python student7.py
+GPA = 3.5
+classes = {'gym': 4, 'englist': 4, 'math': 3}
+$
+```
+Iterface leaks out mutable states (dictionary) and now they are out of sync
+### Interfaces and references
 
-    ```
-    $ python student7.py
-    GPA = 3.5
-    classes = {'gym': 4, 'englist': 4, 'math': 3}
-    $
-    ```
-    Iterface leaks out mutable states (dictionary) and now they are out of sync
-    ### Interfaces and references
+* It is easy to accidentally let a method provide a reference to a mutable data
+structure within your object
 
-    * It is easy to accidentally let a method provide a reference to a mutable data
-    structure within your object
+* Once you have handed out that reference someone can manipulate your internal
+data and perhaps get the object into an unexpected state
 
-    * Once you have handed out that reference someone can manipulate your internal
-    data and perhaps get the object into an unexpected state
+* You really need to think about what you pass out of your object if you want to
+have strong encapsulation
 
-    * You really need to think about what you pass out of your object if you want to
-    have strong encapsulation
+### Public attributes
 
-    ### Public attributes
+* Default behavior is that all attributes are public, i.e. accessible using dot
+notation
 
-    * Default behavior is that all attributes are public, i.e. accessible using dot
-    notation
+`code/student8.py`:
 
-    `code/student8.py`:
+```py
+class Student:
+    def __init__(self, id):
+        self.id = id
+        self.classes = {}
+    def getId(self):
+        return self.id
 
-    ```py
-    class Student:
-        def __init__(self, id):
-            self.id = id
-            self.classes = {}
-        def getId(self):
-            return self.id
+s = Student(7)
+print("s.id = {}".format(s.id))
+```
 
-    s = Student(7)
-    print("s.id = {}".format(s.id))
-    ```
 
+Output:
 
-    Output:
+```
+$ python student8.py
+s.id = 7
+$
+```
 
-    ```
-    $ python student8.py
-    s.id = 7
-    $
-    ```
+### Public attributes
+`code/student9.py`:
 
-    ### Public attributes
+```py
+class Student:
+    def __init__(self, id):
+        self.id = id
+        self.classes = {}
+    def getId(self):
+        return self.id
 
+s = Student(7)
+print("s.getId() = {}".format(s.getId()))
+s.id = 9
+print("s.getId() = {}".format(s.getId()))
+```
 
-    `code/student9.py`:
+Output:
+This may or may not be a good interface design. we might want to protect this id variable. can do this by having protected variables start with "__ ".
 
-    ```py
-    class Student:
-        def __init__(self, id):
-            self.id = id
-            self.classes = {}
-        def getId(self):
-            return self.id
+```
+$ python student9.py
+s.getId() = 7
+s.getId() = 9
+$
+```
 
-    s = Student(7)
-    print("s.getId() = {}".format(s.getId()))
-    s.id = 9
-    print("s.getId() = {}".format(s.getId()))
-    ```
+### Private attributes
+can prefixing with 2 underscores, so instead of "self.id", it's "self._ id"
 
-    Output:
-    This may or may not be a good interface design. we might want to protect this id variable. can do this by having protected variables start with "__ ".
+no extra computational cost to making it private
 
-    ```
-    $ python student9.py
-    s.getId() = 7
-    s.getId() = 9
-    $
-    ```
+Note: can use pass to make script run and put in code body later
+```py
+if True:
+  pass
+```
+***Don't add attributes after an object has been created***
 
-    ### Private attributes
-    can prefixing with 2 underscores, so instead of "self.id", it's "self._ id"
+* Attributes can be made private by using a double underscore prefix for the
+name
 
-    no extra computational cost to making it private
+* See `code/student10.py`:
 
-    Note: can use pass to make script run and put in code body later
-    ```py
-    if True:
-      pass
-    ```
-    ***Don't add attributes after an object has been created***
+```py
+class Student:
+    def __init__(self, id):
+        self.__id = id
+        self.classes = {}
+    def getId(self):
+        return self.__id
 
-    * Attributes can be made private by using a double underscore prefix for the
-    name
+s = Student(7)
+print("s.getId() = {}".format(s.getId()))
+print("s.id = {}".format(s.__id))
+```
 
-    * See `code/student10.py`:
+* Output
 
-    ```py
-    class Student:
-        def __init__(self, id):
-            self.__id = id
-            self.classes = {}
-        def getId(self):
-            return self.__id
-
-    s = Student(7)
-    print("s.getId() = {}".format(s.getId()))
+```
+$ python student10.py
+s.getId() = 7
+Traceback (most recent call last):
+  File "student10.py", line 10, in <module>
     print("s.id = {}".format(s.__id))
-    ```
+AttributeError: Student instance has no attribute '__id'
+$
+```
 
-    * Output
+### "Privacy" through obscurity
 
-    ```
-    $ python student10.py
-    s.getId() = 7
-    Traceback (most recent call last):
-      File "student10.py", line 10, in <module>
-        print("s.id = {}".format(s.__id))
-    AttributeError: Student instance has no attribute '__id'
-    $
-    ```
+Run `student10.py` in interactive mode:
 
-    ### "Privacy" through obscurity
+```
+$ python -i student10.py
+s.getId() = 7
+Traceback (most recent call last):
+File "student10.py", line 10, in <module>
+print "s.id = %s" % s.__id
+AttributeError: Student instance has no attribute '__id'
+>>> s._Student__id
+7
+>>> s._Student__id = 9
+>>> s.getId()
+9
+>>>
+```
 
-    Run `student10.py` in interactive mode:
+The "private" attribute is still accessible by prefixing it with `_<class name>`.
 
-    ```
-    $ python -i student10.py
-    s.getId() = 7
-    Traceback (most recent call last):
-    File "student10.py", line 10, in <module>
-    print "s.id = %s" % s.__id
-    AttributeError: Student instance has no attribute '__id'
-    >>> s._Student__id
-    7
-    >>> s._Student__id = 9
-    >>> s.getId()
-    9
-    >>>
-    ```
+### What not to do
 
-    The "private" attribute is still accessible by prefixing it with `_<class name>`.
+Python is dynamic, which is great.  But you should not do this:
 
-    ### What not to do
+```
+$ python
+Python 2.7.4 (default, Sep 26 2013, 03:20:26)
+[GCC 4.7.3] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> class MyClass:
+...
+pass
+...
+>>> a = MyClass()
+>>> a.nitems = 3
+>>> a.todo = []
+>>> a.todo.append("get groceries")
+>>> a.todo
+['get groceries']
+>>>
+```
 
-    Python is dynamic, which is great.  But you should not do this:
+### OOP Summary
 
-    ```
-    $ python
-    Python 2.7.4 (default, Sep 26 2013, 03:20:26)
-    [GCC 4.7.3] on linux2
-    Type "help", "copyright", "credits" or "license" for more information.
-    >>> class MyClass:
-    ...
-    pass
-    ...
-    >>> a = MyClass()
-    >>> a.nitems = 3
-    >>> a.todo = []
-    >>> a.todo.append("get groceries")
-    >>> a.todo
-    ['get groceries']
-    >>>
-    ```
+* Object Oriented Programming is about implementing abstractions such that data,
+and the associated operations on it, are represented in a way that is more
+familiar to humans
 
-    ### OOP Summary
+* Mechanics of OOP are about the same as procedural programming, but developing
+good abstractions can take a lot of thought
 
-    * Object Oriented Programming is about implementing abstractions such that data,
-    and the associated operations on it, are represented in a way that is more
-    familiar to humans
+### Recommended Reading
 
-    * Mechanics of OOP are about the same as procedural programming, but developing
-    good abstractions can take a lot of thought
+*Learning Python, Fifth Edition* by Mark Lutz
 
-    ### Recommended Reading
+* Chapter 26: OOP: The Big Picture
 
-    *Learning Python, Fifth Edition* by Mark Lutz
+* Chapter 27: Class Coding Basics
 
-    * Chapter 26: OOP: The Big Picture
-
-    * Chapter 27: Class Coding Basics
 # CME 211: Lecture 9
 
-    Wednesday, October 9, 2015
-
-    Topic: More Object Oriented Programming (OOP) in Python
+Wednesday, October 9, 2015
+
+Topic: More Object Oriented Programming (OOP) in Python
+
+## Python OOP topics & examples
+
+### Name example
 
-    ## Announcements
-
-    ## Python OOP topics & examples
+* `code/names.py`:
+
+methods can be called inside the initialization method
+
+
+```py
+class NameClassifier:
+    def __init__(self, femalefile, malefile):
+        self.LoadNameData(femalefile, malefile)
+
+    def LoadNameData(self, femalefile, malefile):
+        # Creates a dictionary with the name data from the two input files
+        self.namedata = {}
+        f = open(femalefile,'r')
+        for line in f:
+            self.namedata[line.split()[0]] = 1.0
+        f.close()
+
+        f = open(malefile,'r')
+        for line in f:
+            name = line.split()[0]
+        if name in self.namedata:
+            # Just assume a 50/50 distribution for names on both lists
+            self.namedata[name] = 0.5
+        else:
+            self.namedata[name] = 0.0
+        f.close()
 
-    ### Name example
+    def ClassifyName(self, name):
+        if name in self.namedata:
+            return self.namedata[name]
+        else:
+            # Don't have this name in our data
+            return 0.5
+```
 
-    * `code/names.py`:
+* `code/main.py`:
 
-    methods can be called inside the initialization method
-
-
-    ```py
-    class NameClassifier:
-        def __init__(self, femalefile, malefile):
-            self.LoadNameData(femalefile, malefile)
+```py
+import names
 
-        def LoadNameData(self, femalefile, malefile):
-            # Creates a dictionary with the name data from the two input files
-            self.namedata = {}
-            f = open(femalefile,'r')
-            for line in f:
-                self.namedata[line.split()[0]] = 1.0
-            f.close()
-
-            f = open(malefile,'r')
-            for line in f:
-                name = line.split()[0]
-            if name in self.namedata:
-                # Just assume a 50/50 distribution for names on both lists
-                self.namedata[name] = 0.5
-            else:
-                self.namedata[name] = 0.0
-            f.close()
+# Create an instance of the name classifier
+classifier = names.NameClassifier('dist.female.first', 'dist.male.first')
 
-        def ClassifyName(self, name):
-            if name in self.namedata:
-                return self.namedata[name]
-            else:
-                # Don't have this name in our data
-                return 0.5
-    ```
+# Setup test data
+testdata = ['PETER', 'LOIS', 'STEWIE', 'BRIAN', 'MEG', 'CHRIS']
+
+# Invoke the ClassifyName() method
+for name in testdata:
+    print('{}: {}'.format(name, classifier.ClassifyName(name)))
+```
+
+* Output:
+
+```
+$ python main.py
+PETER: 1.0
+LOIS: 1.0
+STEWIE: 0.5
+BRIAN: 1.0
+MEG: 1.0
+CHRIS: 1.0
+```
+
+### Student example
+
+Let's inspect a `Student` object:
+
+* `code/student1.py`:
+
+They return copy.deepcopy(self.classes)
+THe thing that's returned cannot come back and change internal state of the student object
+Often a good thing to do if you want to return a bunch of data from inside your class (Maintains strong encapsulation)
+
+
+```py
+import copy
+
+class Student:
+    def __init__(self, id):
+        self.id = id
+        self.classes = {}
+    def getId(self):
+        return self.id
+    def addClass(self, name, gradepoint):
+        self.classes[name] = gradepoint
+        sumgradepoints = float(sum(self.classes.values()))
+        self.gpa = sumgradepoints/len(self.classes)
+    def getGPA(self):
+        return self.gpa
+    def getClasses(self):
+        return copy.deepcopy(self.classes)
+
+s = Student(7)
+s.addClass("gym", 4)
+s.addClass("math", 3)
 
-    * `code/main.py`:
+print("s = {}".format(s))
 
-    ```py
-    import names
+# lots of print statements to get information
+print(s.getId())
+print(s.getClasses())
+print(s.getGPA())
+```
 
-    # Create an instance of the name classifier
-    classifier = names.NameClassifier('dist.female.first', 'dist.male.first')
+Output:
 
-    # Setup test data
-    testdata = ['PETER', 'LOIS', 'STEWIE', 'BRIAN', 'MEG', 'CHRIS']
+```
+$ python student1.py
+s = <__main__.Student instance at 0x7f27f94acdd0>
+7
+{'gym': 4, 'math': 3}
+3.5
+$
+```
 
-    # Invoke the ClassifyName() method
-    for name in testdata:
-        print('{}: {}'.format(name, classifier.ClassifyName(name)))
-    ```
-
-    * Output:
-
-    ```
-    $ python main.py
-    PETER: 1.0
-    LOIS: 1.0
-    STEWIE: 0.5
-    BRIAN: 1.0
-    MEG: 1.0
-    CHRIS: 1.0
-    ```
-
-    ### Student example
-
-    Let's inspect a `Student` object:
-
-    * `code/student1.py`:
-
-    They return copy.deepcopy(self.classes)
-    THe thing that's returned cannot come back and change internal state of the student object
-    Often a good thing to do if you want to return a bunch of data from inside your class (Maintains strong encapsulation)
-
-
-    ```py
-    import copy
-
-    class Student:
-        def __init__(self, id):
-            self.id = id
-            self.classes = {}
-        def getId(self):
-            return self.id
-        def addClass(self, name, gradepoint):
-            self.classes[name] = gradepoint
-            sumgradepoints = float(sum(self.classes.values()))
-            self.gpa = sumgradepoints/len(self.classes)
-        def getGPA(self):
-            return self.gpa
-        def getClasses(self):
-            return copy.deepcopy(self.classes)
-
-    s = Student(7)
-    s.addClass("gym", 4)
-    s.addClass("math", 3)
+### Operator overloading
 
-    print("s = {}".format(s))
+* Your user defined objects can be made to work with the Python built-in
+operators
 
-    # lots of print statements to get information
-    print(s.getId())
-    print(s.getClasses())
-    print(s.getGPA())
-    ```
+* Why would you want to do that?
 
-    Output:
+### String representation method
 
-    ```
-    $ python student1.py
-    s = <__main__.Student instance at 0x7f27f94acdd0>
-    7
-    {'gym': 4, 'math': 3}
-    3.5
-    $
-    ```
+* `code/student2.py`:
 
-    ### Operator overloading
+all same except we added a "repr" method. this returns String representation of the method
+before, when we did print(s), we got instance of memory, but now it prints out a nice thing
 
-    * Your user defined objects can be made to work with the Python built-in
-    operators
+We've overloaded some default python funcitonality
 
-    * Why would you want to do that?
+```py
+import copy
 
-    ### String representation method
+class Student:
+    def __init__(self, id):
+        self.id = id
+        self.classes = {}
+    def getId(self):
+        return self.id
+    def addClass(self, name, gradepoint):
+        self.classes[name] = gradepoint
+        sumgradepoints = float(sum(self.classes.values()))
+        self.gpa = sumgradepoints/len(self.classes)
+    def getGPA(self):
+        return self.gpa
+    def getClasses(self):
+        return copy.deepcopy(self.classes)
+    def __repr__(self):
+        string = "Student %d: " % self.getId()
+        string += " %s, " % self.getClasses()
+        string += "GPA = %4.2f" % self.getGPA()
+        return string
+
+s = Student(7)
+s.addClass("gym", 4)
+s.addClass("math", 3)
+
+# now easy to print a student
+print(s)
+```
+
+Output:
+
+```
+$ python student2.py
+Student 7: {'gym': 4, 'math': 3}, GPA = 3.50
+$
+```
+
+### Methods you can override
+
+```
+| method               | operation                  |
+|----------------------+----------------------------|
+| __len__(self)        | Returns the length of self |
+| __add__(self, other) | Returns self + other       |
+| __mul__(self, other) | Returns self * other       |
+| __neg__(self)        | Returns -sefl              |
+| __abs__(self)        | Returns abs(self)          |
+| __float__(self)      | Returns float(self)        |
+```
 
-    * `code/student2.py`:
+Over 50+ methods in total
 
-    all same except we added a "repr" method. this returns String representation of the method
-    before, when we did print(s), we got instance of memory, but now it prints out a nice thing
+### What is OOP?
 
-    We've overloaded some default python funcitonality
+* Some will argue that putting your data in an object, and adding a bunch of put
+/ get methods to interface with it, is just a glorified container and interface
 
-    ```py
-    import copy
 
-    class Student:
-        def __init__(self, id):
-            self.id = id
-            self.classes = {}
-        def getId(self):
-            return self.id
-        def addClass(self, name, gradepoint):
-            self.classes[name] = gradepoint
-            sumgradepoints = float(sum(self.classes.values()))
-            self.gpa = sumgradepoints/len(self.classes)
-        def getGPA(self):
-            return self.gpa
-        def getClasses(self):
-            return copy.deepcopy(self.classes)
-        def __repr__(self):
-            string = "Student %d: " % self.getId()
-            string += " %s, " % self.getClasses()
-            string += "GPA = %4.2f" % self.getGPA()
-            return string
-
-    s = Student(7)
-    s.addClass("gym", 4)
-    s.addClass("math", 3)
-
-    # now easy to print a student
-    print(s)
-    ```
-
-    Output:
-
-    ```
-    $ python student2.py
-    Student 7: {'gym': 4, 'math': 3}, GPA = 3.50
-    $
-    ```
-
-    ### Methods you can override
-
-    ```
-    | method               | operation                  |
-    |----------------------+----------------------------|
-    | __len__(self)        | Returns the length of self |
-    | __add__(self, other) | Returns self + other       |
-    | __mul__(self, other) | Returns self * other       |
-    | __neg__(self)        | Returns -sefl              |
-    | __abs__(self)        | Returns abs(self)          |
-    | __float__(self)      | Returns float(self)        |
-    ```
+* Real power of OOP might be in allowing objects to interact with each other by
+overriding appropriate methods
 
-    Over 50+ methods in total
 
-    ### What is OOP?
+### Particle collision
+
+![fig/particle-collision.png](lecture-09/fig/particle-collision.png)
 
-    * Some will argue that putting your data in an object, and adding a bunch of put
-    / get methods to interface with it, is just a glorified container and interface
+### OOP design
+
+```
+p_blue = Particle(...)
+p_red = Particle(...)
+
+...
+
+p_purple = p_blue + p_red
+```
 
+### Particle class
+"self" is the left hand side and "other" is the RHS
+`code/particle.py`:
 
-    * Real power of OOP might be in allowing objects to interact with each other by
-    overriding appropriate methods
+```py
+class Particle:
+    def __init__(self, mass, velx):
+        self.mass = mass
+        self.velx = velx
+    def __add__(self, other):
+        # inelastic collision (momentum is conserved)
+        mass = self.mass + other.mass
+        velx = (self.mass*self.velx + other.mass*other.velx)/mass
+        return Particle(mass, velx)
+    def __repr__(self):
+        return "Mass: %s, Velocity: %s" % (self.mass, self.velx)
+```
+
+### OOP particle collision
+
+```
+$ python -i particle.py
+>>> p_blue = Particle(4.3, 2.5)
+>>> p_red = Particle(1.4, -0.8)
+>>> p_purple = p_blue + p_red
+>>> p_purple
+Mass: 5.7, Velocity: 1.68947368421
+>>>
+```
 
-
-    ### Particle collision
-
-    ![fig/particle-collision.png](lecture-09/fig/particle-collision.png)
-
-    ### OOP design
-
-    ```
-    p_blue = Particle(...)
-    p_red = Particle(...)
-
-    ...
-
-    p_purple = p_blue + p_red
-    ```
+### Overloading should be intuitive
+
+`code/badoverloading.py`:
 
-    ### Particle class
-    "self" is the left hand side and "other" is the RHS
-    `code/particle.py`:
+```py
+class User:
+    def __init__(self, id):
+        self.id = id
+    def __len__(self):
+        return self.getId()
+    def getId(self):
+        return self.id
+```
+
+Output:
+
+```
+$ python -i badoverloading.py
+>>> user = User(7)
+>>> len(user)
+7
+>>>
+```
+
+Is this intuitive?
+No, you shouldn't overload this one- it doesn't make sense for the user to have a length. Operator should make sense
+### Inheritance
+
+* Inheritance is a way for a class to inherit attributes from another class
+
+* This is a form of code reuse
 
-    ```py
-    class Particle:
-        def __init__(self, mass, velx):
-            self.mass = mass
-            self.velx = velx
-        def __add__(self, other):
-            # inelastic collision (momentum is conserved)
-            mass = self.mass + other.mass
-            velx = (self.mass*self.velx + other.mass*other.velx)/mass
-            return Particle(mass, velx)
-        def __repr__(self):
-            return "Mass: %s, Velocity: %s" % (self.mass, self.velx)
-    ```
-
-    ### OOP particle collision
-
-    ```
-    $ python -i particle.py
-    >>> p_blue = Particle(4.3, 2.5)
-    >>> p_red = Particle(1.4, -0.8)
-    >>> p_purple = p_blue + p_red
-    >>> p_purple
-    Mass: 5.7, Velocity: 1.68947368421
-    >>>
-    ```
-
-    ### Overloading should be intuitive
-
-    `code/badoverloading.py`:
-
-    ```py
-    class User:
-        def __init__(self, id):
-            self.id = id
-        def __len__(self):
-            return self.getId()
-        def getId(self):
-            return self.id
-    ```
-
-    Output:
-
-    ```
-    $ python -i badoverloading.py
-    >>> user = User(7)
-    >>> len(user)
-    7
-    >>>
-    ```
-
-    Is this intuitive?
-    No, you shouldn't overload this one- it doesn't make sense for the user to have a length. Operator should make sense
-    ### Inheritance
-
-    * Inheritance is a way for a class to inherit attributes from another class
-
-    * This is a form of code reuse
-
-    * The original class is called a base class, or a superclass, or a parent class
+* The original class is called a base class, or a superclass, or a parent class
 
-    * The new class is called a derived class, or a subclass, or a child class
+* The new class is called a derived class, or a subclass, or a child class
 
-    * The new class will typically redefine or add new attributes
+* The new class will typically redefine or add new attributes
 
-    ### Inheritance example
+### Inheritance example
 
-    `code/inheritance1.py`:
+`code/inheritance1.py`:
 
-    ```py
-    # parent class
-    class User:
-        def __init__(self, id):
-            self.id = id
-        def getId(self):
-            return self.id
+```py
+# parent class
+class User:
+    def __init__(self, id):
+        self.id = id
+    def getId(self):
+        return self.id
 
-    # child class
-    class MovieWatcher(User):
-        pass
-    ```
-    moviewatcher inherits from user class ...(User) means we are inheriting all attributes of User
-    Output:
+# child class
+class MovieWatcher(User):
+    pass
+```
+moviewatcher inherits from user class ...(User) means we are inheriting all attributes of User
+Output:
 
-    ```
-    $ python -i inheritance1.py
-    >>> user = MovieWatcher(3)
-    >>> user.getId()
-    3
-    >>>
-    ```
-
-    ### Overriding a method
-
-    `code/inheritance2.py`:
-
-    In this case, the moviewatcher has additional info. need to call initialization from parent class (use name of parent class and . method)
-
-    ```py
-    class User:
-        def __init__(self, id):
-            self.id = id
-        def getId(self):
-            return self.id
+```
+$ python -i inheritance1.py
+>>> user = MovieWatcher(3)
+>>> user.getId()
+3
+>>>
+```
+
+### Overriding a method
 
-    class MovieWatcher(User):
-        def __init__(self, id):
-            # Call the parent class initialization
-            User.__init__(self, id)
-            # MovieWatcher specific initialization
-            self.avgmovieranking = -1.
-            self.movies = {}
-    ```
-
-    ![fig](lecture-09/fig/uml-1.png)
+`code/inheritance2.py`:
+
+In this case, the moviewatcher has additional info. need to call initialization from parent class (use name of parent class and . method)
 
-    ### Sibling classes
+```py
+class User:
+    def __init__(self, id):
+        self.id = id
+    def getId(self):
+        return self.id
 
-    `code/inheritance3.py`:
+class MovieWatcher(User):
+    def __init__(self, id):
+        # Call the parent class initialization
+        User.__init__(self, id)
+        # MovieWatcher specific initialization
+        self.avgmovieranking = -1.
+        self.movies = {}
+```
 
-    both cookieeater and moviewatcher has inherited from user
+![fig](lecture-09/fig/uml-1.png)
 
-    ```py
-    class User:
-        def __init__(self, id):
-            self.id = id
-        def getId(self):
-            return self.id
+### Sibling classes
 
-    class MovieWatcher(User):
-        def __init__(self, id):
-            # Call the parent class initialization
-            User.__init__(self, id)
-            # MovieWatcher specific initialization
-            self.avgmovieranking = -1.
-            self.movies = {}
+`code/inheritance3.py`:
 
-    class CookieEater(User):
-        def __init__(self, id):
-            # Call the parent class initialization
-            User.__init__(self, id)
-            # CookieEater specific initialization
-            self.cookieseaten = 0
-            self.cookies = {}
-    ```
+both cookieeater and moviewatcher has inherited from user
 
-    ![fig](lecture-09/fig/uml-2.png)
+```py
+class User:
+    def __init__(self, id):
+        self.id = id
+    def getId(self):
+        return self.id
 
-    ### Polymorphism
+class MovieWatcher(User):
+    def __init__(self, id):
+        # Call the parent class initialization
+        User.__init__(self, id)
+        # MovieWatcher specific initialization
+        self.avgmovieranking = -1.
+        self.movies = {}
 
-    * Different types of objects have methods with the same name that take the same
-    arguments
+class CookieEater(User):
+    def __init__(self, id):
+        # Call the parent class initialization
+        User.__init__(self, id)
+        # CookieEater specific initialization
+        self.cookieseaten = 0
+        self.cookies = {}
+```
 
-    * Programmer does not need to know the exact type of an object for common
-    operations
+![fig](lecture-09/fig/uml-2.png)
 
-    * Typically the objects inherit from the same parent class
+### Polymorphism
 
-    ### Shapes
+* Different types of objects have methods with the same name that take the same
+arguments
 
-    `code/shapes.py`:
+* Programmer does not need to know the exact type of an object for common
+operations
 
-    Better implementation is if Shape knows it's posisition, then Circle and Rectangle inherits it
+* Typically the objects inherit from the same parent class
 
-    ```py
-    import math
+### Shapes
 
-    class Shape:
-        def GetArea(self):
-            raise RuntimeError, "Not implemented yet"
+`code/shapes.py`:
 
-    class Circle(Shape):
-        def __init__ (self, x, y, radius):
-            self.x = x
-            self.y = y
-            self.radius = radius
+Better implementation is if Shape knows it's posisition, then Circle and Rectangle inherits it
 
-        def GetArea(self):
-            area = math.pi * math.pow(self.radius, 2)
-            return area
+```py
+import math
 
-    class Rectangle(Shape):
-        def __init__ (self, x0, y0, x1, y1):
-            self.x0 = x0
-            self.y0 = y0
-            self.x1 = x1
-            self.y1 = y1
+class Shape:
+    def GetArea(self):
+        raise RuntimeError, "Not implemented yet"
 
-        def GetArea(self):
-            xDistance = self.x1 - self.x0
-            yDistance = self.y1 - self.y0
-            return abs(xDistance * yDistance)
+class Circle(Shape):
+    def __init__ (self, x, y, radius):
+        self.x = x
+        self.y = y
+        self.radius = radius
 
-    shapes = []
-    shapes.append(Circle(0., 0., 1.0))
-    shapes.append(Rectangle(0., 0., 2., 4.))
+    def GetArea(self):
+        area = math.pi * math.pow(self.radius, 2)
+        return area
 
-    for shape in shapes:
-        print("area = {}".format(shape.GetArea()))
-    ```
+class Rectangle(Shape):
+    def __init__ (self, x0, y0, x1, y1):
+        self.x0 = x0
+        self.y0 = y0
+        self.x1 = x1
+        self.y1 = y1
 
-    Output:
+    def GetArea(self):
+        xDistance = self.x1 - self.x0
+        yDistance = self.y1 - self.y0
+        return abs(xDistance * yDistance)
 
-    ```
-    $ python shapes.py
-    area = 3.14159265359
-    area = 8.0
-    $
-    ```
+shapes = []
+shapes.append(Circle(0., 0., 1.0))
+shapes.append(Rectangle(0., 0., 2., 4.))
 
-    ![fig](lecture-09/fig/uml-3.png)
+for shape in shapes:
+    print("area = {}".format(shape.GetArea()))
+```
 
-    ### OOP Summary
+Output:
 
-    * Abstraction
+```
+$ python shapes.py
+area = 3.14159265359
+area = 8.0
+$
+```
 
-    * Represent things in a form familiar to humans
+![fig](lecture-09/fig/uml-3.png)
 
-    * Encapsulation
+### OOP Summary
 
-    * Restrict access to internal data by providing interfaces
+* Abstraction
 
-    * Inheritance
+* Represent things in a form familiar to humans
 
-    * Parent / child classes for code reuse
+* Encapsulation
 
-    * Polymorphism
+* Restrict access to internal data by providing interfaces
 
-    * Share method names and arguments across (sibling) classes
+* Inheritance
+
+* Parent / child classes for code reuse
+
+* Polymorphism
+
+* Share method names and arguments across (sibling) classes
 # CME 211: Lecture 10
 
-    Monday, October 12, 2015
+Monday, October 12, 2015
 
-    * Open book
-    * Open note
-    * Open computer (restricted internet use)
-        * you may use Python iterpreter
-        * use computer to access notes at
-         <https://github.com/nwh/cme211-notes>
-        * use computer to access Learning Python book
-        * use computer to access Python documentation @ python.org
-        * use computer to access reference sheet
-          <http://www.astro.up.pt/~sousasag/Python_For_Astronomers/Python_qr.pdf>
-        * You may not use Google or any other search method to try and find answers
+## Quiz 1 Prep
 
-    Topics:
+* Open book
+* Open note
+* Open computer (restricted internet use)
+    * you may use Python iterpreter
+    * use computer to access notes at
+     <https://github.com/nwh/cme211-notes>
+    * use computer to access Learning Python book
+    * use computer to access Python documentation @ python.org
+    * use computer to access reference sheet
+      <http://www.astro.up.pt/~sousasag/Python_For_Astronomers/Python_qr.pdf>
+    * You may not use Google or any other search method to try and find answers
 
-    * Understanding of low level and high level programming languages
-    * Use cases for fundamental data types: integers, floating point numbers,
-      strings
-    * basic Python syntax: loops, conditionals, functions, variables
-    * built-in Python containers: lists, dictionaries, sets
-    * fundamentals of python's data model
-    * Python OOP: defining classes, data attributes, methods
-    * Basics of complexity analysis (as covered in lecture)
+Topics:
 
-    Won't quiz on exceptions
-    No details on modules
+* Understanding of low level and high level programming languages
+* Use cases for fundamental data types: integers, floating point numbers,
+  strings
+* basic Python syntax: loops, conditionals, functions, variables
+* built-in Python containers: lists, dictionaries, sets
+* fundamentals of python's data model
+* Python OOP: defining classes, data attributes, methods
+* Basics of complexity analysis (as covered in lecture)
 
-    Book chapters:
+Won't quiz on exceptions
+No details on modules
 
-    * Chapter 5: Numeric Types
-    * Chapter 6: The Dynamic Typing Interlude (i.e. references and objects)
-    * Chapter 7: String Fundamentals
-    * Chapter 8: Lists and Dictionaries
-    * Chapter 9: Tuples, Files, and Everything Else
-    * Chapter 11: Assignments, Expressions, and Prints
-    * Chapter 12: if Tests and Syntax Rules
-    * Chapter 13: while and for Loops
-    * Chapter 16: Function Basics
-    * Chapter 17: Scopes
-    * Chapter 18: Arguments
-    * Chapter 26: OOP: The Big Picture
-    * Chapter 27: Class Coding Basics
+Book chapters:
 
-    Notes:
-    * If you want `sqrt()`, remember to `import math` and use `math.sqrt()`.  Other than that, we won't test on module stuff.
-    * We won't test on python exceptions
-    * We won't test on Numpy, Scipy, or matplotlib (which we cover this week)
+* Chapter 5: Numeric Types
+* Chapter 6: The Dynamic Typing Interlude (i.e. references and objects)
+* Chapter 7: String Fundamentals
+* Chapter 8: Lists and Dictionaries
+* Chapter 9: Tuples, Files, and Everything Else
+* Chapter 11: Assignments, Expressions, and Prints
+* Chapter 12: if Tests and Syntax Rules
+* Chapter 13: while and for Loops
+* Chapter 16: Function Basics
+* Chapter 17: Scopes
+* Chapter 18: Arguments
+* Chapter 26: OOP: The Big Picture
+* Chapter 27: Class Coding Basics
+
+Notes:
+
+* If you want `sqrt()`, remember to `import math` and use `math.sqrt()`.  Other
+  than that, we won't test on module stuff.
+* We won't test on python exceptions
+* We won't test on Numpy, Scipy, or matplotlib (which we cover this week)
