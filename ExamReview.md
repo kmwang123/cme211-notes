@@ -4883,11 +4883,11 @@ s = Student(7)
 print(s)
 id = s.getId()
 print("id = {}".format(id))
-id = 9
+id = 9 #changing this from 7 to 9 doesn't change the id.
+#We have not allowed a user to muck around with the internals of the class
 print("id = {}".format(id))
 print("s.getId() = {}".format(s.getId()))
 ```
-No, changing the id=9 below doesn't change the id. We have not allowed a user to muck around with the internals of the class
 Output:
 
 ```
@@ -4922,6 +4922,9 @@ class Student:
         return self.id
     def addClass(self, name, gradepoint):
         self.classes[name] = gradepoint
+        #print self.classes.values() to see what it returns
+        #ah, returns the values of the dictionary
+        print('this is class values: {}'.format(self.classes.values()))
         sumgradepoints = float(sum(self.classes.values()))
         self.gpa = sumgradepoints/len(self.classes)
     def getGPA(self):
@@ -4937,6 +4940,8 @@ Output:
 
 ```
 $ python student5.py
+this is class values: [4]
+this is class values: [4, 3]
 GPA = 3.5
 $
 ```
@@ -5003,7 +5008,7 @@ s.addClass("gym", 4)
 s.addClass("math", 3)
 
 classes = s.getClasses()
-classes["englist"] = 4
+classes["english"] = 4
 
 print("GPA = {}".format(s.getGPA()))
 print("classes = {}".format(s.getClasses()))
@@ -5013,11 +5018,12 @@ Output:
 
 ```
 $ python student7.py
-GPA = 3.5
-classes = {'gym': 4, 'englist': 4, 'math': 3}
+GPA = 3.5  #this is the wrong gpa since we added 'english'
+classes = {'gym': 4, 'english': 4, 'math': 3}
 $
 ```
-Iterface leaks out mutable states (dictionary) and now they are out of sync
+Iterface leaks out mutable states (dictionary) and *now they are out of sync*
+
 ### Interfaces and references
 
 * It is easy to accidentally let a method provide a reference to a mutable data
@@ -5151,6 +5157,8 @@ The "private" attribute is still accessible by prefixing it with `_<class name>`
 
 Python is dynamic, which is great.  But you should not do this:
 
+***Again, don't add attributes after an object has been created***
+
 ```
 $ python
 Python 2.7.4 (default, Sep 26 2013, 03:20:26)
@@ -5266,9 +5274,8 @@ Let's inspect a `Student` object:
 
 * `code/student1.py`:
 
-They return copy.deepcopy(self.classes)
-THe thing that's returned cannot come back and change internal state of the student object
-Often a good thing to do if you want to return a bunch of data from inside your class (Maintains strong encapsulation)
+Notes: It returns copy.deepcopy(self.classes), so the thing that's returned cannot come back and change internal state of the student object since it's a deep copy of it.
+  -This is often a good thing to do if you want to return a bunch of data from inside your class (Maintains strong encapsulation)
 
 
 ```py
