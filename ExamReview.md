@@ -2709,7 +2709,7 @@ Sorting 16000000 values took 11.9 seconds.
 
 ## Problems with empirical
 
-Empirical performance testing is an important endeavor.  It is an apect of
+Empirical performance testing is an important endeavor.  It is an aspect of
 "profiling" your code to see what parts take longer.  Empirical performance
 testing has some drawbacks, namely:
 
@@ -2748,12 +2748,8 @@ testing has some drawbacks, namely:
 
 ## Visualization
 
-<<<<<<< HEAD:lecture-5.md
 ![order chart](lecture-05/fig/order-chart.png)
 O(1) run time is independent of input size. For the algorithm, O(n^2) is the worst. As you go up on the chart, complexity of algorithm is greater.
-=======
-![order chart](lecture-05/fig/order-chart.png)
->>>>>>> upstream/master:lecture-05/lecture-05.md
 
 ## Big O notation
 
@@ -3240,7 +3236,7 @@ Good documentation on Python for time complexities of different operations.
 
 ## Documentation
 
-![time complexity](lecture05/fig/time-complexity.png)
+![time complexity](lecture-05/fig/time-complexity.png)
 
 <https://wiki.python.org/moin/TimeComplexity>
 
@@ -3250,11 +3246,11 @@ Good documentation on Python for time complexities of different operations.
 
 ### Set operations
 
-![set](lecture05/fig/set.png)
+![set](lecture-05/fig/set.png)
 
 ## Dictionary operations
 
-![dict](lecture05/fig/dict.png)
+![dict](lecture-05/fig/dict.png)
 
 ## Space complexity
 
