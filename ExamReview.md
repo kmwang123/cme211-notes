@@ -5570,7 +5570,7 @@ class CookieEater(User):
 ### Polymorphism
 Meaning of operation depends on objects being operated on
 - ex. `4 * 5` means multiplication but `'string'* 5` means repetition
-*polymorphic* means function works on arbitrary types, as long as they support the expected object interface
+- *polymorphic* means function works on arbitrary types, as long as they support the expected object interface
 
 * Different types of objects have methods with the same name that take the same
 arguments
@@ -5584,7 +5584,7 @@ operations
 
 `code/shapes.py`:
 
-Better implementation is if Shape knows it's posisition, then Circle and Rectangle inherits it
+Better implementation is if Shape knows it's position, then Circle and Rectangle inherits it
 
 ```py
 import math
