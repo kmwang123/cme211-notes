@@ -3205,7 +3205,7 @@ Let's compare Python's list and set objects for a few operations:
 
 Create a file `loadnames.py`
 
-```
+```py
 names_list = []
 names_set = set([])
 f = open('dist.female.first')
@@ -3584,14 +3584,6 @@ Topics:
 
 * Python exceptions
 
-## Announcements
-
-* CUDA on Campus Day
-<http://icme.stanford.edu/events/nvidia-tech-talks-and-hands-labs>
-
-* Get your GitHub accounts!  You need this to submit assignments from here on.
-  We will not process last minute requests.
-
 ## Python object model
 
 Let's review and elaborate on Python's object model.  Key things to always keep
@@ -3706,14 +3698,12 @@ Integers are objects also and need to be created in memory:
 True
 >>> a = 1024
 >>> b = 1024
->>> a is b <- pointing to two diff integer objects
-that happen to have the same value
+>>> a is b  #pointing to two diff integer objects that happen to have the same value
 False
 >>> a = 16
 >>> b = 16
 >>> a is b
-True
-small integers are handled differently in python (see preallocated integers)
+True #small integers are handled differently in python (see preallocated integers)
 >>>
 ```
 
