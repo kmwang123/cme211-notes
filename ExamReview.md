@@ -2759,7 +2759,7 @@ O(1) run time is independent of input size. For the algorithm, O(n^2) is the wor
 * Excludes coefficients and lower order terms
 
 ```
-2n^22 + 64n -> O(n^2)
+2n^2 + 64n -> O(n^2)
 ```
 Take highest order and ignore constants (asymptotic behavior)
 * Often some simplifying assumptions will need to be made about the nature of
@@ -3131,7 +3131,8 @@ Is keeping that sublist sorted necessary?
 Question:
 
 * For what m is it better just to sort the list?
-That would be a nlog(n) operation -> think about this
+  - Sorting list is a nlog(n) operation and sorting m largest values in an unordered list is a nmlog(m) operation
+  - It would be when nmlog(m) >= nlog(n) --> or when m >= log(n-m), you might as well sort the whole list n
 
 ## Finding sub-strings
 
