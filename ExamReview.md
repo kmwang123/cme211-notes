@@ -361,20 +361,6 @@ the area of a circle of radius 1 is 6.28318530718.
 4
 >>>
 ```
-## `for` loop 	
-
-* `range()` generates a sequence of integers
-
-```py
->>> range(6)
-[0, 1, 2, 3, 4, 5]
->>>
-```
-* The `for i in <sequence>:` can be interpreted as doing the following:
-    * assign the loop counter, `n`, the first value in `<sequence>`
-    * execute the body of the loop
-    * assign the loop counter variable the next value in the sequence and repeat
-
 ## `range()`
 
 `range()` returns a sequence of integers and can be used in a few different
@@ -388,7 +374,107 @@ ways:
 >>> range(4,16,3)
 [4, 7, 10, 13]
 ```
+## `for` loop 	
+* The `for i in <sequence>:` can be interpreted as doing the following:
+    * assign the loop counter, `n`, the first value in `<sequence>`
+    * execute the body of the loop
+    * assign the loop counter variable the next value in the sequence and repeat
+```py
+for <target> in <sequence>:
+    #statements
+else:
+    #statements
+```
+* can also iterate over strings and tuples:
+```py
+#string
+>>> S='hello'
+>>> for x in S: print(x)
+...
+h
+e
+l
+l
+o
+#tuple
+>>> T=('Ka','May','Wang')
+>>> for i in T:
+...   print(i)
+...
+Ka
+May
+Wang
+```
+* can assign two values to loop over (like looking for key,values in dict):
+```py
+#list
+>>> T=[(1,2),(3,4),(5,6)]
+>>> for (a,b) in T:
+...    print(a,b)
+...
+(1, 2)
+(3, 4)
+(5, 6)
+#dictionary
+>>> D={'a':1,'b':2,'c':3}
+>>> D.items()
+[('a', 1), ('c', 3), ('b', 2)]
+>>> for (key,value) in D.items():
+...    print(key,'=>',value)
+...
+('a', '=>', 1)
+('c', '=>', 3)
+('b', '=>', 2)
+```
+* Nested `for` loop:
+```py
+>>> L1=[1,2,3,4]
+>>> L2=[3,4,5,6]
+#Method 1:
+>>> for items in L1:
+...     for stuff in L2:
+...        if stuff == items:
+...           print('matched!')
+...           break
+...     else:
+...        print(items,'not found!')
+...
+(1, 'not found!')
+(2, 'not found!')
+matched!
+matched!
+#Method 2:
+>>> for items in L1:
+...    if items in L2: #make use of the in method, which searches through the list
+...       print('matched!')
+...    else:
+...       print(items,'not found!')
+...
+(1, 'not found!')
+(2, 'not found!')
+matched!
+matched!
+```
+* traveling with `for` loops in parallel: using the zip() or map() function:
+```py
+>>> L1=[1,2,3,4]
+>>> L2=[5,6,7,8]
+>>> zip(L1,L2)
+[(1, 5), (2, 6), (3, 7), (4, 8)]
+>>> for (x,y) in zip(L1,L2):
+...    print(x,y)
+...
+(1, 5)
+(2, 6)
+(3, 7)
+(4, 8)
+#Map assigns none
+>>> L1=[1,2,3,4]
+>>> L2=[5,6,7,8,9]
+>>> map(None,L1,L2)
+[(1, 5), (2, 6), (3, 7), (4, 8), (None, 9)]
 
+```
 ## Summing numbers
 
 ```py
@@ -416,7 +502,16 @@ if summation != 100*(100+1)/2:
     print("Sorry, wrong answer!")
 else:
     print "Congratulations!"
+
 ```
+Two ways to do this:
+```py
+if X:
+  A = Y
+else:
+  A = Z
+###OR###
+A = Y if X else Z
 
 ## Boolean logic 	
 
@@ -448,17 +543,37 @@ True
 ## Boolean logic and strings 	
 
 ```py
+#if there is a message, print
 >>> msg = "Hello!"
 >>> if msg:
 ...     print("Evaluated True")
 ...
 Evaluated True
+#if there is a message, print
 >>> msg = ""
 >>> if msg:
 ...     print("Evaluated True")
 ...
 >>>
+#evaluates left to right and returns first True object
+#note: both 2 and 3 are True since they are nonzero
+>>> 2 or 3
+2
+>>> 3 or 2
+3
+>>> [] or 3 #[] empty list is false, so returns 3
+3
+>>> [] or {} #because [] is false, returns {}
+{}
+#evalues left to right and returns last True object
+>>> 2 and 3
+3
+>>> [] and {} #because [] is false, returns []
+[]
+>>> 3 and [] #[] empty list is false, so returns []
+[]
 ```
+
 
 ## else if: `elif`
 
@@ -482,6 +597,8 @@ else:
 ```py
 while condition:
     # loop body
+else:  #optional else
+   #statements run if didn't exit loop with break
 ```
 
 ## Bisection
@@ -564,11 +681,17 @@ Use `ctrl-c` to interrupt the interpreter!
 0 1 2 3 4 5
 >>>
 ```
+## `pass`
+Does nothing at all: it's an empty statement placeholder
+```py
+def func1():
+  pass #add real code here Later
+  ```
 
 ## `continue`
 
 The continue statement allows you to skip the remainder of a loop body and
-continue with the next iteration:
+continue with the next iteration. Jumps to top of loop's header line:
 ```py
 >>> for n in range(10):
 ...   if n>3:
@@ -579,6 +702,18 @@ continue with the next iteration:
 1
 2
 3
+
+#printing even numbers
+>>> while x:
+...   x=x-1
+...   if x%2 != 0: continue
+...   print(x)
+...
+8
+6
+4
+2
+0
 ```
 ## `break`
 
@@ -615,6 +750,15 @@ Output:
 ```
 i = 0
 i = 1
+```
+If break was in the innermost k loop, output:
+```
+i=0
+j=0
+j=1
+i=1
+j=0
+j=1
 ```
 
 ## Loop `else`
@@ -663,6 +807,12 @@ Output:
 3
 4
 ```
+## Line Continuation
+- Open syntatic pair (like () or {} or [])
+- add a backslash at end
+- triple quotes
+- Use ; for compound statements
+
 # CME 211 Lecture 3: Lists, file input and output
 
 Friday, September 25, 2015
@@ -3140,526 +3290,160 @@ application made up of multiple algorithms
 
 # CME 211: Lecture 6
 
-    Friday, October 2, 2015
-
-
-    ## Announcements
-
-    * CUDA on Campus Day
-    <http://icme.stanford.edu/events/nvidia-tech-talks-and-hands-labs>
-
-    * Homework 1 was due today at 2:30pm
-    afs/ir/class/cme211/drop to see if submitted
-
-    * Homework 2 is out today, due next Friday @ 2:30pm
-    use github to submit homework from now on
-
-    ## Version control with `git`
-
-    In CME 211 and CME 212 we will be using Git for version control and homework
-    submission.  This is an important practice with a good and widely used tool.
-
-    ### Version control
-
-    Today version control systems (like `git`) formally enable the following:
-
-    * periodic saving of work (called *committing*)
-
-    * returning to old versions when a problem is introduced
-
-    * creation of experimental code *branches* with out disturbing the main or
-      working code
-
-    * *merging* of concurrent work of independent developers
-
-    * *remote* backup and storage of work
-
-    * tracking a *log* of project history
-
-    * and more
-
-    The importance and utility of version control systems really only become clear
-    when you experience the frustration (or fear) when dealing with large software
-    projects.  They are useful even when working alone on a project.  It is
-    important to make periodic commits and then return to one if a breaking change
-    is introduced into the code.  Version control systems are absolutely essential
-    when working on a project involving more than one developer.  Merging changes
-    from two developers into a single codebase by hand is difficult, time consuming,
-    and error prone.
-
-    There are many tools currently in use for version control.  Here are some of the
-    names:
-
-    * **CVS**: Concurrent Versioning System
-    * **SVN**: Subversion
-    * **HG**: Mercurial
-    * **Git**
-
-    All of these tools share commonality.  If you learn one, you will be able to
-    apply that knowledge to other tools.  Today, Git is very popular with open
-    source projects.
-
-    **Note:** version control software is a tool.  Like all powerful tools, it must
-      be learned and used properly.  In CME 211 we will learn the very basics of
-      Git.
-
-    ### `git`
-
-    Git is one of the most widely used version control systems in both industry,
-    academia, and elsewhere. It was created in 2005 by Linus Torvalds (the same guy
-    who started and continues to develop the Linux kernel).  Before 2005, the Linux
-    kernel developers were using a proprietary version control system called
-    BitKeeper.  The owner of BitKeeper withheld free access to the software, so the
-    kernel developers needed to come up with something.  Linus wrote Git to meet the
-    demanding needs of the Linux kernel project.  The result of this is an excellent
-    tool for any project dealing with large amounts of text.
-
-    **Note:** If you are working on any large project, see if you can work on it in
-      a way where the primary thing you create is text.  Then your work can be put
-      in a version control system and effectively managed.  Version control is
-      reason enough to work in plain text.
-
-    In CME 211 we are going to learn the following aspects in Git:
-
-    * Creating new *repositories* (or *repo*) locally and on GitHub (see next section)
-
-    * Adding files to a repository
-
-    * *Committing* file changes to a repository
-
-    * Inspecting the history or *log* of a project
-
-    * Moving back to a previous *commit*
-
-    * *Pushing* to and *pulling* from a *remote* repository
-
-    Git is capable of so much more.  These basic use cases are sufficient for
-    CME 211.  You  will likely want to learn more for your own work.
-
-    ### GitHub
-
-    GitHub is a webservice that allows the storage, browsing, and updating of Git
-    repositories online.  There are other web services, like
-    [BitBucket](https://bitbucket.org/), that do the same thing.  GitHub is quite
-    popular with many open source projects.  I use it everyday.  Make sure to get
-    the academic discount so that you have have private repositories.
-
-    ### Git resources
-
-    * Git homepage: <http://git-scm.com/>
-
-    * Git documentation: <http://git-scm.com/doc>
-
-    * Git Book: <http://git-scm.com/book/en/v2>
-
-    Recommended reading: Git Book chapters 1 and 2
-
-    ### Tutorial introduction
-
-    These instructions are going to be rather sparse.  Please follow along in class
-    or visit office hours for more assistance.
-
-    #### Setting up `git`
-
-    First, we need to tell `git` who we are.  This information will show up in the
-    history log.
-
-    1. log into `corn.stanford.edu`
-
-    2. enter the following commands to introduce yourself to `git`
-
-    ```
-    $ git config --global user.name "Your name"
-    $ git config --global user.email your@email.com
-    ```
-
-    Please use the email address associated with your GitHub account.  For example,
-    I would do this:
-
-    ```
-    $ git config --global user.name "Nick Henderson"
-    $ git config --global user.email nwh@stanford.edu
-    ```
-
-    This creates a file `~/.gitconfig` with the following contents:
-
-    ```
-    $ cat ~/.gitconfig
-    [user]
-    	name = Nick Henderson
-    	email = nwh@stanford.edu
-    ```
-
-    The `~/.gitconfig` file holds a bunch of configuration settings for `git`.
-
-    #### Creating a local repo
-
-    Follow along with the following steps:
-
-    ```
-    nwh@corn25:~$ cd CME211
-    nwh@corn25:~/CME211$ ls
-    hw1  lec5  nwh-submit
-    nwh@corn25:~/CME211$ mkdir test-repo
-    nwh@corn25:~/CME211$ cd test-repo/
-    nwh@corn25:~/CME211/test-repo$ git init .
-    Initialized empty Git repository in /afs/ir.stanford.edu/users/n/w/nwh/CME211/test-repo/.git/
-    nwh@corn25:~/CME211/test-repo$
-    ```
-
-    "." is a reference to current directory
-    in the file, do ls -al. see that .git is a folder since it is drwxr
-    . means this directory
-    .. mean above one
-    don't modify anything in .git since that's how git maintains history
-    it's okay to move entire directory as long as .git subdirectory is there
-
-    #### Adding a file
-
-    Let's create a text file and add it to the repo:
-
-    ```
-    nwh@corn25:~/CME211/test-repo$ emacs awesome_code.py
-    nwh@corn25:~/CME211/test-repo$ cat awesome_code.py
-    print("oh my gosh, python is so cool")
-    nwh@corn25:~/CME211/test-repo$ python awesome_code.py
-    oh my gosh, python is so cool
-    nwh@corn25:~/CME211/test-repo$ git add awesome_code.py
-    nwh@corn25:~/CME211/test-repo$ git status
-    On branch master
-
-    Initial commit
-
-    Changes to be committed:
-      (use "git rm --cached <file>..." to unstage)
-
-    	new file:   awesome_code.py
-
-    nwh@corn25:~/CME211/test-repo$ git commit -m "initial commit of awesome code"
-    [master (root-commit) 57f0c86] initial commit of awesome code
-     1 file changed, 1 insertion(+)
-     create mode 100644 awesome_code.py
-    nwh@corn25:~/CME211/test-repo$
-    ```
-
-    #### Commiting a change to a file
-
-    Here we edit the code and commit the change into the repo.
-
-    ```
-    nwh@corn25:~/CME211/test-repo$ emacs awesome_code.py
-    nwh@corn25:~/CME211/test-repo$ cat awesome_code.py
-    print("oh my gosh, python is so cool")
-    print("but, now I have to learn git and I just want to go home")
-    nwh@corn25:~/CME211/test-repo$ git status
-    On branch master
-    Changes not staged for commit:
-      (use "git add <file>..." to update what will be committed)
-      (use "git checkout -- <file>..." to discard changes in working directory)
-
-    	modified:   awesome_code.py
-
-    no changes added to commit (use "git add" and/or "git commit -a")
-    nwh@corn25:~/CME211/test-repo$ git add awesome_code.py
-    nwh@corn25:~/CME211/test-repo$ git commit -m "update awesome code"
-    [master 7375d75] update awesome code
-     1 file changed, 1 insertion(+)
-    ```
-
-    Thus, two staging areas: add, then commit
-    using the git commit -m "blah blah" allows you to write a note to yourself
-    #### Viewing the log
-
-    The `$ git log` command allows us to look through the repo history:
-    (goes backwards in time)
-
-    ```
-    nwh@corn25:~/CME211/test-repo$ git log
-    commit 7375d755069b11e1d8799e8d4b3cc5e22aceeee4
-    Author: Nick Henderson <nwh@stanford.edu>
-    Date:   Fri Oct 2 12:00:02 2015 -0700
-
-        update awesome code
-
-    commit 57f0c86582ec5920f71d1382a0b4b25b08cfa65d
-    Author: Nick Henderson <nwh@stanford.edu>
-    Date:   Fri Oct 2 11:57:30 2015 -0700
-
-        initial commit of awesome code
-    nwh@corn25:~/CME211/test-repo$
-    ```
-
-    #### Going back in time
-
-    We can go back to a previous commit using the `git checkout` command:
-    get long string from the commit number (see above) and then checkout. Then use the git checkout master command to point to the most current/newest commit to head back. In the git convention, master is the most recent commit of the main branch of your code. "Working directory clean" means nothing in the working directory has been modified and everything has been put into the repository.
-
-
-    ```
-    nwh@corn25:~/CME211/test-repo$ git checkout 57f0c86582ec5920f71d1382a0b4b25b08cfa65d
-    Note: checking out '57f0c86582ec5920f71d1382a0b4b25b08cfa65d'.
-
-    You are in 'detached HEAD' state. You can look around, make experimental
-    changes and commit them, and you can discard any commits you make in this
-    state without impacting any branches by performing another checkout.
-
-    If you want to create a new branch to retain commits you create, you may
-    do so (now or later) by using -b with the checkout command again. Example:
-
-      git checkout -b new_branch_name
-
-    HEAD is now at 57f0c86... initial commit of awesome code
-    nwh@corn25:~/CME211/test-repo$ cat awesome_code.py
-    print("oh my gosh, python is so cool")
-    ```
-
-    The long string that follows `git commit` comes from the commit identifier in
-    the log.
-
-    When you need to go back to the most recent version use `$ git checkout master`:
-
-    ```
-    nwh@corn25:~/CME211/test-repo$ git status
-    HEAD detached at 57f0c86
-    nothing to commit, working directory clean
-    nwh@corn25:~/CME211/test-repo$ git checkout master
-    Previous HEAD position was 57f0c86... initial commit of awesome code
-    Switched to branch 'master'
-    nwh@corn25:~/CME211/test-repo$ git status
-    On branch master
-    nothing to commit, working directory clean
-    nwh@corn25:~/CME211/test-repo$
-    ```
-
-    `HEAD detached` sounds scary, but you can ignore it for now.
-
-    #### Creating a GitHub repo
-
-    Walk through a demo in class:
-
-    1. create a new repo in GitHub interface
-    2. clone to `corn.stanford.edu`
-
-    use the https clone url to get a local copy of the repo
-
-    #### Syncing with the remote repo
-
-    Push local changes to remote:
-
-    1. add file on `corn.stanford.edu`
-    2. commit locally
-    3. push to GitHub
-
-    Pull down remote changes
-
-    1. add a new file on GitHub
-    2. pull changes to `corn.stanford.edu`
-
-    to push the to the remote repository, use
-    "git push origin master"
-
-    or push my local origin to the master
-    you can also directly create files in github web interface, so you neet to sync up local
-    repository with the remote repo
-
-
-    ## Python functions
-
-    * Code we have seen so far has been executed in linear fashion from top to
-      bottom, sometimes repeating one or more lines in a loop body
-
-    * Functions allow us to:
-
-        * Replace duplicated code with one centralized implementation within a single
-          program
-
-        * Reuse code across different programs
-
-        * Easily use code developed by others
-
-        * Develop, test, debug code in isolation from other code
-
-    * Analogous to mathematical functions
-
-    Note: Python is pass by reference, not pass by copy, so there is little overhead cost to passing a variable as an argument to a function
-
-    ### Defining a function in Python
-
-
-
-    Let's start with an example:
-
-    if multiple input statements, replace "name" with "name, blah,blah"
-    you can pass functins since a function is an object
-
-    ```
-    >>> def PrintHello(name):
-    ...     print("Hello, {}".format(name))
-    ...
-    >>> PrintHello
-    <function PrintHello at 0x14d21b8> <-- the numbers and letters are the memory address
-    >>> PrintHello("CME 211 students")
-    Hello, CME 211 students
-    >>>
-    ```
-
-    Anatomy of a Python function:
-
-    ```py
-    def function_name(input_argument):
-        # function body
-        print("you guys rock")
-    ```
-
-    1. start with `def` keyword
-
-    2. give the function name
-
-    3. followed by comma separated list of input arguments, surrounded by
-       parentheses
-
-        * just use `()` for no inputs
-
-    4. followed by a colon `:`
-
-    5. followed by **indented** function body
-
-    ### Return a value
-
-    Use the `return` keyword to return object from a function:
-
-    ```py
-    >>> def summation(a, b):
-    ...     total = 0
-    ...     for n in range(a,b+1):
-    ...         total += n
-    ...     return total
-    ...
-    >>> c = summation(1, 100)
-    >>> c
-    5050
-    >>>
-    ```
-
-    ### Return multiple values
-
-    Separate multiple return values with a comma:
-    it returns a tuple. if assign the function output as a single variable, the variable will be a tuple. Just unpack it using a, b.
-
-
-    ```py
-    >>> def SummationAndProduct(a,b):
-    ...     total = 0
-    ...     prod = 1
-    ...     for n in range(a,b+1):
-    ...         total += n
-    ...         prod *= n
-    ...     return total, prod
-    ...
-    >>> a = SummationAndProduct(1,10)
-    >>> a
-    (55, 3628800)
-    >>> a, b = SummationAndProduct(1,10)
-    >>> a
-    55
-    >>> b
-    3628800
-    >>>
-    34
-    ```
-
-    The `return` keyword packs multiple outputs into a tuple.  You can use Python's
-    tuple unpacking to nicely get the return values in calling code.
-
-    ### Variable scope
-
-    Let's look at an example to start discussing variable scope:
-
-    ```py
-    >>> total = 42
-    >>> def summation(a, b):
-    ...     total = 0
-    ...     for n in range(a, b+1):
-    ...         total += n
-    ...     return total
-    ...
-    >>> a = summation(1, 100)
-    >>> a
-    5050
-    >>> total
-    42
-    >>> n
-    Traceback (most recent call last):
-    File "<stdin>", line 1, in <module>
-    NameError: name 'n' is not defined
-    >>>
-    ```
-
-    Function bodies have a local namespace.  In this example the `summation`
-    function does not see the variable `total` from the top level scope.
-    `summation` creates its own variable `total` which is different!  The top level
-    scope also cannot see variables used inside of `summation`.
-
-    Reference before assignment to a global scope variable will cause an error:
-
-    ```py
-    >>> total = 0
-    >>> def summation(a, b):
-    ...     for n in range(a, b+1):
-    ...         total += n
-    ...     return total
-    ...
-    >>> a = summation(1, 100)
-    Traceback (most recent call last):
-    File "<stdin>", line 1, in <module>
-    File "<stdin>", line 3, in summation
-    UnboundLocalError: local variable 'total' referenced before assignment
-    >>>
-    ```
-
-    ### Variable scope examples
-
-    It is possible to use a variable from a higher scope.  This is generally
-    considered bad practice:
-
-    ```py
-    >>> a = ['hi', 'bye']
-    >>> def func():
-    ...     print(a)
-    ...
-    >>> func()
-    ['hi', 'bye']
-    >>>
-    ```
-
-    Even worse practice is modifying a mutable object from a higher scope:
-
-    ```py
-    >>> a = ['hi', 'bye']
-    >>> def func():
-    ...     a.append('hello')
-    ...
-    >>> func()
-    >>> a
-    ['hi', 'bye', 'hello']
-    >>>
-    ```
-
-    Python will not let you redirect an identifier at a global scope.  Here the
-    function body has its own `a`:
-
-    ```py
-    >>> a = ['hi', 'bye']
-    >>> def func():
-    ...     a = 2
-    ...
-    >>> func()
-    >>> a
-    ['hi', 'bye']
-    >>>
-    ```
-
-    ### Accessing a global variable
+Friday, October 2, 2015
+### Git resources
+* Git homepage: <http://git-scm.com/>
+* Git documentation: <http://git-scm.com/doc>
+* Git Book: <http://git-scm.com/book/en/v2>
+Recommended reading: Git Book chapters 1 and 2
+
+## Python functions
+* Code we have seen so far has been executed in linear fashion from top to bottom, sometimes repeating one or more lines in a loop body
+
+* Functions allow us to:
+* Replace duplicated code with one centralized implementation within a single program
+* Reuse code across different programs
+* Easily use code developed by others
+* Develop, test, debug code in isolation from other code
+* Analogous to mathematical functions
+
+Note: Python is pass by reference, not pass by copy, so there is little overhead cost to passing a variable as an argument to a function
+
+### Defining a function in Python
+``` py
+>>> def PrintHello(name):
+...     print("Hello, {}".format(name))
+...
+>>> PrintHello
+<function PrintHello at 0x14d21b8> #the numbers and letters are the memory address
+>>> PrintHello("CME 211 students")
+Hello, CME 211 students
+>>>
+```
+Anatomy of a Python function:
+```py
+def function_name(input_argument):
+    # function body should be indented
+    print("you guys rock")
+```
+### Return a value
+Use the `return` keyword to return object from a function:
+
+```py
+>>> def summation(a, b):
+...     total = 0
+...     for n in range(a,b+1):
+...         total += n
+...     return total
+...
+>>> c = summation(1, 100)
+>>> c
+5050
+>>>
+```
+### Return multiple values
+```py
+>>> def SummationAndProduct(a,b):
+...     total = 0
+...     prod = 1
+...     for n in range(a,b+1):
+...         total += n
+...         prod *= n
+...     return total, prod  #return multiple values
+...
+>>> a = SummationAndProduct(1,10)
+>>> a
+(55, 3628800)             #if saved as a single variables, returned values will be a tuple
+>>> a, b = SummationAndProduct(1,10)
+>>> a
+55
+>>> b
+3628800
+>>>
+34
+```
+The `return` keyword packs multiple outputs into a tuple.  You can use Python's tuple unpacking to nicely get the return values in calling code.
+
+### Variable scope
+Let's look at an example to start discussing variable scope:
+```py
+>>> total = 42
+>>> def summation(a, b):
+...     total = 0
+...     for n in range(a, b+1):
+...         total += n
+...     return total
+...
+>>> a = summation(1, 100)
+>>> a
+5050
+>>> total
+42
+>>> n
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+NameError: name 'n' is not defined
+>>>
+```
+
+Function bodies have a local namespace.  In this example the `summation`
+function does not see the variable `total` from the top level scope.
+`summation` creates its own variable `total` which is different!  The top level
+scope also cannot see variables used inside of `summation`.
+
+Reference before assignment to a global scope variable will cause an error:
+
+```py
+>>> total = 0
+>>> def summation(a, b):
+...     for n in range(a, b+1):
+...         total += n
+...     return total
+...
+>>> a = summation(1, 100)
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+File "<stdin>", line 3, in summation
+UnboundLocalError: local variable 'total' referenced before assignment
+>>>
+```
+### Variable scope examples
+It is possible to use a variable from a higher scope.  This is generally considered bad practice:
+
+```py
+>>> a = ['hi', 'bye']
+>>> def func():
+...     print(a)
+...
+>>> func()
+['hi', 'bye']
+>>>
+```
+
+Even worse practice is modifying a mutable object from a higher scope:
+```py
+>>> a = ['hi', 'bye']
+>>> def func():
+...     a.append('hello')
+...
+>>> func()
+>>> a
+['hi', 'bye', 'hello']
+>>>
+```
+Python will not let you redirect an identifier at a global scope.  Here the function body has its own `a`:
+
+```py
+>>> a = ['hi', 'bye']
+>>> def func():
+...     a = 2
+...
+>>> func()
+>>> a
+['hi', 'bye']
+>>>
+```
+### Accessing a global variable
 
     This is bad practice, do not do this.  We will take off points.  We show you in
     case you run into it.
@@ -3794,23 +3578,7 @@ application made up of multiple algorithms
 
     Monday, October 5, 2015
 
-    Topics:
-
-    * Review: Python object model
-
-    * Python modules
-
-    * Python exceptions
-
-    ## Announcements
-
-    * CUDA on Campus Day
-    <http://icme.stanford.edu/events/nvidia-tech-talks-and-hands-labs>
-
-    * Get your GitHub accounts!  You need this to submit assignments from here on.
-      We will not process last minute requests.
-
-    ## Python object model
+## Python object model
 
     Let's review and elaborate on Python's object model.  Key things to always keep
     in mind:
@@ -3819,7 +3587,7 @@ application made up of multiple algorithms
 
     * variables in Python are references to objects
 
-    ### Starting example
+### Starting example
 
     ```py
     >>> a = [42, 19, 73]
@@ -3843,7 +3611,7 @@ application made up of multiple algorithms
     In this example, `a` is a reference to the list object initially set to `[42,
     19, 73]`.  The variable `b` also references the same list.
 
-    [fig/references.png](fig/references.png)
+    [fig/references.png](lecture-07/fig/references.png)
 
     ### Analogy
 
@@ -3887,11 +3655,11 @@ application made up of multiple algorithms
 
     ### Example
 
-    [fig/references-example.png](fig/references-example.png)
+    [fig/references-example.png](lecture-07/fig/references-example.png)
 
     ### Example
 
-    [fig/references-example-2.png](fig/references-example-2.png)
+    [fig/references-example-2.png](lecture-07/fig/references-example-2.png)
 
     ### Checking references
 
@@ -3976,8 +3744,7 @@ application made up of multiple algorithms
     True
     >>>
     ```
-
-    ### Why immutables?
+### Why immutables?
 
     * It's a design decision not uncommon in other languages (e.g. strings are
       immutable in Java)
@@ -4124,13 +3891,10 @@ application made up of multiple algorithms
     <<<<<<< HEAD:lecture-07.md
     Last example, we have string a and b, but no variables pointing to it, so no references
     ![lecture-07/gc-2.png](lecture-07/fig/gc-2.png)
-    =======
 
-    >>>>>>> upstream/master:lecture-07/lecture-07.md
+## Python modules
 
-    ## Python modules
-
-    ### Organization
+### Organization
 
     * Your code should be organized in some way
 
@@ -4630,18 +4394,6 @@ application made up of multiple algorithms
 
     Topic: Introduction to Object Oriented Programming (OOP) in Python
 
-    ## Announcements
-
-    * Deadline: by 5pm today you must have a GitHub account.  If you have not
-      created a GitHub account and sent us your account information, your homework 2
-      **will not** be graded.  You can do this today and email the following to
-      <cme211-staff@lists.stanford.edu>:
-
-      * GitHub user name
-
-      * Stanford email address
-
-      * Email address you used to register on GitHub
 
     * Example to show good formatting of a Python program:
       <https://github.com/nwh/cme211-notes/blob/master/examples/ngrams/ngrams.py>
@@ -4807,20 +4559,17 @@ application made up of multiple algorithms
     * `append()` and `sort()` are *methods* (function that is attached to the object, call using the "." notation)
     * 3, 5, 19 are the *data* maintained by the object
 
-    ### Class / object examples 2: file objects
-
-    See the file `code/filewrite.py`:
-
+### Class / object examples 2: file objects
+See the file `code/filewrite.py`:
     ```py
     f = open("hello.txt", "w")
     f.write("hello cme211!\n")
     f.close()
     ```
+* The `open()` function returns an *object* which is an instance of the *file
+  class*
 
-    * The `open()` function returns an *object* which is an instance of the *file
-      class*
-
-    * `write()` and `close()` are methods of the *file class*
+* `write()` and `close()` are methods of the *file class*
 
     If we run the code in *interactive* mode, we can inspect these things in
     Python's online help:
@@ -4892,7 +4641,7 @@ application made up of multiple algorithms
     * But you might want to create classes that are specialized to the needs of your
     applications, so they can be used (and reused) by yourself and others
 
-    ### OOP in Python
+### OOP in Python
 
     * New kinds of objects can be created in Python by defining your own classes
 
@@ -5879,14 +5628,6 @@ application made up of multiple algorithms
 
     Monday, October 12, 2015
 
-    Topic: Representation of numbers, Numpy overview
-
-    ## Announcements
-
-    ## Quiz 1 Prep
-
-    Sample quiz solutions from 2012 and 2013 are posted on Piazza.
-
     * Open book
     * Open note
     * Open computer (restricted internet use)
@@ -5930,8 +5671,6 @@ application made up of multiple algorithms
     * Chapter 27: Class Coding Basics
 
     Notes:
-
-    * If you want `sqrt()`, remember to `import math` and use `math.sqrt()`.  Other
-      than that, we won't test on module stuff.
+    * If you want `sqrt()`, remember to `import math` and use `math.sqrt()`.  Other than that, we won't test on module stuff.
     * We won't test on python exceptions
     * We won't test on Numpy, Scipy, or matplotlib (which we cover this week)
