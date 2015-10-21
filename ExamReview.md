@@ -219,6 +219,9 @@ TypeError: unsupported operand type(s) for +: 'int' and 'str'
 
 ## String slicing
 
+Think of slicing as indices pointing in *between* characters:
+![slice](MidtermRev/Slicing.png)
+
 ```py
 >>> quote = """That's all folks!"""
 >>> quote[2]
