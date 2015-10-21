@@ -4405,8 +4405,11 @@ Topic: Introduction to Object Oriented Programming (OOP) in Python
 
 ## Objects and References
 ![Assignment](MidtermRev/Assignment.png)
+
 Variable
+
 Object: pieces of allocated memory
+
 Reference: pointers from variables to objects
 *Types live with objects, not variable names*
 
@@ -4725,8 +4728,10 @@ $
 ```
 * we created an instance object (namespace that have access to their classes' attributes) by calling the class Student
     - we have 2 objects: 1 instance and 1 class, or 2 linked namespaces
-    - the value id is pass in and assigned to self.id. Self automatically referes to the instance being processed (s)
-* To get access to the id field, we can do s.id. This attaches a new attribute to the object- programs can fetch, change, or create attributes on any object to which they have references
+    - the value id is passed in and assigned to self.id.
+    - Self automatically refers to the instance being processed, which is s
+* To get access to the id field, we can do s.id
+    - This attaches a new attribute to the object; programs can fetch, change, or create attributes on any object to which they have references
 
 ### Let's talk about `self`
 
@@ -4765,20 +4770,18 @@ variables that will be used throughout the life of the instance
 
 ### Class variable setup
 
-* The `__init__` method is coded or inherited in a class, and Python calls it automatically each time an instance of that class is created. It's known as the constructor method; it is passed the new instance implicityly, as well as any arguments passed explicitly to the class name. It's also the most commonly used operator overloading method.
+* The `__init__` method is coded or inherited in a class, and Python calls it automatically each time an instance of that class is created. It's known as the constructor method; it is passed the new instance implicity, as well as any arguments passed explicitly to the class name. It's also the most commonly used operator overloading method.
 
-* If not `__init__` method is present, instances simply begin life as empty namespaces
+* If `__init__` method NOT is present, instances simply begin life as empty namespaces
 
 See `code/student2.py`.  Let's add an empty dictionary for the classes that
 the student is enrolled in:
-
-'self.classes={}' means a dictionary of classes (courses, not the python class) that the student has been enrolled in
 
 ```py
 class Student:
     def __init__(self, id):
         self.id = id
-        self.classes = {}
+        self.classes = {} #means a dictionary of classes (courses, not the python class) that the student has been enrolled in
 
 s = Student(7)
 ```
@@ -4801,7 +4804,6 @@ Only care about inputs and outputs, details are hidden to make it easier to use
 * *encapsulation* means hiding the details of data structures and algorithms
 (internal code)
 
-<<<<<<< HEAD:lecture-08.md
 As long as you don't change the interface, you don't have to change all the code that uses this interface. Just change data internal code. Adding things are fine, but changing things that you've introduced in the past causes problems
 
 ![fig-08/encapsulation.png](lecture-08/fig/encapsulation.png)
