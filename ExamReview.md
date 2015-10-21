@@ -77,8 +77,33 @@ and floating point numbers.  For now:
 3
 >>>
 ```
-
 ![operators and precedence](MidtermRev/Operators.png)
+
+### Rounding and Truncation
+For truncation, can use int(N) or math.trunc(N):
+```py
+>>> N=34.7184
+>>> int(N)
+34
+>>> math.trunc(N)
+34
+```
+For rounding, can use round(N,digits)
+```py
+>>> N=34.7184
+>>> round(N)
+35.0
+>>> round(N,2)
+34.72
+```
+Misc: Floor or Ceiling
+```py
+>>> N=34.7184
+>>> math.floor(N)
+34.0
+>>> math.ceil(N)
+35.0
+```
 
 ## Modules
 
@@ -322,7 +347,6 @@ the area of a circle of radius 1 is 6.28318530718.
 ![format ex5](MidtermRev/Format5.png)
 
 ## Looping
-
 ```py
 >>> for i in range(5):
 ...     # loop body
@@ -337,7 +361,6 @@ the area of a circle of radius 1 is 6.28318530718.
 4
 >>>
 ```
-
 ## `for` loop 	
 
 * `range()` generates a sequence of integers
@@ -347,7 +370,6 @@ the area of a circle of radius 1 is 6.28318530718.
 [0, 1, 2, 3, 4, 5]
 >>>
 ```
-
 * The `for i in <sequence>:` can be interpreted as doing the following:
     * assign the loop counter, `n`, the first value in `<sequence>`
     * execute the body of the loop
@@ -645,20 +667,6 @@ Output:
 
 Friday, September 25, 2015
 
-## Announcements
-
-* Homework 1 is out today.  It will require material covered in this weeks
-  class.  You will not need version control (`git`) for this assignment.  We
-  will start using `git` in homework 2 or 3, so start getting comfortable with
-  it.  This assignment will be submitted via a script on `corn.stanford.edu`.
-  See the homework PDF for details.  Please alert us on Piazza if there are any
-  issues.
-
-* Today we will discuss: Python lists, control flow, and file input output.
-  These topics will be needed for homework 1.
-
-* Relevant chapters in *Learning Python* are:
-
     * Chapter 5: Numeric Types
     * Chapter 7: String Fundamentals
     * Chapter 8: Lists and Dictionaries (you can ignore Dictionaries for now)
@@ -669,26 +677,6 @@ Friday, September 25, 2015
 
 * Chapter 4 (Introducing Python Object Types) has a summary of the object types
 
-* By Monday (Sept 28) I will post a schedule for the rest of the quarter.
-  In summary:
-
-    * 1 assignment per week, unless there is a quiz
-    * 6 assignments
-    * 2 quizzes (1 Python, 1 C++)
-    * 2-part final project in C++
-
-## Last time
-
-In the last lecture we discussed basic use of the Python as an interpreter and
-saw some of the fundamental data types (integers, floats, strings).
-
-## Today
-
-We have a lot to cover:
-
-* Lists
-* Control flow
-* File input output
 
 ## Big picture
 
@@ -1028,19 +1016,58 @@ simple example to demonstrate this property:
 ```
 
 In this example, we assigned `a` to `b` via `b = a`.  This did not copy the
-data, it only copied the reference to the list object in memory.  Thus
-modifying the list through `b` also changes the data that you will see when
-accessing from `a`.  You can inspect object ids in Python with:
+data, it only copied the *reference* to the list object in memory.
+
+## Notes on Identity and Equivalence
+You can inspect object ids in Python with:
 
 ```py
+#numbers refer to memory addresses.
 >>> id(a)
 140672544197304
 >>> id(b)
 140672544197304
 ```
+Can check equivalence and identity:
+```py
+>>> L1=[3,1,5]
+>>> L2=[3,1,5]
+>>> L1 == L2  #compares all nested objects recursively
+True
+>>> L1 is L2 #test if two are same object (live in same memory)
+False
+>>> id(L1) #check memory address
+2920400
+>>> id(L2) #check memory address
+2916600
+```
+Python shares identity for short strings:
+```py
+>>> a='hello'
+>>> b='hello'
+>>> id(a),id(b)
+(2901952, 2901952)
+```
+But not for longer strings:
+```py
+>>> a='a longer string'
+>>> b='a longer string'
+>>> id(a),id(b)
+(2945136, 2945176)
+```
+Python shares identity for integers -5 to 256:
+```py
+>>> a=256
+>>> b=256
+>>> id(a),id(b)
+(8469276,8469276) #same location in mem
 
-Those numbers refer to memory addresses.
-
+>>> a=257
+>>> b=257
+>>> id(a),id(b)
+(8468652, 8468640) #not the same
+```
+More on this "gotcha" type things on page 308
 ## Copying data
 
 If you need to make a new copy of a list you may use the `copy` function in the
@@ -1055,6 +1082,43 @@ If you need to make a new copy of a list you may use the `copy` function in the
 [5, 2, 7, 0, 'xyz']
 >>> print(a)
 [5, 2, 7, 0, 'abc']
+
+#Note for sets and dictionaries, don't need copy module
+#sets
+>>> a
+set([1, 2, 3])
+>>> b=a.copy()
+>>> b
+set([1, 2, 3])
+#dict
+>>> a={'Me':3,'You':1}
+>>> b=a.copy()
+>>> b
+{'Me': 3, 'You': 1}
+```
+See what happens since everything is a reference to memory:
+```py
+>>> L=[1,2,3,4]
+>>> A=L           #A points to same object as L, so if you change A, L changes too
+>>> A[2]=100
+>>> L
+[1, 2, 100, 4]
+```
+Instead, use copy.copy() or L[:] to prevent this from happening. Note that these only make
+**TOP level copies**, so nested data structures aren't copied
+```py
+>>> L=[1,2,3,4]
+>>> A=copy.copy(L) #copy.copy() method
+>>> A[2]=100
+>>> A
+[1, 2, 100, 4]
+>>> B=L[:]       #L[:] method
+>>> B[2]=100
+>>> B
+[1, 2, 100, 4]
+>>> L
+[1, 2, 3, 4]
+
 ```
 
 Note that elements in a list are also references to memory location.  For
@@ -1073,9 +1137,12 @@ example if your list contains a list, this will happen when using `copy.copy()`:
 Here, the element for the sub-list `[55, 2, 3]` is actually a memory reference.
 So, when we copy the outer list, only references for the contained objects are
 copied.  Thus in this case modifying the copy (`b`) modifies the original
-(`a`).  Thus, we may need the function `copy.deepcopy()`:
+(`a`).  
+
+The function **`copy.deepcopy()`** copies all nested lists:
 
 ```py
+import copy
 >>> a = [2, 'string', [1,2,3]]
 >>> b = copy.deepcopy(a)
 >>> b[2][0] = 99
@@ -1825,7 +1892,7 @@ TypeError: 'tuple' object does not support item assignment
 
 ### Tuple modifiability diagram
 
-![tuple diagram](fig/tuple-modifiability.png)
+![tuple diagram](lecture-04/fig/tuple-modifiability.png)
 
 ### Tuple/list conversion
 ```py
@@ -1881,30 +1948,86 @@ It is possible to associate a value with a new key with the following code:
   dictionary must be immutable)
 - Create a set with: `>>> my_set = set([1, 2, 3])`
 - We can test for existence in a set and perform set operations
+- used to FILTER OUT DUPLICATES and ISOLATE DIFFERENCES
 
 ### Set examples
+add(), intersection(), union(), update(), remove(), issubset()
 
-```
->>> myclasses = set()
->>> myclasses.add("math")
->>> myclasses.add("chemistry")
->>> myclasses.add("literature")
->>>
->>> yourclasses = set()
->>> yourclasses.add("physics")
->>> yourclasses.add("gym")
->>> yourclasses.add("math")
->>>
->>> "gym" in myclasses
+```py
+>>> myclasses = set(['math','chem','eng'])   #initialize set1
+>>> yourclasses = set()                      #another way to initialize set2
+>>> yourclasses.add('phys')
+>>> yourclasses.add('gym')
+>>> yourclasses.add('math')
+>>> yourclasses
+set(['gym', 'phys', 'math'])
+
+>>> 'gym' in myclasses
 False
->>> "gym" in yourclasses
+>>> 'gym' in yourclasses
 True
->>>
->>> myclasses & yourclasses # intersection
+>>> myclasses & yourclasses   #intersection
 set(['math'])
->>> myclasses | yourclasses # union
-set(['literature', 'gym', 'chemistry', 'physics', 'math'])
->>>
+>>> myclasses | yourclasses
+set(['phys', 'eng', 'gym', 'chem', 'math']) #union
+#or, can merge using
+>>> myclasses.update(yourclasses)
+>>> myclasses
+set(['phys', 'eng', 'gym', 'chem', 'math']) #merge
+
+#remove item
+>>> myclasses
+set(['phys', 'eng', 'gym', 'chem', 'math'])
+>>> myclasses.remove('phys')
+>>> myclasses
+set(['eng', 'gym', 'chem', 'math'])
+
+#check if it is a subset
+>>> myclasses
+set(['eng', 'gym', 'chem', 'math'])
+>>> sub=set(['gym','chem'])
+>>> sub.issubset(myclasses)
+True
+```
+### Isolating Differences
+
+```py
+>>> myclasses
+set(['eng', 'gym', 'chem', 'math'])
+>>> yourclasses
+set(['gym', 'phys', 'math'])
+>>> myclasses-yourclasses
+set(['chem', 'eng'])         #we are left with the differences (what myclasses has but yourclasses doesnt)
+
+>>> S1 = set([1,3,5,7])
+>>> S2 = set([1,2,4,5,6])
+>>> S1-S2                 #left with what set1 has that s2 doesn't
+set([3, 7])
+```
+## Order Neutral Equality
+```py
+>>> L1, L2 = [1, 3, 5, 2, 4], [2, 5, 3, 4, 1]
+>>> L1 == L2 # Order matters for the list
+>>> set(L1) == set(L2) # Order-neutral equality
+True
+#or, can sort the list
+>>> sorted(L1) == sorted(L2) # Similar but results ordered
+True
+```
+## Subsets and Supersets
+```py
+>>> Engineers = set({'Bob','Karen','Ali','Vince'})
+>>> {'Bob','Karen'} < Engineers #are bob and karen subsets of engineers?
+True
+
+>>> Workers
+set(['Diana', 'Bob', 'Vince', 'Erica'])
+>>> Engineers
+set(['Karen', 'Ali', 'Diana', 'Bob', 'Vince', 'Erica'])
+>>> Engineers > Workers  #all workers are engineers
+True
+>>> Workers > Engineers #all engineers are workers
+False
 ```
 
 ### Set methods
@@ -2476,10 +2599,10 @@ testing has some drawbacks, namely:
 ## Visualization
 
 <<<<<<< HEAD:lecture-5.md
-![order chart](lecture-5/order-chart.png)
+![order chart](lecture-05/fig/order-chart.png)
 O(1) run time is independent of input size. For the algorithm, O(n^2) is the worst. As you go up on the chart, complexity of algorithm is greater.
 =======
-![order chart](fig/order-chart.png)
+![order chart](lecture-05/fig/order-chart.png)
 >>>>>>> upstream/master:lecture-05/lecture-05.md
 
 ## Big O notation
@@ -2527,7 +2650,7 @@ for i in xrange(n):
 ```
 
 
-![matmul](fig/matrix.png)
+![matmul](lecture-05/fig/matrix.png)
 
 Computing one value in the output matrix requires `O(n)`
 operations, and there are `n^2` values in the output matrix.
@@ -2680,7 +2803,7 @@ The internet is full of examples of how sorting algorithms work
 
 ## Sorting algorithms
 
-![sorting algo table](fig/sorting-algo-table.png)
+![sorting algo table](lecture-05/fig/sorting-algo-table.png)
 
 See: <https://en.wikipedia.org/wiki/Sorting_algorithm#Comparison_of_algorithms>
 
@@ -2967,21 +3090,21 @@ Good documentation on Python for time complexities of different operations.
 
 ## Documentation
 
-![time complexity](fig/time-complexity.png)
+![time complexity](lecture05/fig/time-complexity.png)
 
 <https://wiki.python.org/moin/TimeComplexity>
 
 ### List operations
 
-![list](fig/list.png)
+![list](lecture-05/fig/list.png)
 
 ### Set operations
 
-![set](fig/set.png)
+![set](lecture05/fig/set.png)
 
 ## Dictionary operations
 
-![dict](fig/dict.png)
+![dict](lecture05/fig/dict.png)
 
 ## Space complexity
 
@@ -3720,7 +3843,7 @@ application made up of multiple algorithms
     In this example, `a` is a reference to the list object initially set to `[42,
     19, 73]`.  The variable `b` also references the same list.
 
-    ![fig/references.png](fig/references.png)
+    [fig/references.png](fig/references.png)
 
     ### Analogy
 
@@ -3764,11 +3887,11 @@ application made up of multiple algorithms
 
     ### Example
 
-    ![fig/references-example.png](fig/references-example.png)
+    [fig/references-example.png](fig/references-example.png)
 
     ### Example
 
-    ![fig/references-example-2.png](fig/references-example-2.png)
+    [fig/references-example-2.png](fig/references-example-2.png)
 
     ### Checking references
 
@@ -3886,7 +4009,7 @@ application made up of multiple algorithms
     ```
     a and b point to a list. The list points to objects 42 and "hello"
 
-    ![fig/list-ref.png](fig/list-ref.png)
+    ![fig/list-ref.png](lecture-07/fig/list-ref.png)
 
     ### Copying a list
 
@@ -3907,7 +4030,7 @@ application made up of multiple algorithms
     >>> b = copy.copy(a)
     ```
 
-    ![fig/shallow-copy.png](fig/shallow-copy.png)
+    ![fig/shallow-copy.png](lecture-07/fig/shallow-copy.png)
 
     * Constructs a new list and inserts references to
     the objects referenced in the original
@@ -3930,7 +4053,7 @@ application made up of multiple algorithms
     ```
     Problem is that if we wanted to change value inside the dictionary, by changing a, we will change b as well
 
-    ![fig/shallow-copy-mutables.png](fig/shallow-copy-mutables.png)
+    ![fig/shallow-copy-mutables.png](lecture-07/fig/shallow-copy-mutables.png)
 
     ### Deep copy
     This will recursively copy nested data structures
@@ -3949,7 +4072,7 @@ application made up of multiple algorithms
     >>>
     ```
 
-    ![fig/deep-copy-mutables.png](fig/deep-copy-mutables.png)
+    ![fig/deep-copy-mutables.png](lecture-07/fig/deep-copy-mutables.png)
 
     * Constructs a new list and inserts copies of the
     objects referenced in the original
@@ -3982,7 +4105,7 @@ application made up of multiple algorithms
     >>>
     ```
 
-    ![fig/tuples-and-immutability.png](fig/tuples-and-immutability.png)
+    ![fig/tuples-and-immutability.png](lecture-07/fig/tuples-and-immutability.png)
 
     The immutable property of tuples only means I can't change where the arrows
     point, I'm still free to change a mutable at the arrow destination
@@ -3991,7 +4114,7 @@ application made up of multiple algorithms
 
     * What happens to those objects that are no longer referenced?
 
-    ![fig/gc-1.png](fig/gc-1.png)
+    ![fig/gc-1.png](lecture-07/fig/gc-1.png)
 
     ### Garbage collection
 
@@ -4000,10 +4123,9 @@ application made up of multiple algorithms
     * Garbage collection in Python is implemented with reference counting
     <<<<<<< HEAD:lecture-07.md
     Last example, we have string a and b, but no variables pointing to it, so no references
-    ![lecture-07/gc-2.png](lecture-07/gc-2.png)
+    ![lecture-07/gc-2.png](lecture-07/fig/gc-2.png)
     =======
 
-    ![fig/gc-2.png](fig/gc-2.png)
     >>>>>>> upstream/master:lecture-07/lecture-07.md
 
     ## Python modules
@@ -4662,7 +4784,7 @@ application made up of multiple algorithms
     Object is actual thing in memory that gets assigned
     There could be many objects in a class
 
-    ![fig/class-object.png](fig/class-object.png)
+    ![fig/class-object.png](lecture-08/fig/class-object.png)
 
     * Classes specify data and the methods to use or interact with that data
 
@@ -4919,10 +5041,8 @@ application made up of multiple algorithms
     <<<<<<< HEAD:lecture-08.md
     As long as you don't change the interface, you don't have to change all the code that uses this interface. Just change data internal code. Adding things are fine, but changing things that you've introduced in the past causes problems
 
-    ![fig-08/encapsulation.png](fig-08/encapsulation.png)
+    ![fig-08/encapsulation.png](lecture-08/fig/encapsulation.png)
     =======
-    ![fig/encapsulation.png](fig/encapsulation.png)
-    >>>>>>> upstream/master:lecture-08/lecture-08.md
 
     ### Interfaces
 
@@ -5510,7 +5630,7 @@ application made up of multiple algorithms
 
     ### Particle collision
 
-    ![fig/particle-collision.png](fig/particle-collision.png)
+    ![fig/particle-collision.png](lecture-09/fig/particle-collision.png)
 
     ### OOP design
 
@@ -5640,7 +5760,7 @@ application made up of multiple algorithms
             self.movies = {}
     ```
 
-    ![fig](fig/uml-1.png)
+    ![fig](lecture-09/fig/uml-1.png)
 
     ### Sibling classes
 
@@ -5672,7 +5792,7 @@ application made up of multiple algorithms
             self.cookies = {}
     ```
 
-    ![fig](fig/uml-2.png)
+    ![fig](lecture-09/fig/uml-2.png)
 
     ### Polymorphism
 
@@ -5736,7 +5856,7 @@ application made up of multiple algorithms
     $
     ```
 
-    ![fig](fig/uml-3.png)
+    ![fig](lecture-09/fig/uml-3.png)
 
     ### OOP Summary
 
