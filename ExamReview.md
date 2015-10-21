@@ -3624,7 +3624,7 @@ in mind:
 In this example, `a` is a reference to the list object initially set to `[42,
 19, 73]`.  The variable `b` also references the same list.
 
-![fig/references.png](fig/references.png)
+![fig/references.png](lecture-07/fig/references.png)
 
 ### Analogy
 
@@ -3668,11 +3668,11 @@ objects
 
 ### Example
 
-![fig/references-example.png](fig/references-example.png)
+![fig/references-example.png](lecture-07/fig/references-example.png)
 
 ### Example
 
-![fig/references-example-2.png](fig/references-example-2.png)
+![fig/references-example-2.png](lecture-07/fig/references-example-2.png)
 
 ### Checking references
 
@@ -3790,7 +3790,7 @@ it never changes
 ```
 a and b point to a list. The list points to objects 42 and "hello"
 
-![fig/list-ref.png](fig/list-ref.png)
+![fig/list-ref.png](lecture-07/fig/list-ref.png)
 
 ### Copying a list
 
@@ -3811,7 +3811,7 @@ original?
 >>> b = copy.copy(a)
 ```
 
-![fig/shallow-copy.png](fig/shallow-copy.png)
+![fig/shallow-copy.png](lecture-07/fig/shallow-copy.png)
 
 * Constructs a new list and inserts references to
 the objects referenced in the original
@@ -3834,7 +3834,7 @@ the objects referenced in the original
 ```
 Problem is that if we wanted to change value inside the dictionary, by changing a, we will change b as well
 
-![fig/shallow-copy-mutables.png](fig/shallow-copy-mutables.png)
+![fig/shallow-copy-mutables.png](lecture-07/fig/shallow-copy-mutables.png)
 
 ### Deep copy
 This will recursively copy nested data structures
@@ -3853,7 +3853,7 @@ This will recursively copy nested data structures
 >>>
 ```
 
-![fig/deep-copy-mutables.png](fig/deep-copy-mutables.png)
+![fig/deep-copy-mutables.png](lecture-07/fig/deep-copy-mutables.png)
 
 * Constructs a new list and inserts copies of the
 objects referenced in the original
@@ -3886,7 +3886,7 @@ TypeError: 'tuple' object does not support item assignment
 >>>
 ```
 
-![fig/tuples-and-immutability.png](fig/tuples-and-immutability.png)
+![fig/tuples-and-immutability.png](lecture-07/fig/tuples-and-immutability.png)
 
 The immutable property of tuples only means I can't change where the arrows
 point, I'm still free to change a mutable at the arrow destination
@@ -3895,20 +3895,16 @@ point, I'm still free to change a mutable at the arrow destination
 
 * What happens to those objects that are no longer referenced?
 
-![fig/gc-1.png](fig/gc-1.png)
+![fig/gc-1.png](lecture-07/fig/gc-1.png)
 
 ### Garbage collection
 
 * Unreachable objects are garbage collected
 
 * Garbage collection in Python is implemented with reference counting
-<<<<<<< HEAD:lecture-07.md
+
 Last example, we have string a and b, but no variables pointing to it, so no references
 ![lecture-07/gc-2.png](lecture-07/gc-2.png)
-=======
-
-![fig/gc-2.png](fig/gc-2.png)
->>>>>>> upstream/master:lecture-07/lecture-07.md
 
 ## Python modules
 
@@ -4416,10 +4412,12 @@ Topic: Introduction to Object Oriented Programming (OOP) in Python
 * Example to show good formatting of a Python program:
   <https://github.com/nwh/cme211-notes/blob/master/examples/ngrams/ngrams.py>
 
-```python
->>> if __name__ == "__main__":
-```
-allows you to use function in the command line, gives info on how to run the program
+## Objects and References
+![Assignment](MidtermRev/Assignment.png)
+Variable
+Object: pieces of allocated memory
+Reference: pointers from variables to objects
+*Types live with objects, not variable names*
 
 
 ## Command line arguments
@@ -4642,6 +4640,9 @@ applications, so they can be used (and reused) by yourself and others
 * Classes are the blueprint for creating objects which are known as instances of
 the class
 
+* When instance of an object is created, Python does this: "Find the first occurrence of *attribute* by looking in *object*, then in all classes above it, from bottom to top and left to right"
+      * attribute fetches are tree searches
+
 * Classes have *attributes*
 
     * Variables (data) are called class *variables*
@@ -4650,14 +4651,21 @@ the class
 
     * Attributes are accessed using *dot notation*
 
+    * Ex: Calling "I2.w" searches for attribute w by looking in I2 and above (at it's superclasses)
+
 ### Creating instances
 
 * Instances of a class are created by calling the class object as a function
+
+* Instances represent the concrete items in a program's domain. Their attributes record data that varies per specific object
 
 For example, you can make multiple houses (objects) with the same blueprint (class), so each house is an instance of the blueprint (of the class)
 
 * Any arguments of the function call are passed to the special `__init__()`
   method
+    - `__init__` is  known as the constructor method and used to initialize objects' state
+
+* Difference between class and modules: we only ever have one instance of a given module in memory, but with classes, we can make as many instances as we need
 
 ### Python class definition
 
@@ -4684,6 +4692,25 @@ class Student:
 * `id` is the input argument from the call to create a new instance
 * `self.id = id` stores the input `id` in the object
 
+### Another example
+When run class implements three specially named attributes that Python calls automatically:
+* `__init__` is run when new instance object is created: self is the new ThirdClass object
+* `__add__` is run when a ThirdClass instance appears in a + expression
+*  `__str__` is run when an object is printed (or when it's converted to a print string)
+  - NOTE: we usually use `__repr__`
+
+
+```py
+class ThirdClass(SecondClass):
+    def __init__(self,value):
+        self.data = value
+    def __add__(self,other):
+        return ThirdClass(self.data + other)
+    def __str__(self):
+        return '[ThirdClass: %s]' % self.data
+```
+
+
 ### Class definition in action
 
 See the file `code/student1.py`
@@ -4700,20 +4727,23 @@ print(s)
 ```
 
 Output:
-To get access to the id field, can do s.id. On any class method, it's always (self,id)
 ```
 $ python student1.py
 <__main__.Student instance at 0x1069f6c20>
 $
 ```
+* we created an instance object (namespace that have access to their classes' attributes) by calling the class Student
+    - we have 2 objects: 1 instance and 1 class, or 2 linked namespaces
+    - the value id is pass in and assigned to self.id. Self automatically referes to the instance being processed (s)
+* To get access to the id field, we can do s.id. This attaches a new attribute to the object- programs can fetch, change, or create attributes on any object to which they have references
 
 ### Let's talk about `self`
 
-First argument to any method is 'self'-- this is usually just for convention. Represents object that is calling the particular method
+* First argument to any method is 'self'-- this is usually just for convention. Represents object that is calling the particular method
+
+* Self always receives the instance object that is the implied subject of the method call, called self by convention
+
 See `code-08/self.py`:
-Self is just a reference to the object
-
-
 ```py
 class Student:
     def __init__(self, id):
@@ -4743,6 +4773,10 @@ variables that will be used throughout the life of the instance
 * What kind of class variables might we want to setup for a student class?
 
 ### Class variable setup
+
+* The `__init__` method is coded or inherited in a class, and Python calls it automatically each time an instance of that class is created. It's known as the constructor method; it is passed the new instance implicityly, as well as any arguments passed explicitly to the class name. It's also the most commonly used operator overloading method.
+
+* If not `__init__` method is present, instances simply begin life as empty namespaces
 
 See `code/student2.py`.  Let's add an empty dictionary for the classes that
 the student is enrolled in:
@@ -4795,6 +4829,8 @@ problem
 Problem
 
 ### Defining a regular method
+
+* *Methods* are functions attached to classes as attributes
 
 Inside of the `Student` class, we put:
 
@@ -5288,6 +5324,8 @@ $
 * Your user defined objects can be made to work with the Python built-in
 operators
 
+* Methods named with double underscores (`__X__`) are special hooks
+
 * Why would you want to do that?
 
 ### String representation method
@@ -5530,6 +5568,9 @@ class CookieEater(User):
 ![fig](lecture-09/fig/uml-2.png)
 
 ### Polymorphism
+Meaning of operation depends on objects being operated on
+- ex. 4*5 means multiplication but 'string'* 5 means repetition
+*polymorphic* means function works on arbitrary types, as long as they support the expected object interface
 
 * Different types of objects have methods with the same name that take the same
 arguments
