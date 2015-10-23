@@ -59,19 +59,24 @@ code block on your own, please modify the provided source (or start a new source
 file).
 
 Let's start with the file: `src/hello.cpp`
+sometimes also .cc or .cxx or others. Some are standard so that C++ compiler will know what to do
+if you pass in .c file, interpreter will compile that as standard C
 
 ```c++
-#include <iostream>
+#include <iostream> // input/output stream
+//these are like import in python
 
-int main()
+int main() // input arguments in main to put in command line arguments, int is the return type
 {
+  // everything in this code block is run
   /* Hello world program (this is a comment)
-     this form of comment can span multiple lines
-  */
-  
+     this form of comment can span multiple line*/
+
   // this is also a comment, but only goes to the end of the line
 
   std::cout << "Hello world" << std::endl;
+//std cout is the output string, we're sending it the string "hello world" and
+//endl forces text to be displayed
 
   return 0; // Return value of the function
 }
@@ -98,6 +103,18 @@ function body will be executed upon starting the program.
 ### Compilation
 
 * C++ programs have to be compiled
+```
+DN0a225536:src babagoatkw$ ls
+hello.cpp	string.cpp	variables.cpp
+DN0a225536:src babagoatkw$ vi hello.cpp
+DN0a225536:src babagoatkw$ g++ hello.cpp <-- g++ is the compiler, creates an a.out file
+DN0a225536:src babagoatkw$ ls
+a.out		hello.cpp	string.cpp	variables.cpp
+DN0a225536:src babagoatkw$ ./a.out  <-- run using the ./ command (want to run an executable located in this directory)
+Hello world
+```
+
+Note: use "cd -" to go back to original directory you were in
 
 * Compilation is the process of translating the human readable source code into
 an executable containing the machine instructions that the computer will use
@@ -107,17 +124,23 @@ while the program is running
 machines (Linux, Windows, Mac) the executables are specific to an operating
 system and underlying processor
 
+```
+DN0a225536:src babagoatkw$ g++ hello.cpp -o hello <-- can name the compiled code to something different
+DN0a225536:src babagoatkw$ ls
+a.out		hello		hello.cpp	string.cpp	variables.cpp
+DN0a225536:src babagoatkw$ ./hello
+Hello world
+```
+
 ### Compiling on corn
 
 * We will use the GNU (GNU's Not Unix) compilers that should be available with
 any Linux distribution
 
-TODO: insert compilation output here
-
 ```
 [nwh@icme-nwh src] $ ls
 hello.cpp
-[nwh@icme-nwh src] $ g++ -Wall -Wconversion -Wextra hello.cpp 
+[nwh@icme-nwh src] $ g++ -Wall -Wconversion -Wextra hello.cpp <--- "-W" tells compiler to give us warnings (they are flags). If we are compiling with these flags and it's producing warnings, fix those warnings
 [nwh@icme-nwh src] $ ls
 a.out  hello.cpp
 ```
@@ -135,7 +158,7 @@ Details:
 ```
 [nwh@icme-nwh src] $ ls
 a.out  hello.cpp
-[nwh@icme-nwh src] $ ./a.out 
+[nwh@icme-nwh src] $ ./a.out
 Hello world
 ```
 
@@ -151,7 +174,7 @@ Specify the output executable name:
 [nwh@icme-nwh src] $ g++ -Wall -Wconversion -Wextra hello.cpp -o hello
 [nwh@icme-nwh src] $ ls
 a.out  hello  hello.cpp
-[nwh@icme-nwh src] $ ./hello 
+[nwh@icme-nwh src] $ ./hello
 Hello world
 ```
 
@@ -184,7 +207,10 @@ as necessary
 #include <iostream>
 
 int main() {
-  std::cout << "Hello world\n";
+  int a;
+  std::cout << a << std::endl; // with flags, will get warning that we haven't initialized a. Without flags, a=0. Compiler can also give warnings if there is an unused variable in the code. Warnings don't stop the compilation problems- they just spit out warnings
+
+  std::cout << "Hello world\n"; // this will not flush the buffer. It's good to use standard endl for outputting new lines
   return 0;
 }
 ```
@@ -205,6 +231,7 @@ giving us access to functionality defined in another file
 screen requires specifying the proper include file(s)
 
 * Include files in C++ work a bit differently when it comes to namespaces
+
 
 * However, namespaces in C++ still generally serve the same purpose as
 namespaces in Python
@@ -238,6 +265,7 @@ C++ language
 ### Scope resolution operator
 
 * The `::` is called the scope resolution operator
+  - for example, `std::out`, so we need  `namespace::what we want`
 
 * Used to indicate what namespace something comes from
 
@@ -367,7 +395,7 @@ $
 
 int main()
 {
-  /* Hello world program */
+  /* Hello world program*/
   std::cout << "Hello world" << std::endl;
   return 0;
 }
@@ -377,7 +405,7 @@ int main()
 #include <iostream>
 
 int main() {
-  /* Hello world program */
+  /* Hello world program*/
   std::cout << "Hello world" << std::endl;
   return 0;
 }
@@ -389,15 +417,15 @@ int main() {
 #include <iostream>
 
 int main() {
-  /* Hello world program */
+  /* Hello world program*/
   std::cout << "Hello world" << std::endl;
   return 7;
 }
 ```
-
+* returning a positve number represents an error
 ```
 [nwh@icme-nwh src] $ g++ -Wall -Wconversion -Wextra hello.cpp -o hello
-[nwh@icme-nwh src] $ ./hello 
+[nwh@icme-nwh src] $ ./hello
 Hello world
 [nwh@icme-nwh src] $ echo $?
 7
@@ -413,7 +441,7 @@ a.out  hello  hello.cpp
 ## Variables
 
 File: `src/variables.cpp`
-
+* code below won't compile since 'a' hasn't been declared (you didn't tell me what type variable is going to correspond to). need to specify type
 ```cpp
 #include <iostream>
 
@@ -464,7 +492,7 @@ int main() {
 ```
 $ g++ variables.cpp -o variables
 $ ./variables
-c = 32767
+c = 32767  <-- this is dangerous since it assigns a,b random ints that were already in mem
 $
 ```
 
@@ -506,7 +534,7 @@ int main() {
 
 ```
 [nwh@icme-nwh src] $ g++ -Wall -Wconversion -Wextra variables.cpp -o variables
-[nwh@icme-nwh src] $ ./variables 
+[nwh@icme-nwh src] $ ./variables
 c = 5
 ```
 
@@ -534,6 +562,8 @@ variables.cpp:10:5: error: invalid conversion from ‘const char*’ to ‘int�
 ```
 
 ### Mixed number types
+
+* manually cast data to the right type if you need to; best thing to do is round, then cast it
 
 ```cpp
 #include <iostream>
@@ -580,7 +610,7 @@ int main() {
 
 ```
 [nwh@icme-nwh src] $ g++ -Wall -Wconversion -Wextra variables.cpp -o variables
-[nwh@icme-nwh src] $ ./variables 
+[nwh@icme-nwh src] $ ./variables
 c = 5
 ```
 
@@ -591,7 +621,7 @@ c = 5
 
 int main() {
   int a;
-  double b = 3.14;
+  double b = 3.14; // 64 bit floating point number (higher precision); float is 32 bit floating point number
 
   a = 2;
   double c = a*b;
@@ -613,7 +643,7 @@ $
 
 ```cpp
 #include <iostream>
-#include <cmath>
+#include <cmath> // include this to use round() function
 
 int main() {
   int a;
@@ -649,7 +679,7 @@ representation of data in conjunction with NumPy
 
 * A string object
 
-### Boolean
+### Boolean (true/false values)
 
 ```cpp
 #include <iostream>
@@ -657,7 +687,7 @@ representation of data in conjunction with NumPy
 int main() {
   bool equal;
 
-  equal = 2 == 3;
+  equal = 2 == 3; // assigning the bool to equal. Should be equal = false
   std::cout << equal << std::endl;
 
   equal = true; // All lowercase
@@ -679,6 +709,7 @@ $
 ## Strings
 
 * There are two options for strings in C++
+ - we'll mainly use string rather than char arrays
 
 * An array of characters (same as C)
 
@@ -690,10 +721,10 @@ $
 
 ```cpp
 #include <iostream>
-#include <string>
+#include <string> // need to include this
 
 int main() {
-  std::string hello = "Hello world";
+  std::string hello = "Hello world"; // pass as a standard string
 
   std::cout << hello << std::endl;
 
@@ -718,7 +749,7 @@ int main() {
   std::string hello = "Hello";
   std::string world = " world";
 
-  std::string helloworld = hello + world;
+  std::string helloworld = hello + world; // string concatenation
 
   std::cout << helloworld << std::endl;
 
