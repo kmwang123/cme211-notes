@@ -10,15 +10,15 @@ Topics: Introduction to LaTeX
 
 * HTML is also a document markup language targeting web browsers
 
-* LaTeX targets high quality print documents
+* LaTeX targets high quality print (pdf) documents
 
 * LaTeX commands are also now used to typeset equations on the web
+
+* pdf Latex is also on corn
 
 ![fig](fig/markup.png)
 
 ## How to obtain
-
-* Windows: <http://miktex.org/about>
 
 * Mac OSX: <https://tug.org/mactex/>
 
@@ -38,6 +38,11 @@ TeXLive is installed on `corn.stanford.edu`.  The primary access point for CME
 
 ![fig](fig/equation.png)
 
+- put equations in an equation environment
+- handy program in mac called latex it
+  - can experiment with different tex equations
+  - `\frac{1}{2}`
+
 ### Hello world
 
 See: `tex/hello.tex`:
@@ -50,13 +55,16 @@ Hello
 ```
 
 Typesetting instructions (from this directory):
+don't check temporary files in github
 
 ```
 $ cd tex
 $ pdflatex hello.tex
 ```
 
+this produces the pdf
 This creates `hello.pdf`.
+uses computer modern font
 
 ### Document class
 
@@ -90,9 +98,12 @@ White space is normalized so `1` to `n` spaces are treated the same
 
 ![fig](fig/spaces.png)
 
+If you need extra spaces between words, type `\ \` to escape the spaces
+
 ### Paragraphs
 
 ![fig](fig/paragraphs.png)
+
 
 ### Special characters
 
@@ -101,7 +112,7 @@ There are several reserved characters in LaTeX:
 ```
 # $ % ^ & _ { } ~ \
 ```
-
+All of these have to be escaped to show up
 ### Comments
 
 ![fig](fig/comments.png)
@@ -113,6 +124,17 @@ of switches:
 
 ![fig](fig/groups.png)
 
+everything within curly brakcets will be in bold
+
+can also do:
+```
+\textbf{
+  blahblah.\\
+  blahblah.
+}
+
+can use tt for code
+
 ### Commands
 
 General form of a LaTeX command is
@@ -120,7 +142,7 @@ General form of a LaTeX command is
 ```
 \commandname[option1,option2,...]{argument1}{argument2}...
 ```
-
+options are required, arguments are optional
 ### Command example
 
 ![fig](fig/commands.png)
@@ -137,9 +159,13 @@ Text to be influenced by this environment
 
 ![fig](fig/equation.png)
 
+use labels to refer to the equation
+
 ### Bulleted list
 
 ![fig](fig/bullets.png)
+
+if you want numbers, it is `enumerate`
 
 ### Latex packages
 
@@ -165,6 +191,9 @@ This comes before the `\begin{document}` command.
 ### Table
 
 ![fig](fig/table.png)
+
+table is built into standard latex
+`{|c|c|c|}` tells how we want to justify
 
 ### Algorithm
 
@@ -194,12 +223,12 @@ The second pass of LaTeX will resolved the reference:
   `\begin{figure}[?]`.  The options are:
 
   * `h` for "float here"
-  
+
   * `t` for "top of page"
-  
+
   * `b` for "bottom of page"
-  
-  * `H` for "put here, don't float"
+
+  * `H` for "put here, don't float" this forces it to be put here
 
 * Good figure placement often requires some experimentation.
 
@@ -220,6 +249,8 @@ See `tex/references.bib`:
 
 ![fig](fig/bibtex-example.png)
 
+- first thing is the unique label that you use to refer to in the document
+
 ### Typesetting with BibTeX reference
 
 This is really annoying!
@@ -239,7 +270,7 @@ Many TeX editors do this for you with one button click.  See
 
 * TeXMaker
 
-I use a GNU makefile to drive TeX.
+I use a GNU makefile to drive TeX (automatically run the four commands)
 
 ### Bibliography management
 
@@ -249,12 +280,12 @@ I use a GNU makefile to drive TeX.
 mode
 
   * There are also applications specifically for doing this:
-  
-  * BibDesk (Mac OS X only): <http://bibdesk.sourceforge.net>
-  
+
+  * BibDesk (Mac OS X only): <http://bibdesk.sourceforge.net> use GUI
+
   * JabRef (Windows / Mac OS X / Linux): <http://jabref.sourceforge.net>
-  
-  * Mendeley: <http://www.mendeley.com>
+
+  * Mendeley: <http://www.mendeley.com> commercial product
 
 ### Citations
 
@@ -280,7 +311,7 @@ This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format
 ! Undefined control sequence.
 l.35 \includegraphics
                      [width=0.85\linewidth]{../fig/maze.pdf}
-? 
+?
 ```
 
 LaTeX is wanting you to guide the typesetting at this point.  I have no idea
