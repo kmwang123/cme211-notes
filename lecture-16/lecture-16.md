@@ -2,6 +2,9 @@
 
 Wednesday, October 27, 2015
 
+Announcements:
+68% of class will get A- or above
+
 Topics:
 
 * conditionals
@@ -37,7 +40,7 @@ int main() {
 Output:
 
 ```
-$ ./if1 
+$ ./if1
 n = 2
 n is positive
 $
@@ -75,7 +78,7 @@ $
 ```
 
 ### `else`
-
+This is executed if none of the other blocks are executed (last case)
 ```cpp
 #include <iostream>
 
@@ -115,12 +118,13 @@ if (n < 0);
 ```
 
 Assignment in the conditional expression:
-
+This gives an compiler error if assigned for a conditional
+If no error, code may not run properly
 ```
 if (n = 0)
   std::cout << "n is zero" << std::endl;
 ```
-
+Can also switch order of variable to force noncompile (ex: if(0 == n)), called a yoda condition
 Note: some people recommend always putting the 'literal' before the variable.
 This is known as a
 [Yoda Condition](https://en.wikipedia.org/wiki/Yoda_conditions).
@@ -155,7 +159,7 @@ $
 
 ### `continue`
 
-The `continue` keyword moves to the next loop iteration. 
+The `continue` keyword moves to the next loop iteration.
 
 ```
 #include <iostream>
@@ -184,7 +188,7 @@ $
 
   * Newer style `and`, `or`, `not`
 
-  * Older style `&&`, `||`,
+  * Older style `&&`, `||`,'!'
 
 * Latter are backwards compatible with C
 
@@ -201,10 +205,10 @@ int main() {
 
   if (a == 7 and b == 42)
     std::cout << "a == 7 and b == 42 is true" << std::endl;
-  
+
   if (a == 7 && b == 42)
     std::cout << "a == 7 && b == 42 is true" << std::endl;
-  
+
   return 0;
 }
 ```
@@ -217,20 +221,21 @@ $
 ```
 
 ### `0` is false, everything else is true
+use cpp.reference to see how to print format with precision
 
 ```cpp
 #include <iostream>
 
 int main() {
   int a[] = {-1, 0, 1, 2};
-  
+
   for (int n = 0; n < 4; n++) {
     if (a[n])
       std::cout << a[n] << " is true" << std::endl;
     else
       std::cout << a[n] << " is false" << std::endl;
   }
-  
+
   return 0;
 }
 ```
@@ -245,6 +250,8 @@ $
 ```
 
 ### Bitwise results
+common mistake: doing bitwise and instead of logical
+
 
 ```cpp
 #include <iostream>
@@ -252,26 +259,27 @@ $
 int main() {
   int a = 1;
   int b = 2;
-  
+
   if (a)
     std::cout << "a is true" << std::endl;
   else
     std::cout << "a is false" << std::endl;
-  
+
   if (b)
     std::cout << "b is true" << std::endl;
   else
     std::cout << "b is false" << std::endl;
-  
+
   if (a & b)
     std::cout << "a & b is true" << std::endl;
   else
     std::cout << "a & b is false" << std::endl;
-  
+
   return 0;
 }
 ```
 
+Bitwise and of 1 (01) and 2 (10) becomes (00), so it becomes false
 ```
 $ g++ -Wall -Wconversion -Wextra logical3.cpp -o logical3
 $ ./logical3
@@ -301,7 +309,10 @@ else
 ```
 
 Becomes:
-
+each case needs to end with a break
+say we're in case C, execute function, then break goes to end of switch block
+if neglected to put break, control would keep going down and execute other cases
+default is executed if choice is not equal to any of the other cases
 ```
 switch (choice) {
   case `C': clearRecord(); break;
@@ -313,6 +324,8 @@ switch (choice) {
 ```
 
 ### `switch` and `enum` example
+enum is a new type that has text values; makes code more readable
+might have enum for days of the week, months, anything that we often think of enumerated with text (not numbers)
 
 ```cpp
 enum direction {
@@ -322,9 +335,18 @@ enum direction {
   down
 };
 
+//Can also do this and assign a keyword to some integer:
+// can also define inside of a function
+enum direction {
+  left=100,
+  right=123,
+  up=32,
+  down=88
+};
+
 int main() {
   direction d = right;
-  
+
   std::string txt = "you are going ";
   switch (d) {
     case left:
@@ -402,6 +424,9 @@ $
 
 This is called the "ternary" operator:
 
+-b returned if b<0 is true
+b returned if b<0 is false
+
 ```
 a = b < 0 ? -b : b;
 ```
@@ -448,9 +473,9 @@ File I/O in C++:
 * Three stream options:
 
   * `ofstream`: output file stream (i.e. write)
-  
+
   * `ifstream`: input file stream (i.e. read)
-  
+
   * `fstream`: file stream (i.e. read or write)
 
 ### `ofstream`
@@ -460,17 +485,17 @@ File I/O in C++:
 #include <fstream>
 
 int main() {
-  std::ofstream f;
-  
+  std::ofstream f; //this stream is specifically for output
+
   f.open("hello.txt");
-  if (f.is_open()) {
-    f << "Hello" << std::endl;
+  if (f.is_open()) { //test to make sure file is open
+    f << "Hello" << std::endl; //normally, we put stdcout
     f.close();
   }
   else {
     std::cout << "Failed to open file" << std::endl;
   }
-  
+
   return 0;
 }
 ```
@@ -493,7 +518,7 @@ Code:
 
 int main() {
   std::string filename = "file.txt";
-  
+
   std::ofstream f;
   f.open(filename);
   if (f.is_open()) {
@@ -503,13 +528,14 @@ int main() {
   else {
     std::cout << "Failed to open file" << std::endl;
   }
-  
+
   return 0;
 }
 ```
 
 Output:
-
+open method doesn't support (new feature in C++ 11)
+can convert back to older one by using .cstr()
 ```
 $ g++ -Wall -Wconversion -Wextra ofstream2.cpp -o ofstream2
 ofstream2.cpp: In function 'int main()':
@@ -535,7 +561,7 @@ Change to:
 ```cpp
   f.open(filename.c_str());
 ```
-
+Or see below, convert to C++ 2011 standard
 ```
 $ g++ -Wall -Wconversion -Wextra ofstream3.cpp -o ofstream3
 $ rm -f file.txt
@@ -544,6 +570,7 @@ $ cat file.txt
 ```
 
 ### C++ 2011 standard
+Our homeworks will all be in C++ 2011
 
 Specify usage of the C++ 2011 standard.  Passing an `std::string` to `f.open` is supported:
 
@@ -560,12 +587,12 @@ cat file.txt
 #include <iostream>
 
 //  Define constants to size the static array
-#define ni 2 
-#define nj 3
+#define ni 2  // anytime you see a "ni", replace it with a 2
+#define nj 3  // anytime you see a "nj", replace it with a 3
 
 int main() {
   int a[ni][nj];
-  
+
   // Initialize the array values
   int n = 0;
   for (int i = 0; i < ni; i++) {
@@ -574,7 +601,7 @@ int main() {
       n++;
     }
   }
-  
+
   // Store the array values in a file
   std::ofstream f("array.txt");
   if (f.is_open()) {
@@ -594,6 +621,8 @@ int main() {
 
 ### `fstream`
 
+Can read and write using fstream
+
 ```cpp
 #include <iostream>
 #include <fstream>
@@ -602,7 +631,7 @@ int main() {
   std::fstream f;
 
   // specify output mode with second argument
-  f.open("hello.txt", std::ios::out);
+  f.open("hello.txt", std::ios::out); // need to pass in what you want to do (read? or write?)
   if (f.is_open()) {
     f << "Hello" << std::endl;
     f.close();
@@ -610,7 +639,7 @@ int main() {
   else {
     std::cout << "Failed to open file" << std::endl;
   }
-  
+
   return 0;
 }
 ```
@@ -630,7 +659,7 @@ wrote
 
 int main() {
   // Read the array values from the file
-  std::ifstream f("array.txt");
+  std::ifstream f("array.txt"); //creates object and opens it in the same line
   if (f.is_open()) {
     int i;
     while (f >> i) { // Stream extraction operator
@@ -667,7 +696,7 @@ std::ifstream f("array.txt");
 if (f.is_open()) {
   // Read the size of the data and make sure storage is sufficient
   int nif, njf; // Values of ni and nj read to be read from file
-  f >> nif >> njf;
+  f >> nif >> njf; // read in size of the file to make sure we have enough storage for the size of that array
   if (nif > ni or njf > nj) {
     std::cout << "Not enough storage available" << std::endl;
     return 0; // quit the program
@@ -676,7 +705,7 @@ if (f.is_open()) {
   // Read the data and populate the array
   for (int i = 0; i < nif; i++) {
     for (int j = 0; j < njf; j++) {
-      f >> a[i][j];
+      f >> a[i][j]; // reads in data from file into the array
     }
   }
   f.close();
@@ -687,6 +716,6 @@ if (f.is_open()) {
 
 * **C++ Primer, Fifth Edition** by Lippman et al.
 
-* Chapter 1: Statements: Sections 5.3 - 5.5
+* Chapter 1: Conditional Statements: Sections 5.3 - 5.5
 
 * Chapter 8: The IO Library: Section 8.2
