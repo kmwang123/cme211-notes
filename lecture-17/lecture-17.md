@@ -3,9 +3,11 @@
 Friday, October 30, 2015
 
 Topic: Additional file I/O options in C++
-
+C++ is zero based indexing
 ### Command line arguments
-
+Argc is the number if input arguments
+float returns 32 bit floating point
+double returns a 64 bit floating point
 ```cpp
 #include <iostream>
 
@@ -20,7 +22,7 @@ int main(int argc, char *argv[]) {
 
 ```
 $ ./argv1 hello.txt 3.14 42
-0 ./argv1
+0 ./argv1 // first one is the program
 1 hello.txt
 2 3.14
 3 42
@@ -39,10 +41,12 @@ int main(int argc, char *argv[]) {
     std::cout << " " << argv[0] << " <filename> <param1> <param2>" << std::endl;
     return 0;
   }
-
+  // easy for strings
   std::string filename = argv[1];
-  double param1 = std::stof(argv[2]);
-  int param2 = std::stoi(argv[3]);
+  // conversion functions (from char array to numbers) comes from <string>
+  //noted by someone in class: should use stod instead of stof since we're assigning it to a double
+  double param1 = std::stof(argv[2]); //stof gives a floating point number
+  int param2 = std::stoi(argv[3]);   //stoi gives an int
 
   std::cout << "filename = " << filename << std::endl;
   std::cout << "param1 = " << param1 << std::endl;
@@ -64,7 +68,7 @@ $
 ```
 
 ### Formatting
-
+Note: can also do #include <cstdio> for C style printing
 ```cpp
 #include <iostream>
 
@@ -88,12 +92,13 @@ $
 
 int main() {
   double a = 2.;
+  //this changes a flag (setf means set floating point property), then () is the options
   std::cout.setf(std::ios::showpoint);
   std::cout << "a = " << a << std::endl;
   return 0;
 }
 ```
-
+// Prints out a bunch of zeros
 ```
 $ ./formatting2
 a = 2.00000
@@ -137,8 +142,9 @@ int main() {
   int c = 4;
 
   //Always show 3 decimal places
+  //fixed means "fixed width"
   std::cout.setf(std::ios::fixed, std::ios::floatfield);
-  std::cout.setf(std::ios::showpoint);
+  std::cout.setf(std::ios::showpoint); //always show the point
   std::cout.precision(3);
 
   std::cout << "a = " << a << std::endl;
@@ -191,7 +197,6 @@ $
 int main() {
   double a = 2., b = 3.14;
   int c = 4;
-
   std::cout.setf(std::ios::scientific, std::ios::floatfield);
   std::cout.precision(3);
 
@@ -221,7 +226,7 @@ $
 
 int main() {
 
-  std::cout.fill('0');
+  std::cout.fill('0'); // use this to line stuff up
 
   for(int n = 0; n < 10; n++) {
     std::cout << std::setw(2) << n << std::endl;
@@ -230,7 +235,7 @@ int main() {
   return 0;
 }
 ```
-
+Width is 2 and fill character is 0
 ```
 $ ./formatting7
 00
@@ -290,7 +295,9 @@ $ cat u.data
 ```
 
 ### Same data on each line
-
+Macs use clang++ (different compiler compared to corn)
+then,
+make file1 (this is to rerun)
 ```cpp
 #include <fstream>
 #include <iostream>
@@ -301,7 +308,12 @@ int main() {
   f.open("u.data");
   if (f.is_open()) {
     int uid, mid, rating, time;
-    while (f >> uid >> mid >> rating >> time) {
+    //from inputstream f, read into uid, mid, rating, and time
+    //reads in a single line at a time and delimit by whitespace, then store info in those variables
+    // >> stream operator converts what it reads from file into an interger
+    // if we don't include >> time, it messes up the column since now it doesn't read in the time stamp
+    if we force "int uid,mid,rating,time", and the conversion doesn't work, it returns false and the loop terminates
+    while (f >> uid >> mid >> rating >> time) { //all these in while loop since it returns false at end of file
       std::cout << "user = " << uid;
       std::cout << ", movie = " << mid;
       std::cout << ", rating = " << rating << std::endl;
@@ -409,10 +421,10 @@ if (f.is_open()) {
       return 1;
     }
 
-  // Read appropriate number of values
-  float val[6];
-  for (int n = 0; n < nval; n++) {
-    f >> val[n];
+    // Read appropriate number of values
+   float val[6];
+   for (int n = 0; n < nval; n++) {
+   f >> val[n];
   }
 ```
 
@@ -422,7 +434,7 @@ if (f.is_open()) {
 f.open(filename);
 if (f.is_open()) {
   std::string line;
-  while (getline(f, line)) {
+  while (getline(f, line)) { // reads a single line from file into a string, handy to process line by line
     std::cout << line << std::endl;
   }
   f.close();
@@ -448,8 +460,9 @@ rectangle 1 1 8 2
 $
 ```
 
-### String stream
-
+### String stream READ IN BOOK
+Remains in memory- Purpose is to convert back into string later
+This is a more efficient way to do string concatenation and behind the scenes, object handles mem by itself
 ```cpp
 f.open(filename);
 if (f.is_open()) {
@@ -495,7 +508,7 @@ $
 int main(int argc, char *argv[]) {
   if (argc < 2) {
     std::cout << "Usage:" << std::endl;
-    std::cout << " " << argv[0] << " <name data> [nnames]" << std::endl << std::endl;
+    std::cout << " " << argv[0] << " <name data> [nnames]" << std::endl << std::endl; //nnames is number of names we will process and this is an optional argument, so we want a default number
     std::cout << " Read at most nnames (optional)" << std::endl;
     return 0;
   }
@@ -504,9 +517,9 @@ int main(int argc, char *argv[]) {
   std::string filename = argv[1];
 
   // Determine maximum number of names to read
-  int nnames = std::numeric_limits<int>::max();
+  int nnames = std::numeric_limits<int>::max(); //do #include <limits> to retrieve limit of integer type
   if (argc == 3) {
-    nnames = std::stoi(argv[2]);
+    nnames = std::stoi(argv[2]); //again, we see stoi. also, this is NOT a silent error (see Testing extraction)
   }
 
   std::ifstream f;
@@ -538,7 +551,7 @@ int main(int argc, char *argv[]) {
 
   // Attempt to extract an integer from the string stream
   int n = 0;
-  ss >> n;
+  ss >> n; //putting a string into an int, and when C++ realizes it can't convert, it leaves n=0 and doens't modify it. This doesn't throw an error! or a silent error
   std::cout << "n = " << n << std::endl;
 
   return 0;
@@ -570,7 +583,7 @@ int main(int argc, char *argv[]) {
 
   // Attempt to extract an integer from the string stream
   int n = 0;
-  if (ss >> n)
+  if (ss >> n) // if cannot convert, it returns a false
     std::cout << "n = " << n << std::endl;
   else
     std::cerr << "ERROR: string stream extraction failed" << std::endl;
