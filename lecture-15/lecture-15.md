@@ -8,6 +8,7 @@ Topics:
 * variable scope
 * looping
 
+Coliru.stacked-crooked.com is a handy website that you can write C++ code in and compile.
 ## Static arrays
 
 The size (length) of static arrays is known at compile time.  See `src/array.cpp`:
@@ -16,7 +17,7 @@ The size (length) of static arrays is known at compile time.  See `src/array.cpp
 #include <iostream>
 
 int main() {
-  int a[3]; // Array referenced via a with 3 integer elements
+  int a[3]; // Array referenced via a with 3, integer elements (array with 3 elements)
 
   a[0] = 0;
   a[1] = a[0] + 1;
@@ -82,8 +83,9 @@ a[3] = 3
 $
 ```
 
-Nothing bad happened here.  But, the behavior is undefined.  This could have
-cause the universe to collapse.  We're lucky it did not.
+Nothing bad happened here.  But, the behavior is undefined. We're overwriting memory in the computer that is used for something else, but we don't know what that is, so this is very very bad.
+
+Python checks this for your (out of bounds error), but C++ doesn't! Leads to all sorts of problems
 
 ### Address Sanitizer
 
@@ -101,10 +103,11 @@ arrays.  To do this we enable the "address sanitizer" at compile time.
 * Program will use more memory and run slower
 
 Let's enable this with `g++`:
-
+Backslash '\' tells command line to keep reading on the next line
 ```
+
 $ g++ -Wall -Wconversion -Wextra \
-    -g \
+    -g \ // enables debugging signal
     -fsanitize=address \
     array.cpp -o array
 $
@@ -191,6 +194,8 @@ Starting program:
 #7  0x0000000000400c64 in main () at array.cpp:12
 (gdb) q
 ```
+'#7  0x0000000000400c64 in main () at array.cpp:12
+(gdb) q' this is an important line since it tells you what line of code is causing the crash
 
 ## Multidimensional static arrays
 
@@ -201,7 +206,7 @@ See `src/md_array.cpp`:
 
 int main() {
   // declare a 2D array
-  int a[2][2];
+  int a[2][2]; // accessing data along the second element or rightmost index is CONTIGUOUS in memory (this is C-style format)
 
   a[0][0] = 0;
   a[1][0] = 1;
@@ -248,7 +253,7 @@ int main() {
   // declare another 2D array
   int b[2][2];
 
-  b = a;
+  b = a; // cannot assign a to b, gives compile error. If you want to copy array, you need to do a double nested for loop and do it yourself
 
   a[0][0] = 0;
   a[1][0] = 1;
@@ -299,7 +304,7 @@ int main() {
   {
     int n = 5;
   }
-
+ //compile time error since n is outside the scope and we are trying to print it
   std::cout << "n = " << n << std::endl;
 
   return 0;
@@ -340,7 +345,7 @@ int main() {
   return 0;
 }
 ```
-
+This bad practice since you don't want to rename variables in a subscope
 ```
 $ g++ -Wall -Wconversion -Wextra scope.cpp -o scope
 $ ./scope
@@ -348,7 +353,14 @@ n = Hi
 n = 5
 $
 ```
-
+If you comment out the int n=5 block, get:
+```
+$ g++ -Wall -Wconversion -Wextra scope.cpp -o scope
+$ ./scope
+n = Hi
+n = Hi <- this is the print statement called in the nested for loop
+$
+```
 ## C++ for loop
 
 Start with an example.  See `src/for_loop1.cpp`:
@@ -491,12 +503,12 @@ Output:
 
 ```
             a: 1
-return of a++: 1
+return of a++: 1 //copy value of a, store it, then increment
             a: 2
-return of ++a: 3
+return of ++a: 3 //increment first, then store and returns
             a: 3
 ```
-
+Postfix is more expensive
 ### Iterating through an array
 
 `src/for_loop3.cpp`:
