@@ -26,7 +26,7 @@ Topics:
 Example:
 
 ```c++
-int sum(int a, int b) {
+int sum(int a, int b) { //need to specify return type and parameter type
   int c = a + b;
   return c;
 }
@@ -76,6 +76,8 @@ $
 
 `src/sum2.cpp`:
 
+The order in which the function appears matters. Sum function should show up before the main function.
+
 ```c++
 #include <iostream>
 
@@ -110,9 +112,9 @@ $
 
 * A function *definition* is the code that implements the function
 
-* It is legal to call a function if it has been defined or *declared* previously
+* It is legal to call a function if it has been defined or *declared* previously (in the same C++ source file)
 
-* A function *declaration* specifies the function name, input argument type(s),
+* See example below: A function *declaration* specifies the function name, input argument type(s),
   and output type.  The function *declaration* need not specify the
   implementation (code) for the function.
 
@@ -122,14 +124,14 @@ $
 #include <iostream>
 
 // Forward declaration or prototype
-int sum(int a, int b);
+int sum(int a, int b); // tells compiler that there is an implementation for this function and it exists somewhere
 
 int main() {
   int a = 2, b = 3;
-  
+
   int c = sum(a,b);
   std::cout << "c = " << c << std::endl;
-  
+
   return 0;
 }
 
@@ -195,7 +197,8 @@ $
 
 int sum(int a, int b) {
   double c = a + b;
-  return c; // we are not returning the correct type
+  return c; // we are not returning the correct type (since this rounds c up or down to an int)
+
 }
 
 int main() {
@@ -241,7 +244,7 @@ int sum(int a, int b) {
 int main() {
   double a = 2.7, b = 3.8;
 
-  int c = sum((int)a,(int)b);
+  int c = sum((int)a,(int)b); // can also do int(a), but (int)a used to be compatible with C
   std::cout << "c = " << c << std::endl;
 
   return 0;
@@ -249,11 +252,13 @@ int main() {
 ```
 
 Output:
+This returns c = 5
 
 ```
 $ g++ -Wall -Wextra -Wconversion datatypes3.cpp -o datatypes3
 $
 ```
+
 
 ### `void`
 
@@ -264,7 +269,7 @@ $
 ```c++
 #include <iostream>
 
-void printHeader(void) {
+void printHeader(void) { //the input argument doesn't need to have anything (it's optional to put void or not)
   std::cout << "-------------------------" << std::endl;
   std::cout << "      MySolver v1.0      " << std::endl;
   std::cout << "-------------------------" << std::endl;
@@ -294,12 +299,14 @@ $
 ```c++
 #include <iostream>
 
+//returning 0 gives compiler error since the return is void
 void printHeader(void) {
   std::cout << "-------------------------" << std::endl;
   std::cout << "      MySolver v1.0      " << std::endl;
   std::cout << "-------------------------" << std::endl;
   return 0;
 }
+
 
 int main() {
   printHeader();
@@ -325,6 +332,7 @@ $
 ```c++
 #include <iostream>
 
+// use return keyword to get back to main
 void printHeader(void) {
   std::cout << "-------------------------" << std::endl;
   std::cout << "      MySolver v1.0      " << std::endl;
@@ -343,6 +351,12 @@ Output:
 ```
 $ g++ -Wall -Wextra -Wconversion void3.cpp -o void3
 $
+```
+and it gives
+```
+-------------------------
+      MySolver v1.0      
+-------------------------
 ```
 
 ### Ignoring return value
@@ -398,6 +412,8 @@ int main() {
 ```
 
 Output:
+
+In this case, a,b exist in scope of main but not in sum, so it gives a compile time error
 
 ```
 $ g++ -Wall -Wextra -Wconversion scope1.cpp -o scope1
@@ -488,15 +504,17 @@ $
 void increment(int a[2]) {
   a[0]++;
   a[1]++;
+  std::cout << "a[0] = " << a[0] << ", " << "a[1] = " << a[1]<< std::endl;
+
 }
 
 int main() {
   int a[2] = {2, 3};
 
-  std::cout << "a[0] = " << ", " << "a[1] = " << std::endl;
-  increment(a);
-  std::cout << "a[0] = " << ", " << "a[1] = " << std::endl;
-  
+  std::cout << "a[0] = " << a[0] << ", " << "a[1] = " << a[1]<< std::endl;
+  increment(a); // passes a pointer so that we can still modify this array
+  std::cout << "a[0] = " << a[0] << ", " << "a[1] = " << a[1]<< std::endl;
+
   return 0;
 }
 ```
@@ -523,12 +541,21 @@ arguments are copied
   number
 
 * For a static array like `int a[2]`, what is being passed and copied is the
-location in memory where the array data is stored
+**location in memory** where the array data is stored
 
 * Will discuss pass by reference when we get to data structures
 
 
 ### Towards modularity
+Takes source file and compiles them independently
+Compiler operates in stages:
+1. preprocess
+2. compile
+3. link
+g++ -Wall -Wextra -Wconversion main4.cpp sum4.cpp -o sum4
+this command links  main4.cpp sum4.cpp  together
+if don't include one of the program, this gives a "linker" or "link" error
+
 
 `src/main4.cpp`:
 
@@ -603,6 +630,8 @@ collect2: error: ld returned 1 exit status
 $
 ```
 
+Can overload a function based on input arguments, not output
+
 ## The preprocessor and `#include`
 
 * We have used functionality from the C++ standard library for output to the
@@ -636,27 +665,29 @@ preprocessor, `cpp`
 * What does the preprocessor do?
 
 * For one thing it processes those `#include` statements
+    - "#include" copy pastes into code
 
 ### Hacking the preprocessor
 
 ```
-$ cpp -P goodbye.txt 
+$ cpp -P goodbye.txt
 Hello!
 
 Goodbye!
 
 
-$ cat hello.txt 
+$ cat hello.txt
 Hello!
-$ cat goodbye.txt 
+$ cat goodbye.txt
 #include "hello.txt"
 Goodbye!
 
-$ cpp -P goodbye.txt 
+$ cpp -P goodbye.txt
 Hello!
 
 Goodbye!
 ```
+
 
 ### Compilation process
 
@@ -703,6 +734,7 @@ $
 
 ### `#include` syntax
 
+
 * The `.hpp` file extension denotes a C++ header file
 
 * `<` `>` around the file name means that the preprocessor should search for an
@@ -716,8 +748,14 @@ Linux
 
 * `"header.hpp"` means that the preprocessor should first search in the user directory,
 followed by a search in a system dependent or default directory if necessary
+*  Quotes within the same file
+* Brackets for system directory
+
 
 ### `#define`
+
+- Will replace any instance of ni or nj with 16
+- Use this for constants
 
 `src/define1.cpp`:
 
@@ -773,7 +811,7 @@ $
 ```c++
 #include <iostream>
 
-#define sqr(n) (n)*(n)
+#define sqr(n) (n)*(n) // take instances of sqr(n) and replace it with (n)*(n), so do this for generic types
 
 int main() {
   int a = 2;
@@ -801,7 +839,7 @@ $
 ```c++
 #include <iostream>
 
-#define sqr(n) n*n
+#define sqr(n) n*n // need to bracket variables!! otherwise get weird outputs  
 
 int main() {
   int a = 2;
@@ -861,7 +899,7 @@ int main() {
   a[0] = 2;
   for (int n = 1; n < na; n++) a[n] = a[n-1] + 1;
 
-#ifdef DEBUG
+#ifdef DEBUG // if DEBUG is defined in the preprocessor, then include this code. This is a debugging flag
   // Only kept by preprocessor if DEBUG defined
   for (int n = 0; n < na; n++) {
     std::cout << "a[" << n << "] = " << a[n] << std::endl;
