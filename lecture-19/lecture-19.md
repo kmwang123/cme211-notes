@@ -869,6 +869,8 @@ int main() {
     int uid, mid, rating, time;
     while (f >> uid >> mid >> rating >> time) {
       data.emplace_back(uid, mid, rating, time);
+    //  data.push_back(std::tuple<uid, mid, rating, time>); // this is equivalent to above, but this is less efficient
+
     }
     f.close();
   }
