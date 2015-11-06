@@ -49,7 +49,7 @@ int main()
   else
     std::cout << "v is not empty" << std::endl;
 
-  v.push_back(42);
+  v.push_back(42); //similar to "append()" to a list in python
 
   std::cout << "v.size() = " << v.size() << std::endl;
 
@@ -71,7 +71,7 @@ v.size() = 0
 v is empty
 v.size() = 1
 v is not empty
-$ 
+$
 ```
 
 ### Printing a vector
@@ -89,7 +89,7 @@ int main()
   std::vector<int> v;
   v.push_back(42);
 
-  std::cout << "v = " << v << std::endl;
+  std::cout << "v = " << v << std::endl; // will give error since you cant print vector like this
 
   return 0;
 }
@@ -164,10 +164,11 @@ Valid `vector` indices for a vector named `v` are in the range
 int main()
 {
   std::vector<int> v;
+  // add three elements to vector
   v.push_back(42);
   v.push_back(-7);
   v.push_back(19);
-
+  // access vector out of bounds
   std::cout << "v[-1] = " << v[-1] << std::endl;
   std::cout << "v[3] = " << v[3] << std::endl;
 
@@ -176,7 +177,7 @@ int main()
 ```
 
 Output:
-
+No error, but will hurt your later. Hard to find bugs later.
 ```
 $ g++ -std=c++11 -Wall -Wextra -Wconversion    vector4a.cpp   -o vector4a
 $ ./vector4a
@@ -235,6 +236,7 @@ int main()
 ```
 
 Output:
+No address sanitizer fault
 
 ```
 $ g++ -std=c++11 -Wall -Wextra -Wconversion -g -fsanitize=address    vector4c.cpp   -o vector4c
@@ -285,7 +287,8 @@ int main()
   return 0;
 }
 ```
-
+error is not connected to sanitizer- this is from .at() methods
+Watch out, at() adds extra computation- can help in debugging, but would rather use debug move
 Output:
 
 ```
@@ -362,7 +365,7 @@ clang++ -std=c++11 -Wall -Wextra -Wconversion -g -fsanitize=address    vector7.c
 vector7.cpp:11:5: error: no matching member function for call to 'insert'
   v.insert(1, 73);
   ~~^~~~~~
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector:709:14: note: 
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector:709:14: note:
       candidate function not viable: no known conversion from 'int' to
       'const_iterator' (aka '__wrap_iter<const_pointer>') for 1st argument
     iterator insert(const_iterator __position, value_type&& __x);
@@ -392,8 +395,8 @@ int main()
   std::vector<int>::iterator iter;
 
   // Set iterator to start of vector
-
-  iter = v.begin();
+  // think of like a reference/pointer to a particular location to a vector
+  iter = v.begin(); //points to start of vector
 
   // Advance iterator by two positions
   iter += 2;
@@ -407,7 +410,9 @@ int main()
   return 0;
 }
 ```
-
+Inserted 73, and it pushed 19 back
+Data containers don't have a notion of being able to index into the container, so we need iterator
+(ex, C++ map doesn't have a sequence, so iterator moves thru items in a container but not be associated with an integer index)
 Output:
 
 ```
@@ -422,6 +427,7 @@ v[3] = 19
 ### Erase
 
 The `erase()` method also uses an iterator.
+Below example, we want to remove the fourth element
 
 `src/vector9.cpp`:
 
@@ -439,7 +445,7 @@ int main()
   v.push_back(0);
 
   // remove fourth element
-  v.erase(v.begin()+3);
+  v.erase(v.begin()+3); //advances three elements from beginning
 
   for(unsigned int n = 0; n < v.size(); n++)
     std::cout << "v[" << n << "] = " << v[n] << std::endl;
@@ -464,6 +470,27 @@ v[3] = 0
 `src/sort.cpp`:
 
 ```c++
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+int main()
+{
+  std::vector<int> v;
+  v.push_back(42);
+  v.push_back(-7);
+  v.push_back(19);
+  v.push_back(73);
+  v.push_back(0);
+
+  std::sort(v.begin(), v.end());
+
+  for(unsigned int n = 0; n < v.size(); n++)
+    std::cout << "v[" << n << "] = " << v[n] << std::endl;
+
+  return 0;
+}
+
 ```
 
 Output:
@@ -479,6 +506,8 @@ v[4] = 73
 ```
 
 ### Accumulate
+Need to include numeric algorithm. Need to pass it iterators of the beginning and end. Check reference for waht 0 is doing.
+This is equivalent to python sum()
 
 `src/accumulate.cpp`:
 
@@ -506,7 +535,7 @@ int main()
 Output:
 
 ```
-$ ./accumulate 
+$ ./accumulate
 sum = 127
 $
 ```
@@ -527,7 +556,7 @@ int main()
   v1.push_back(19);
 
   std::vector<int> v2 = v1;
-  v2[1] = 73; 
+  v2[1] = 73;
 
   for (unsigned int n = 0; n < v1.size(); n++) {
     std::cout << "v1[" << n << "] = " << v1[n] << std::endl;
@@ -584,7 +613,7 @@ int main() {
 Output:
 
 ```
-$ cat numbers.txt 
+$ cat numbers.txt
 42
 17
 -5
@@ -605,6 +634,7 @@ $
 #include <iostream>
 #include <vector>
 
+//this is pass by caller (make a copy)
 void increment(std::vector<int> v) {
   for (unsigned int n = 0; n < v.size(); n++) {
     v[n]++;
@@ -641,13 +671,13 @@ $
 ```
 
 ### Pass by reference
-
+This is faster as the previous example
 `src/passing.cpp`:
 
 ```c++
 #include <iostream>
 
-void increment(int &a)
+void increment(int &a) //use & to pass by reference; variable is reference to an int
 {
   a++;
   std::cout << "a = " << a << std::endl;
@@ -667,10 +697,10 @@ int main()
 Output:
 
 ```
-$ ./passing 
+$ ./passing
 a = 3
 a = 3
-$ 
+$
 ```
 
 ### Pass by reference
@@ -741,7 +771,9 @@ int main()
   std::string h = "Hello";
   int a = 42;
 
-  auto t = std::make_tuple(h, a);
+  auto t = std::make_tuple(h, a); //automatically put the type
+  //auto t = std::make_tuple(h, a,b,v); //can add even more if you want
+
 
   std::cout << "t[0] = " << std::get<0>(t) << std::endl;
   std::cout << "t[1] = " << std::get<1>(t) << std::endl;
@@ -762,7 +794,7 @@ $ ./tuple1
 t[0] = Hello
 t[1] = 42
 t[1] = 19
-$ 
+$
 ```
 
 ### Vector of tuples
@@ -777,7 +809,7 @@ $
 
 int main() {
   std::ifstream f;
-  std::vector<std::tuple<std::string,float,float,int>> names;
+  std::vector<std::tuple<std::string,float,float,int>> names; //data has four columns (string,float,float,int). each item in the vector is this tuple type
 
   f.open("dist.female.first");
   if (f.is_open()) {
@@ -843,8 +875,8 @@ int main() {
   else {
     std::cerr << "ERROR: Failed to open file" << std::endl;
   }
-
-  for (auto d : data) {
+// loops thru vector data and gives us one entry
+  for (auto d : data) { // use auto so compiler automatically determines the type that's stored
     std::cout << std::get<0>(d) << " " << std::get<1>(d);
     std::cout << " " << std::get<2>(d) << std::endl;
   }
@@ -875,5 +907,3 @@ $ ./tuple3
 * **C++ Primer, Fifth Edition** by Lippman et al.
 
 * Chapter 9: Sequential Containers: Sections 9.1 - 9.4
-
-
