@@ -31,27 +31,29 @@ Topics:
 int main() {
   std::vector<int> a;
   for (int i = 0; i < 10; i++) {
-    a.push_back(i);
+    a.push_back(i); //requires 40 bytes of memory
   }
-  std::cout << "sizeof(a): " << sizeof(a) << std::endl;
-  std::cout << "    memory location of a: " << &a << std::endl;
-  std::cout << " memory location of data: " << a.data() << std::endl;
+  std::cout << "sizeof(a): " << sizeof(a) << std::endl; //sizeof() gives size in bytes required by that variable and the type (for example, this returns n bytes required by the vector container)
+  std::cout << "    memory location of a: " << &a << std::endl; //&a gives address of the object a (orange thing in the pic)
+  std::cout << " memory location of data: " << a.data() << std::endl; //.data() returns memory location of data (blue thing in pic)
   std::cout << "difference in memory loc: "
-            << double((int*)&a-a.data()) / 1024 / 1024 / 1024 
-            << " GB" << std::endl;
+            << double((int*)&a-a.data()) / 1024 / 1024 / 1024 // how far apart the memory and its container (address of a-address of data)
+            << " GB" << std::endl; //this returns in Gigabytes instead of bytes
   return 0;
 }
 ```
 
 Output:
 
+Note that memory allocation is stochastic- this is for security purposes, making it harder for ppl to introduce malicious codes
+
 ```
 $ clang++ -std=c++11 -Wall -Wextra -Wconversion src/vector_memory.cpp -o src/vector_memory
 $ ./src/vector_memory
 sizeof(a): 24
-    memory location of a: 0x7fff541738e0
+    memory location of a: 0x7fff541738e0 //hexadecimals
  memory location of data: 0x7f9d4b500040
-difference in memory loc: 98.0343 GB
+difference in memory loc: 98.0343 GB //difference in address space, not physical memory space
 $ ./src/vector_memory
 sizeof(a): 24
     memory location of a: 0x7fff5d1498e0
@@ -72,16 +74,16 @@ difference in memory loc: 2.5961 GB
 
   * 8 bytes of the capacity of the vector, number of elements that may be stored
   before reallocation
-  
+
 * Memory locations are different in each run of the program.  This is a security
   feature to make it harder to introduce malicious code or data.
-  
+
 ## Multidimensional data
 
 * How do we handle multidimensional data in C++?
 
 ### Container of containers
-
+This is basically a vector of vectors (causes things in different rows to be NOT contiguous in memory)
 `src/multi1.cpp`:
 
 ```cpp
@@ -131,9 +133,12 @@ v[2][2] = 8
 
 ### Layout in memory
 
+
 ![fig](fig/vector-of-vectors.png)
 
 ### Contiguous memory
+Source of programmer error (getting something wrong in the indexing)
+Should write some helper functions to make indexing a bit nicer
 
 `src/multi2.cpp`:
 
@@ -144,7 +149,7 @@ v[2][2] = 8
 int main() {
   unsigned int nrows = 3, ncols = 3;
   std::vector<double> a;
-  a.resize(nrows*ncols);
+  a.resize(nrows*ncols); //data for entire array is contiguous in memory
 
   double n = 0.;
   for(unsigned int i = 0; i < nrows; i++) {
@@ -179,6 +184,8 @@ a[8] = 8
 ```
 
 ## Boost Multidimensional Array Library
+Check boost.org for a ton of different C++ libraries
+
 
 `src/array1.cpp`:
 
@@ -188,7 +195,7 @@ a[8] = 8
 
 int main() {
   unsigned int nrows = 3, ncols = 3;
-  boost::multi_array<double, 2> a(boost::extents[nrows][ncols]);
+  boost::multi_array<double, 2> a(boost::extents[nrows][ncols]); //boost:: namespace; double is the type we want to store in the array, '2' is the number of dimensions you want the array to have
 
   double n = 0.;
   for (unsigned int i = 0; i < nrows; i++) {
@@ -224,6 +231,9 @@ a[2][2] = 8
 ```
 
 ### Accessing the contiguous memory
+Use a.data() for multiarray object- you can index into that to access data items sequentially (linearly)
+Second index is contiguous (j) and there will be a stride in (i)
+
 
 `src/array2.cpp`:
 
@@ -285,7 +295,7 @@ int main() {
       a[i][j] = 1.0;
     }
   }
-  
+
   auto t0 = std::clock();
   double sum = 0.;
   for (unsigned int i = 0; i < nrows; i++) {
@@ -299,7 +309,7 @@ int main() {
             << double(t1-t0) / CLOCKS_PER_SEC
             << " seconds"<< std::endl;
 
-  auto b = a.data();
+  auto b = a.data(); //access memory linearly
   t0 = std::clock();
   sum = 0.;
   for (unsigned int n = 0; n < nrows*ncols; n++) {
@@ -327,6 +337,8 @@ $ ./src/perf1
  boost: sum = 6.71089e+07, time = 4.39778 seconds
 direct: sum = 6.71089e+07, time = 0.184639 seconds
 ```
+Why? Boost does range checks if you're out of bounds. We can disable these (see below)
+
 
 ### Performance
 
@@ -351,11 +363,12 @@ $ ./src/perf2
  boost: sum = 6.71089e+07, time = 3.97976 seconds
 direct: sum = 6.71089e+07, time = 0.184732 seconds
 ```
+We're still quite a bit slower than the standard linear run of the data even when we disable the range checks
 
 ### Compiler optimization
 
 Enable compiler optimizations with the `-O3` argument.
-
+Boost is still a bit slower, but not bad!
 With range checking:
 
 Output:
@@ -374,9 +387,9 @@ direct: sum = 6.71089e+07, time = 0.062854 seconds
 ```
 
 Range checking disabled:
-
 Output:
-
+Really good- compiler did an amazing job optimizing the code so that our memory access is as efficient as linear access
+Drawbacks: Compilation phase takes longer, you may lose something else in arithmetic or other things (check up manual for more details)
 ```
 $ clang++ -O3 -std=c++11 -Wall -Wextra -Wconversion src/perf2.cpp -o src/perf2
 $ ./src/perf2
@@ -400,7 +413,7 @@ direct: sum = 6.71089e+07, time = 0.062087 seconds
 
 int main() {
   boost::multi_array<double, 2> a(boost::extents[3][3]);
-  a[3][3] = 1.;
+  a[3][3] = 1.; //try putting value out of bounds
   return 0;
 }
 ```
@@ -482,7 +495,7 @@ Shadow bytes around the buggy address:
   0x1c0e00001bf0: fd fd fa fa fa fa fd fd fd fd fd fd fd fd fd fd
 Shadow byte legend (one shadow byte represents 8 application bytes):
   Addressable:           00
-  Partially addressable: 01 02 03 04 05 06 07 
+  Partially addressable: 01 02 03 04 05 06 07
   Heap left redzone:       fa
   Heap right redzone:      fb
   Freed heap region:       fd
@@ -508,6 +521,10 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
 
 Another method to check for memory leaks is `valgrind`.
 
+Still leave in -g debugging flag
+execute valgrind <give program you want to execute>
+able to detect out of bounds memory access
+
 Output:
 
 ```
@@ -517,23 +534,23 @@ $ valgrind ./src/array3b
 ==22635== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
 ==22635== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
 ==22635== Command: ./src/array3b
-==22635== 
+==22635==
 ==22635== Invalid write of size 8
 ==22635==    at 0x10000093D: main (array3b.cpp:7)
 ==22635==  Address 0x100809650 is 16 bytes after a block of size 80 in arena "client"
-==22635== 
-==22635== 
+==22635==
+==22635==
 ==22635== HEAP SUMMARY:
 ==22635==     in use at exit: 34,725 bytes in 422 blocks
 ==22635==   total heap usage: 510 allocs, 88 frees, 41,197 bytes allocated
-==22635== 
+==22635==
 ==22635== LEAK SUMMARY:
 ==22635==    definitely lost: 0 bytes in 0 blocks
 ==22635==    indirectly lost: 0 bytes in 0 blocks
 ==22635==      possibly lost: 0 bytes in 0 blocks
 ==22635==    still reachable: 0 bytes in 0 blocks
 ==22635==         suppressed: 34,725 bytes in 422 blocks
-==22635== 
+==22635==
 ==22635== For counts of detected and suppressed errors, rerun with: -v
 ==22635== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
 ```
@@ -557,7 +574,7 @@ int main() {
     }
   }
 
-  std::cout << "a == b: " << (a == b) << std::endl;
+  std::cout << "a == b: " << (a == b) << std::endl; //returns true if all elements of a and b are equal
   std::cout << "a < b: " << (a < b) << std::endl;
   std::cout << "a > b: " << (a > b) << std::endl;
 
@@ -594,12 +611,13 @@ int main() {
 
   auto b = a; // copy or reference?
 
+//modify elements of a
   for (unsigned int i = 0; i < 3; i++) {
     for (unsigned int j = 0; j < 3; j++) {
       a[i][j] = 2.;
     }
   }
-
+//print out both a and b
   std::cout << "a b" << std::endl;
   std::cout << "---" << std::endl;
   for (unsigned int i = 0; i < 3; i++) {
@@ -613,6 +631,7 @@ int main() {
 
 Output:
 
+They are different! So the assignment operator = is COPYING the array
 ```
 $ clang++ -std=c++11 -Wall -Wextra -Wconversion src/array6a.cpp -o src/array6a
 $ ./src/array6a
@@ -630,6 +649,8 @@ a b
 ```
 
 ### Passing an array to a function
+
+This convention is pass by copy or value
 
 `src/array6b.cpp`:
 
@@ -682,6 +703,8 @@ $ ./src/array6b
 ```
 
 ### Passing by reference
+
+Specify by the & (reference to the data type)
 
 From `src/array6c.cpp`:
 
@@ -746,7 +769,7 @@ int main() {
   }
 
   /* Setup b as a view into a subset of a. */
-  typedef boost::multi_array<double, 2>::index_range index_range;
+  typedef boost::multi_array<double, 2>::index_range index_range; // rename this long type (boost::multi_array<double, 2>::index_range) and call it index_range instead, similar to import numpy as np in python- it's just an alias for the name
   auto b = a[boost::indices[index_range(1,3)][index_range(1,3)]];
 
   for (unsigned int i = 0; i < 2; i++) {
@@ -794,7 +817,7 @@ int main() {
   double n = 0.;
   for (unsigned int i = 0; i < 3; i++) {
     for (unsigned int j = 0; j < 3; j++) {
-      a[i][j] = n;
+      a[i][j] = n; //rightmost index is contiguous in memory
       n++;
     }
   }
@@ -831,6 +854,8 @@ order)
 when traversing through linear memory
 
 ### "Fortran" storage order
+
+Is the opposite: the first index changes fastest and is contigous in memory
 
 `src/array10b.cpp`:
 
@@ -891,13 +916,13 @@ From `src/accumulate.cpp`:
 ```
 
 Output:
-
+Can optimize all of the using the -03
 ```
 $ clang++ -std=c++11 -Wall -Wextra -Wconversion src/accumulate.cpp -o src/accumulate
 $ ./src/accumulate
- boost: sum = 6.71089e+07, time = 4.78976 seconds
-direct: sum = 6.71089e+07, time = 0.186091 seconds
- accum: sum = 6.71089e+07, time = 2.63903 seconds
+ boost: sum = 6.71089e+07, time = 4.78976 seconds //array access is slow
+direct: sum = 6.71089e+07, time = 0.186091 seconds //going over memory is fast
+ accum: sum = 6.71089e+07, time = 2.63903 seconds //somewhere in the middle
 ```
 
 ### Boost summary
