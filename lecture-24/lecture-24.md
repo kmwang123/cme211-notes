@@ -118,16 +118,16 @@ int main(int argc, char* argv[]) {
 #include <string>
 #include <tuple>
 #include <unordered_map>
-
+// namemap is the alias for this very long type
 typedef std::unordered_map<std::string,std::tuple<double,double,unsigned int>> namemap;
 
 class NameClassifier
-{
-  namemap female;
+{//these are all private (default), not accessible outside of class
+  namemap female; //data members with the namemap type defined above (using alias)
   namemap male;
 
   void readData(std::string filename, namemap &names);
-
+//this are all public: the constructor is public (data we need to create object of this class)
  public:
   NameClassifier(std::string female, std::string male);
   double classifyName(std::string name);
@@ -139,7 +139,7 @@ class NameClassifier
 #endif /* NAMES_HPP */
 ```
 
-### Implementaion
+### Implementation
 
 `name/names.cpp`:
 
@@ -182,11 +182,11 @@ double NameClassifier::classifyName(std::string name) {
   if (f == female.end() and m == male.end()) return 0.5;
 
   // definitely male or female
-  if (f == female.end()) return 0.;
+  if (f == female.end()) return 0.; //end method returns an iterator that is one past the end (indicates that name was not found in this map)
   if (m == male.end()) return 1.;
 
-  // somewhere in between
-  return std::get<0>(f->second)/(std::get<0>(f->second) + std::get<0>(m->second)); 
+  // somewhere in between (f-> second corresponds to value, f-> first corresponds to key)
+  return std::get<0>(f->second)/(std::get<0>(f->second) + std::get<0>(m->second)); //get<0> is index column?
 }
 
 namemap::size_type NameClassifier::getNumberNames(void) {
@@ -194,7 +194,7 @@ namemap::size_type NameClassifier::getNumberNames(void) {
 }
 
 namemap::size_type NameClassifier::getNumberFemaleNames(void) {
-  return female.size();
+  return female.size(); //note that this is type size_type (will it work if we change to int? probably not, but you can try it)
 }
 
 namemap::size_type NameClassifier::getNumberMaleNames(void) {
@@ -203,7 +203,7 @@ namemap::size_type NameClassifier::getNumberMaleNames(void) {
 ```
 
 ### Putting it together
-
+//pass name of main and names source files
 Output:
 
 ```
@@ -253,6 +253,13 @@ Computed similarities in 39.075 seconds
 * Only difference is high level versus low level language
 
 * Let's review the implementation...
+
+- there's c standard includes
+- c++ standard includes
+- any of my own includes
+- declare types for data (typedef uint32_t MovieId;); used typedef for easier read, also more flexible when you need to make changes
+- Nick's preference is to make types with capital letters and everything else lowercase with underscores
+- pass large data structures by reference
 
 ### C++ performance
 
