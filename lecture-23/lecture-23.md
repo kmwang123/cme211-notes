@@ -12,15 +12,15 @@ Topic: C++ Object Oriented Programming
 #include <string>
 
 class user {
-  // data members
+  // data members (members of the types)
   int id;
   std::string name;
-};
+}; //REQUIRED SEMICOLON!!
 
 int main()
 {
   user u; // object (instance of the class)
-  return 0;
+  return 0; //creates object in memory, doesn't do anything
 }
 ```
 
@@ -51,10 +51,10 @@ class user
 
 int main()
 {
-  user u;
+  user u; //create object u of class user
   u.id = 7; // Member access via dot notation
   std::cout << "u.id = " << u.id << std::endl;
-  return 0;
+  return 0; //code does NOT compile- everything is private; cannot access data inside class
 }
 ```
 
@@ -85,7 +85,7 @@ src/class2.cpp:6:7: note: implicitly declared private here
 #include <iostream>
 #include <string>
 
-struct user
+struct user //default access is public
 {
   int id;
   std::string name;
@@ -94,7 +94,7 @@ struct user
 int main()
 {
   user u;
-  u.id = 7;
+  u.id = 7; //similar to python code we've seen before
   std::cout << "u.id = " << u.id << std::endl;
   return 0;
 }
@@ -221,9 +221,9 @@ class user {
 
 int main() {
   user u;
-  u.id = 7;
+  u.id = 7; //this is private (will give compile time errors)
   u.name = "Leland";
-  u.age = 12;
+  u.age = 12; //this is private
 
   std::cout << "u.id = " << u.id << std::endl;
   std::cout << "u.name = " << u.name << std::endl;
@@ -278,7 +278,7 @@ struct user {
 int main() {
   user u;
   u.id = 7;
-  u.age = 12;
+  u.age = 12; //age wasn't declared in struct user
   return 0;
 }
 ```
@@ -302,8 +302,8 @@ src/struct3.cpp:10:5: error: no member named 'age' in 'user'
 
 class user {
   // data member initialization is a C++11 feature
-  int id = 7;
-  int getId(void) {
+  int id = 7; //data member initialization
+  int getId(void) {//define a function inside a class (note:don't need self)
     return id;
   }
 };
@@ -336,9 +336,9 @@ src/class5.cpp:6:7: note: implicitly declared private here
 #include <iostream>
 
 class user {
-  int id = 7;
+  int id = 7; //this is private, user cannot modify
  public:
-  int getId(void) {
+  int getId(void) { //getter method (read only method for that variable)
     return id;
   }
 };
@@ -369,7 +369,7 @@ class user {
   int id = 1;
  public:
   int getId(void) { return id; }
-  void setId(int id) { id = id; }
+  void setId(int id) { id = id; } //user can set it, but id = id clashes with int id (this is ambiguous). id refers to id from argument, and this causes errors
 };
 
 int main() {
@@ -397,6 +397,8 @@ u.getId() = 1
 
 ### One solution
 
+google.github style guide 
+
 `src/class8.cpp`:
 
 ```c++
@@ -406,7 +408,7 @@ class user {
   int id = 1;
  public:
   int getId(void) { return id; }
-  void setId(int id_) { id = id_; }
+  void setId(int id_) { id = id_; } // id_ refers to argument
 };
 
 int main()
@@ -440,7 +442,7 @@ class user {
   int id = 1;
  public:
   int getId(void) { return id; }
-  void setId(int id) { this->id = id; }
+  void setId(int id) { this->id = id; } //this is analogous to self in python; "this" is the pointer to the object. when we want to access data id, this-> get acces to data member
 };
 
 int main() {
@@ -484,13 +486,13 @@ a method name with the same name as the class
 
 class user {
   int id;
- public:
+ public://in most cases, you want the constructor to be public
   user(int id) { this->id = id; }
   int getId(void) { return id; }
 };
 
 int main() {
-  user u(13);
+  user u(13); 
   std::cout << "u.getId() = " << u.getId() << std::endl;
   return 0;
 }
@@ -518,7 +520,7 @@ class user {
 };
 
 int main() {
-  user u;
+  user u; //calls default constructor, but doesn't exit -> need to declare on its own(for ex, set id=0 in constructor)
   std::cout << "u.getId() = " << u.getId() << std::endl;
   return 0;
 }
@@ -582,6 +584,7 @@ c.getArea() = 12.5664
 `src/circle2.hpp`:
 
 ```c++
+//header gaurds
 #ifndef CIRCLE2_HPP
 #define CIRCLE2_HPP
 
@@ -600,15 +603,15 @@ class circle {
 ```c++
 #include <cmath>
 
-#include "circle2.hpp"
+#include "circle2.hpp" //header has class definition that we'll need later in the function
 
-circle::circle(double x, double y, double r) {
+circle::circle(double x, double y, double r) { //member funcitons sit inside class namespace
   this->x = x;
   this->y = y;
   this->r = r;
 }
 
-double circle::getArea(void) {
+double circle::getArea(void) { //member functions have different name
   return M_PI*r*r;
 }
 ```
@@ -643,7 +646,7 @@ c.getArea() = 12.5664
 #ifndef CIRCLE3_HPP
 #define CIRCLE3_HPP
 
-namespace geometry {
+namespace geometry { //namespace can access everything inside geometry (defining this namespace)
 
 class circle {
   double x, y, r;
@@ -705,7 +708,7 @@ double circle::getPerimeter(void) {
 #include "circle3.hpp"
 
 int main() {
-  geometry::circle c(1.2, 3.4, 1.8);
+  geometry::circle c(1.2, 3.4, 1.8); // namespace is geometry
   std::cout << "c.getArea() = " << c.getArea() << std::endl;
   std::cout << "c.getPerimeter() = " << c.getPerimeter() << std::endl;
   return 0;
@@ -732,8 +735,8 @@ c.getPerimeter() = 11.3097
 #include "circle3.hpp"
 
 int main() {
-  std::vector<geometry::circle> circles;
-  circles.emplace_back(8.3, 4.7, 0.5);
+  std::vector<geometry::circle> circles; //vector is gonna contain circles
+  circles.emplace_back(8.3, 4.7, 0.5); //push them at the end of vector (emplace does it inplace instead of push_back, which makes copies
   circles.emplace_back(4.1, 2.3, 1.4);
   circles.emplace_back(-3.2, 0.8, 14.4);
 

@@ -89,10 +89,10 @@ int main() {
   std::cout << "Hello, CME 211!" << std::endl;
   return 0;
 }
-$ g++ -E -o src/hello1.i src/hello1.cpp 
-$ g++ -S -o src/hello1.s src/hello1.i
-$ g++ -c -o src/hello1.o src/hello1.s
-$ g++ -o src/hello1 src/hello1.o
+$ g++ -E -o src/hello1.i src/hello1.cpp //just preprocess and do '.i' 
+$ g++ -S -o src/hello1.s src/hello1.i //compiles into assembly language (source to assembly)
+$ g++ -c -o src/hello1.o src/hello1.s //assemble process (produces object file)
+$ g++ -o src/hello1 src/hello1.o //linking happens by default
 $ ./src/hello1
 Hello, CME 211!
 ```
@@ -171,7 +171,7 @@ main:
 * This step translates the text representation of the assembly instructions into
 the binary machine code in a `.o` file
 
-* `.o` files are called object files
+* `.o` files are called object files (binary file so you cant read it)
 
 * Linux uses the Executable and Linkable Format (ELF) for these files
 
@@ -184,14 +184,14 @@ garbage, intermixed with a few strings
 Output:
 
 ```
-$ nm ./src/hello1.o
+$ nm ./src/hello1.o //inspect symbols inside an object file using 'nm'
                  U __cxa_atexit
                  U __dso_handle
 0000000000000064 t _GLOBAL__sub_I_main
-0000000000000000 T main
+0000000000000000 T main (THIS CORRESPONDS TO OUR MAIN FUNCTION)
 0000000000000027 t _Z41__static_initialization_and_destruction_0ii
-                 U _ZNSolsEPFRSoS_E
-                 U _ZNSt8ios_base4InitC1Ev
+                 U _ZNSolsEPFRSoS_E (THESE ARE C++ mangled symbols)
+                 U _ZNSt8ios_base4InitC1Ev (Us are unresolved symbols)
                  U _ZNSt8ios_base4InitD1Ev
                  U _ZSt4cout
                  U _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_
@@ -202,7 +202,7 @@ $ nm ./src/hello1.o
 ### Linking
 
 * Linking is the process of building the final executable by combining (linking)
-the `.o` file(s), and possibly library files as well
+the `.o` file(s), and possibly library files as well (resolving all those unresolved symbols)
 
 * The linker makes sure all of the required functions are present
 
@@ -290,8 +290,8 @@ Compile and assemble source files, but don't link:
 Output:
 
 ```
-$ g++ -c src/foo.cpp -o src/foo.o
-$ g++ -c src/bar.cpp -o src/bar.o
+$ g++ -c src/foo.cpp -o src/foo.o //covert object files into cpp files
+$ g++ -c src/bar.cpp -o src/bar.o //note -c means compile and assemble
 $ g++ -c src/main.cpp -o src/main.o
 ```
 
@@ -309,11 +309,11 @@ What symbols are present in the object files?
 Output:
 
 ```
-$ nm src/foo.o
+$ nm src/foo.o //inspect the object file
                  U __cxa_atexit
                  U __dso_handle
 000000000000005f t _GLOBAL__sub_I__Z3foov
-0000000000000000 T _Z3foov
+0000000000000000 T _Z3foov (THIS corresponds to object file)
 0000000000000022 t _Z41__static_initialization_and_destruction_0ii
                  U _ZNSolsEPFRSoS_E
                  U _ZNSt8ios_base4InitC1Ev
@@ -326,7 +326,7 @@ $ nm src/bar.o
                  U __cxa_atexit
                  U __dso_handle
 000000000000005f t _GLOBAL__sub_I__Z3barv
-0000000000000000 T _Z3barv
+0000000000000000 T _Z3barv (BAR OBJECT FILE)
 0000000000000022 t _Z41__static_initialization_and_destruction_0ii
                  U _ZNSolsEPFRSoS_E
                  U _ZNSt8ios_base4InitC1Ev
@@ -335,9 +335,9 @@ $ nm src/bar.o
                  U _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_
 0000000000000000 b _ZStL8__ioinit
                  U _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
-$ nm src/main.o
-0000000000000000 T main
-                 U _Z3barv
+$ nm src/main.o //object file for main
+0000000000000000 T main //provides function main
+                 U _Z3barv //we have two undefined references to bar and foo
                  U _Z3foov
 ```
 
@@ -357,6 +357,7 @@ collect2: error: ld returned 1 exit status
 Ahhh, linker errors!  Let's do it right:
 
 Output:
+provide compiler wiht all the object files
 
 ```
 $ g++ src/main.o src/foo.o src/bar.o -o src/main
@@ -370,7 +371,7 @@ Hello from bar
 * Libraries are really just a file that contain one or more `.o` files
 
 * On Linux these files typically have a `.a` (static library) or `.so` (dynamic
-library) extension
+library) extension (shared object 'so')
 
 * `.so` files are analogous to `.dll` files on Windows
 
@@ -388,7 +389,7 @@ From `src/hw6.cpp`:
 ```c++
 ...
 
-#include <jpeglib.h>
+#include <jpeglib.h> //look in standard system locations
 
 #include "hw6.hpp"
 
@@ -422,7 +423,8 @@ int main()
 ```
 
 Let's try to compile:
-
+main is protected by DEBUG, so we need to add that 
+we dont have references to jpeg library (header should provide header declarations, but since main isn't defined, we don't have access to library calls to jpeg library)
 Output:
 
 ```
@@ -458,6 +460,8 @@ Let's find the `jpeglib.h` header file:
 
 Output:
 
+header files should go in here (standard location)
+
 ```
 $ ls -l /usr/include/jpeglib.h 
 -rw-r--r--. 1 root root 50298 Feb 24  2015 /usr/include/jpeglib.h
@@ -477,7 +481,9 @@ ls: cannot access /usr/lib64/libjpeg.*: No such file or directory
 Note that the library files may be in a different location on your system.
 
 Now let's compile:
-
+-DDEBUG includes main in the compilation
+then, specify include and library file
+-ljpeg link against libjpeg
 Output:
 
 ```
@@ -517,7 +523,7 @@ double sum(double a, double b) {
 `src/ex1/sum.hpp`:
 
 ```c++
-#pragma once
+#pragma once //header guard
 
 double sum(double a, double b);
 ```
@@ -525,7 +531,7 @@ double sum(double a, double b);
 `src/ex1/main.cpp`:
 
 ```c++
-#include <iostream>
+#include <iostream> //need to include header file
 
 #include "sum.hpp"
 
@@ -551,8 +557,8 @@ main: main.cpp sum.cpp sum.hpp
 Anatomy of a `make` rule:
 
 ```
-target: dependencies
-    build_command
+target: dependencies 
+    build_command //make requires a tab! not a space
 ```
 
 * `target`: is the thing you want the rule to create.  The target should be a
@@ -572,7 +578,7 @@ Let's run make!
 ```
 [nwh@icme-nwh ex1] $ ls
 main.cpp  makefile  sum.cpp  sum.hpp
-[nwh@icme-nwh ex1] $ make
+[nwh@icme-nwh ex1] $ make //runs first rule in file
 g++ -Wall -Wextra -Wconversion -o main main.cpp sum.cpp
 [nwh@icme-nwh ex1] $ ls
 main  main.cpp	makefile  sum.cpp  sum.hpp
@@ -586,16 +592,18 @@ make: 'main' is up to date.
 * Make looks at time stamps on files to know when changes have been made and
 will recompile accordingly
 
+* have one make file for a project
+
 ```
 [nwh@icme-nwh ex1] $ make
 make: 'main' is up to date.
-[nwh@icme-nwh ex1] $ touch main.cpp
-[nwh@icme-nwh ex1] $ make
+[nwh@icme-nwh ex1] $ touch main.cpp //change timestamp
+[nwh@icme-nwh ex1] $ make //recompiles
 g++ -Wall -Wextra -Wconversion -o main main.cpp sum.cpp
 [nwh@icme-nwh ex1] $ touch sum.hpp
 [nwh@icme-nwh ex1] $ make
 g++ -Wall -Wextra -Wconversion -o main main.cpp sum.cpp
-[nwh@icme-nwh ex1] $ make
+[nwh@icme-nwh ex1] $ make 
 make: 'main' is up to date.
 [nwh@icme-nwh ex1] $
 ```
@@ -606,7 +614,7 @@ make: 'main' is up to date.
 
 ```makefile
 # this is a makefile variable, note := for direct assignment
-CXX := g++
+CXX := g++ //C++ compiler
 
 # this is a makefile comment
 #CXXFLAGS := -Wall -Wextra -Wconversion
@@ -617,7 +625,7 @@ main: main.cpp sum.cpp sum.hpp
 	$(CXX) $(CXXFLAGS) -o main main.cpp sum.cpp
 
 # here is a target to clean up the output of the build process
-.PHONY: clean
+.PHONY: clean //delete everything that you have compiled (target that doesnt produce a file .PHONY)
 clean:
 	$(RM) main
 ```
@@ -704,7 +712,7 @@ OBJS := hw6.o
 INCS := hw6.hpp
 
 $(TARGET): $(OBJS)
-	$(CXX) -o $(TARGET) $(OBJS) $(LDFLAGS)
+	$(CXX) -o $(TARGET) $(OBJS) $(LDFLAGS) //use for hw 6
 
 %.o: %.cpp $(INCS)
 	$(CXX) -c -o $@ $< $(CPPFLAGS) $(CXXFLAGS)
