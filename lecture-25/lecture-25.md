@@ -17,6 +17,8 @@ the *heap*
 
 ## Stack
 
+* managed by compiler (heap is managed by programmer)
+
 * Fixed memory allocation provided to your application
 
 * It is the operating system that specifies the size of the stack
@@ -26,7 +28,7 @@ the *heap*
 * Limited to local variables of fixed size
 
 ### Stack example
-
+Fixed set of memory, so it's possible to get a seg fault (or stack overflow)
 ![fig](fig/stack-1.png)
 
 ### Function call
@@ -62,7 +64,10 @@ Segmentation fault (core dumped)
 
 
 ### Static size limit
-
+stack size is only 4096
+this command, ulimit -a tells you all the properties you might be interested in
+max memory size is usually set on clusters
+cpu time is interesting- tells you in seconds
 Output:
 
 ```
@@ -86,6 +91,8 @@ file locks                      (-x) unlimited
 ```
 
 ### Modifying the stack size limit
+sometimes may not be able to change on corn
+only modifies for whatever session you're in (close terminal, thne it goes back)
 
 ```
 $ ulimit -s unlimited
@@ -99,7 +106,8 @@ $
 * On `corn` we cannot make the stack size larger, but we can make it smaller!
 
 ### Stack size
-
+We're pushing a ton of data back- they get managed on the heap;
+They run just fine even though they are huge just because these containers manage data on the heap
 `src/stack5.cpp`:
 
 ```c++
@@ -146,6 +154,8 @@ $ ./src/stack5
 
 ## Heap
 
+* worry about impacts of memory leaks (short programs, doesn't matter since program cleans up)
+
 * Can contain data of arbitrary size (subject to available computer resources
 like total memory)
 
@@ -157,7 +167,7 @@ like total memory)
 
 ### Using heap memory
 
-* You need to allocate heap memory
+* You need to allocate heap memory (get a pointer to memory that has been allocated, usu a contiguous block. when you're done with that memory, you need to free it up)
 
 * The location of the allocated memory is stored in a pointer, a special
 variable which stores a memory address
@@ -169,9 +179,9 @@ variable which stores a memory address
 Declaration of a pointer is denoted by a `*` in front of the variable name
   (after the type)
 
-* `int a;`: variable `a` will contain an integer
+* `int a;`: variable `a` will contain an integer (memory on the stack)
 
-* `int *b;`: variable `b` will contain a memory address where an integer is
+* `int *b;`: variable `b` will contain a memory address where an integer is (declares a pointer)
   stored
 
 * `int* b;`: equivalent to `int *b;`.  This is my prefered style.  I would read
@@ -179,7 +189,7 @@ Declaration of a pointer is denoted by a `*` in front of the variable name
   C++ type declarations backwards.
 
 ### Pointers contain addresses
-
+& returns memory address (give me the address of the data stored at a)
 ![fig](fig/memory-address.png)
 
 ### Many roles of the `*`
@@ -211,7 +221,7 @@ int main() {
   // show the value of the pointer
   std::cout << " b = " << b << std::endl;
 
-  // dereference the pointer
+  // dereference the pointer, give us value that is stored at the memory address
   std::cout << "*b = " << *b << std::endl;
 
   return 0;
@@ -224,9 +234,9 @@ Output:
 $ g++ -std=c++11 -Wall -Wextra -Wconversion src/pointer1.cpp -o src/pointer1
 $ ./src/pointer1
  a = 42
-&a = 0x7ffdf7b3efa4
- b = 0x7ffdf7b3efa4
-*b = 42
+&a = 0x7ffdf7b3efa4 //address of a
+ b = 0x7ffdf7b3efa4 //assign address of a to b
+*b = 42 //dereference b, returns value stored at this memory address
 ```
 
 ### Store a value at a memory address
@@ -243,6 +253,8 @@ b = &a;
 ```
 
 ### Storing a value
+
+You can have a pointer to a pointer, but cannot get an address to an address
 
 `src/pointer2.cpp`:
 
@@ -288,6 +300,7 @@ $ ./src/pointer2
 ```
 
 ### Increment
+we have a pointer to an int and want to increment
 
 `src/increment.cpp`:
 
@@ -297,7 +310,7 @@ $ ./src/pointer2
 void increment(int *a) {
   // Value at the memory
   // address is incremented
-  (*a)++;
+  (*a)++; //based on order operation
 }
 
 int main() {
@@ -423,13 +436,13 @@ a = 16
 
 int main() {
   int *a;
-  std::cout << "*a = " << *a << std::endl;
+  std::cout << "*a = " << *a << std::endl; //this accesses data and a random location in memory
   return 0;
 }
 ```
 
 Output:
-
+This is an undefined behavior and could cause a seg fault
 ```
 $ g++ -std=c++11 -Wall -Wextra -Wconversion src/pointer4.cpp -o src/pointer4
 src/pointer4.cpp: In function ‘int main()’:
@@ -441,6 +454,8 @@ $ ./src/pointer4
 ```
 
 ### Suggestion
+better to initialize to null pointer
+essentiallly says a points to nothing
 
 `src/pointer5.cpp`:
 
@@ -455,7 +470,7 @@ int main() {
 ```
 
 Output:
-
+if you dereference a null pointer, you get a seg fault (should show that below)
 ```
 $ g++ -std=c++11 -Wall -Wextra -Wconversion src/pointer5.cpp -o src/pointer5
 $ ./src/pointer5
@@ -464,12 +479,13 @@ $ ./src/pointer5
 ### `new`
 
 * the `new` keyword *allocates* dynamic memory in the *heap*
+* keyword "delete" frees the dynamic memory in the heap
 
 * Works by setting aside a specified amount of *contiguous memory* and returning
-the *starting address*
+the *starting address* (returns a pointer)
 
 * No guarantees about the state of initialization (i.e. the memory will have
-"random" data in it)
+"random" data in it), but don't use as random number generator (it's pseudo random)
 
 ### Memory allocation
 
@@ -485,8 +501,8 @@ int main(int argc, char *argv[]) {
 
   // Allocate storage for n double values and
   // store the starting address in a
-  double *a = new double[n];
-  std::cout << "a = " << a << std::endl;
+  double *a = new double[n]; //type, pointer type to a variable type *a (new keyword) then number of items we want to allocate memory for (allocates memory for n doubles)
+  std::cout << "a = " << a << std::endl; //this is a pointer (mem address)
 
   for (unsigned int i = 0; i < n; i++)
     a[i] = i+3;
@@ -501,12 +517,17 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 ```
+If we only want to allocate memory for a single item (not n numbers), here's the syntax
+```
+double *a = new double;
+delete a; //free mem
+```
 
 Output:
 
 ```
 $ g++ -std=c++11 -Wall -Wextra -Wconversion src/new1.cpp -o src/new1
-$ ./src/new1 2
+$ ./src/new1 2 //declared memory for 2 items
 a = 0x8f5040
 a[0] = 3
 a[1] = 4
@@ -527,15 +548,15 @@ Step 1:
 ![fig](fig/mem-alloc-1.png)
 
 Step 2:
-
+a now is a pointer to that memory on the heap
 ![fig](fig/mem-alloc-2.png)
 
 Step 3:
-
+variable a still contains memory address allocated for us by the new command
 ![fig](fig/mem-alloc-3.png)
 
 ### Out of bounds access
-
+Delete memory then try to access it (gives out of bounds error since the memory at pointer a is no longer allocated for our program)
 `src/new2.cpp`:
 
 ```c++
@@ -570,11 +591,11 @@ $ ./src/new2 2
 a = 0xe98040
 a = 0xe98040
 a[0] = 3
-a[1] = 4
+a[1] = 4 // no issue for small sizes
 $ ./src/new2 1048576
 a = 0x7f8bf1c0b010
 a = 0x7f8bf1c0b010
-Segmentation fault (core dumped)
+Segmentation fault (core dumped) // core dumped for larger sizes, undefined behavior based on size- > this is bad
 ```
 
 ### Use valgrind
@@ -582,6 +603,8 @@ Segmentation fault (core dumped)
 * compile with `-g` flag
 
 * run with `valgrind`
+
+Give us invalid writes, good for finding out of bounds memory access and memory leaks
 
 Output:
 
@@ -636,8 +659,8 @@ int main(int argc, char *argv[]) {
 
   double *a = new double[n];
 
-  delete[] a;
-  a = nullptr;
+  delete[] a; // still contains memory address
+  a = nullptr; //program will crash now, so easy for programmer to clean up
 
   for (unsigned int i = 0; i < n; i++)
     a[i] = i+3;
