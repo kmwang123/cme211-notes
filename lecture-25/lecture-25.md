@@ -74,20 +74,15 @@ Output:
 $ ulimit -a
 core file size          (blocks, -c) 0
 data seg size           (kbytes, -d) unlimited
-scheduling priority             (-e) 0
 file size               (blocks, -f) unlimited
-pending signals                 (-i) 30601
-max locked memory       (kbytes, -l) 64
+max locked memory       (kbytes, -l) unlimited
 max memory size         (kbytes, -m) unlimited
-open files                      (-n) 1024
-pipe size            (512 bytes, -p) 8
-POSIX message queues     (bytes, -q) 819200
-real-time priority              (-r) 0
-stack size              (kbytes, -s) 4096
+open files                      (-n) 256
+pipe size            (512 bytes, -p) 1
+stack size              (kbytes, -s) 8515
 cpu time               (seconds, -t) unlimited
-max user processes              (-u) 4096
+max user processes              (-u) 709
 virtual memory          (kbytes, -v) unlimited
-file locks                      (-x) unlimited
 ```
 
 ### Modifying the stack size limit
@@ -134,20 +129,15 @@ Output:
 $ ulimit -a
 core file size          (blocks, -c) 0
 data seg size           (kbytes, -d) unlimited
-scheduling priority             (-e) 0
 file size               (blocks, -f) unlimited
-pending signals                 (-i) 30601
-max locked memory       (kbytes, -l) 64
+max locked memory       (kbytes, -l) unlimited
 max memory size         (kbytes, -m) unlimited
-open files                      (-n) 1024
-pipe size            (512 bytes, -p) 8
-POSIX message queues     (bytes, -q) 819200
-real-time priority              (-r) 0
-stack size              (kbytes, -s) 4096
+open files                      (-n) 256
+pipe size            (512 bytes, -p) 1
+stack size              (kbytes, -s) 8515
 cpu time               (seconds, -t) unlimited
-max user processes              (-u) 4096
+max user processes              (-u) 709
 virtual memory          (kbytes, -v) unlimited
-file locks                      (-x) unlimited
 $ g++ -std=c++11 -Wall -Wextra -Wconversion src/stack5.cpp -o src/stack5
 $ ./src/stack5
 ```
@@ -234,9 +224,15 @@ Output:
 $ g++ -std=c++11 -Wall -Wextra -Wconversion src/pointer1.cpp -o src/pointer1
 $ ./src/pointer1
  a = 42
+<<<<<<< HEAD
 &a = 0x7ffdf7b3efa4 //address of a
  b = 0x7ffdf7b3efa4 //assign address of a to b
 *b = 42 //dereference b, returns value stored at this memory address
+=======
+&a = 0x7fff5a43fad8
+ b = 0x7fff5a43fad8
+*b = 42
+>>>>>>> upstream/master
 ```
 
 ### Store a value at a memory address
@@ -290,12 +286,12 @@ Output:
 $ g++ -std=c++11 -Wall -Wextra -Wconversion src/pointer2.cpp -o src/pointer2
 $ ./src/pointer2
  a = 42
-&a = 0x7ffccf457cd4
- b = 0x7ffccf457cd4
+&a = 0x7fff5ebc9a98
+ b = 0x7fff5ebc9a98
 *b = 42
  a = 7
-&a = 0x7ffccf457cd4
- b = 0x7ffccf457cd4
+&a = 0x7fff5ebc9a98
+ b = 0x7fff5ebc9a98
 *b = 7
 ```
 
@@ -335,10 +331,11 @@ a = 3
 ```
 
 ### Increment
-
-![fig](src/increment.png)
+as we exit functions, memory used on stack goes back down (since we arent using the functions)
+![fig](fig/increment.png)
 
 ### Returning pointers
+Cant return a pointer to a local variable of a function (since after you exit function, the pointer goes away). memory for the function has been elimated, so we get undefined behavior
 
 `src/func.cpp`:
 
@@ -364,13 +361,13 @@ Output:
 
 ```
 $ g++ -std=c++11 -Wall -Wextra -Wconversion src/func.cpp -o src/func
-src/func.cpp: In function ‘int* func()’:
-src/func.cpp:4:7: warning: address of local variable ‘b’ returned [-Wreturn-local-addr]
-   int b = 2;
-       ^
+src/func.cpp:5:11: warning: address of stack memory associated with local variable 'b' returned [-Wreturn-stack-address]
+  return &b;
+          ^
+1 warning generated.
 $ ./src/func
- a = 0x7ffc716c177c
-*a = 32577
+ a = 0x7fff5bcf4acc
+*a = 32767
 ```
 
 ### Returning pointers
@@ -400,7 +397,7 @@ $ ./src/func
 * `b` is a **double**
 
 ### Many uses of `*`
-
+Dereferencing, multiplication, and storage
 `src/pointer3.cpp`:
 
 ```c++
@@ -411,7 +408,7 @@ int main() {
   int *b = &a;
 
   // * used for dereferencing, multiplication, and storage
-  *b = *b**b;
+  *b = *b**b; //deref b to get value (twice), then multiply -> (*b) * (*b)
 
   std::cout << "a = " << a << std::endl;
 
@@ -445,17 +442,21 @@ Output:
 This is an undefined behavior and could cause a seg fault
 ```
 $ g++ -std=c++11 -Wall -Wextra -Wconversion src/pointer4.cpp -o src/pointer4
-src/pointer4.cpp: In function ‘int main()’:
-src/pointer4.cpp:5:28: warning: ‘a’ is used uninitialized in this function [-Wuninitialized]
-   std::cout << "*a = " << *a << std::endl;
-                            ^
+src/pointer4.cpp:5:28: warning: variable 'a' is uninitialized when used here [-Wuninitialized]
+  std::cout << "*a = " << *a << std::endl;
+                           ^
+src/pointer4.cpp:4:9: note: initialize the variable 'a' to silence this warning
+  int *a;
+        ^
+         = nullptr
+1 warning generated.
 $ ./src/pointer4
-*a = -1991643855
+/bin/sh: line 1: 61024 Segmentation fault: 11  ./src/pointer4
 ```
 
 ### Suggestion
 better to initialize to null pointer
-essentiallly says a points to nothing
+essentially says a points to nothing
 
 `src/pointer5.cpp`:
 
@@ -474,6 +475,7 @@ if you dereference a null pointer, you get a seg fault (should show that below)
 ```
 $ g++ -std=c++11 -Wall -Wextra -Wconversion src/pointer5.cpp -o src/pointer5
 $ ./src/pointer5
+/bin/sh: line 1: 61031 Segmentation fault: 11  ./src/pointer5
 ```
 
 ### `new`
@@ -501,11 +503,11 @@ int main(int argc, char *argv[]) {
 
   // Allocate storage for n double values and
   // store the starting address in a
-  double *a = new double[n]; //type, pointer type to a variable type *a (new keyword) then number of items we want to allocate memory for (allocates memory for n doubles)
+  double *a = new double[n]; //type, pointer type to a variable type *a (new keyword) then number of items we want to allocate memory for (allocates memory for n doubles) 
   std::cout << "a = " << a << std::endl; //this is a pointer (mem address)
 
   for (unsigned int i = 0; i < n; i++)
-    a[i] = i+3;
+    a[i] = i+3; 
 
   for (unsigned int i = 0; i < n; i++)
     std::cout << "a[" << i << "] = " << a[i] << std::endl;
@@ -513,7 +515,7 @@ int main(int argc, char *argv[]) {
   // Free the memory
   delete[] a;
   std::cout << "a = " << a << std::endl;
-
+                  
   return 0;
 }
 ```
@@ -527,18 +529,27 @@ Output:
 
 ```
 $ g++ -std=c++11 -Wall -Wextra -Wconversion src/new1.cpp -o src/new1
+<<<<<<< HEAD
 $ ./src/new1 2 //declared memory for 2 items
 a = 0x8f5040
+=======
+src/new1.cpp:6:20: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  unsigned int n = std::stoi(argv[1]);
+               ~   ^~~~~~~~~~~~~~~~~~
+1 warning generated.
+$ ./src/new1 2 
+a = 0x7fb562e00000
+>>>>>>> upstream/master
 a[0] = 3
 a[1] = 4
-a = 0x8f5040
+a = 0x7fb562e00000
 $ ./src/new1 4
-a = 0x2405010
+a = 0x7fc033c031a0
 a[0] = 3
 a[1] = 4
 a[2] = 5
 a[3] = 6
-a = 0x2405010
+a = 0x7fc033c031a0
 ```
 
 ### Memory allocation sequence
@@ -574,7 +585,7 @@ int main(int argc, char *argv[]) {
   std::cout << "a = " << a << std::endl;
 
   for (unsigned int i = 0; i < n; i++)
-    a[i] = i+3;
+    a[i] = i+3; 
 
   for (unsigned int i = 0; i < n; i++)
     std::cout << "a[" << i << "] = " << a[i] << std::endl;
@@ -610,39 +621,57 @@ Output:
 
 ```
 $ g++ -g -std=c++11 -Wall -Wextra -Wconversion src/new2.cpp -o src/new2
+src/new2.cpp:6:20: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  unsigned int n = std::stoi(argv[1]);
+               ~   ^~~~~~~~~~~~~~~~~~
+1 warning generated.
 $ valgrind ./src/new2 4
-==29156== Memcheck, a memory error detector
-==29156== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
-==29156== Using Valgrind-3.10.1 and LibVEX; rerun with -h for copyright info
-==29156== Command: ./src/new2 4
-==29156==
-a = 0x5a200a0
-a = 0x5a200a0
-==29156== Invalid write of size 8
-==29156==    at 0x400FF4: main (new2.cpp:15)
-==29156==  Address 0x5a200a0 is 0 bytes inside a block of size 32 free'd
-==29156==    at 0x4C2B633: operator delete[](void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
-==29156==    by 0x400F6A: main (new2.cpp:11)
-==29156==
-==29156== Invalid read of size 8
-==29156==    at 0x40101E: main (new2.cpp:18)
-==29156==  Address 0x5a200a0 is 0 bytes inside a block of size 32 free'd
-==29156==    at 0x4C2B633: operator delete[](void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
-==29156==    by 0x400F6A: main (new2.cpp:11)
-==29156==
+==61046== Memcheck, a memory error detector
+==61046== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==61046== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==61046== Command: ./src/new2 4
+==61046== 
+a = 0x100a72ea0
+a = 0x100a72ea0
+==61046== Invalid write of size 8
+==61046==    at 0x100001099: main (new2.cpp:15)
+==61046==  Address 0x100a72ea0 is 0 bytes inside a block of size 32 free'd
+==61046==    at 0x10000B2F7: free (in /usr/local/Cellar/valgrind/3.11.0/lib/valgrind/vgpreload_memcheck-amd64-darwin.so)
+==61046==    by 0x10000101E: main (new2.cpp:11)
+==61046==  Block was alloc'd at
+==61046==    at 0x10000AEBB: malloc (in /usr/local/Cellar/valgrind/3.11.0/lib/valgrind/vgpreload_memcheck-amd64-darwin.so)
+==61046==    by 0x10004E7DD: operator new(unsigned long) (in /usr/lib/libc++.1.dylib)
+==61046==    by 0x100000FAB: main (new2.cpp:8)
+==61046== 
+==61046== Invalid read of size 8
+==61046==    at 0x10000112F: main (new2.cpp:18)
+==61046==  Address 0x100a72ea0 is 0 bytes inside a block of size 32 free'd
+==61046==    at 0x10000B2F7: free (in /usr/local/Cellar/valgrind/3.11.0/lib/valgrind/vgpreload_memcheck-amd64-darwin.so)
+==61046==    by 0x10000101E: main (new2.cpp:11)
+==61046==  Block was alloc'd at
+==61046==    at 0x10000AEBB: malloc (in /usr/local/Cellar/valgrind/3.11.0/lib/valgrind/vgpreload_memcheck-amd64-darwin.so)
+==61046==    by 0x10004E7DD: operator new(unsigned long) (in /usr/lib/libc++.1.dylib)
+==61046==    by 0x100000FAB: main (new2.cpp:8)
+==61046== 
 a[0] = 3
 a[1] = 4
 a[2] = 5
 a[3] = 6
-==29156==
-==29156== HEAP SUMMARY:
-==29156==     in use at exit: 0 bytes in 0 blocks
-==29156==   total heap usage: 2 allocs, 2 frees, 58 bytes allocated
-==29156==
-==29156== All heap blocks were freed -- no leaks are possible
-==29156==
-==29156== For counts of detected and suppressed errors, rerun with: -v
-==29156== ERROR SUMMARY: 8 errors from 2 contexts (suppressed: 0 from 0)
+==61046== 
+==61046== HEAP SUMMARY:
+==61046==     in use at exit: 38,600 bytes in 193 blocks
+==61046==   total heap usage: 258 allocs, 65 frees, 44,344 bytes allocated
+==61046== 
+==61046== LEAK SUMMARY:
+==61046==    definitely lost: 80 bytes in 1 blocks
+==61046==    indirectly lost: 68 bytes in 2 blocks
+==61046==      possibly lost: 0 bytes in 0 blocks
+==61046==    still reachable: 16,384 bytes in 1 blocks
+==61046==         suppressed: 22,068 bytes in 189 blocks
+==61046== Rerun with --leak-check=full to see details of leaked memory
+==61046== 
+==61046== For counts of detected and suppressed errors, rerun with: -v
+==61046== ERROR SUMMARY: 8 errors from 2 contexts (suppressed: 0 from 0)
 ```
 
 ### Suggestion
@@ -663,7 +692,7 @@ int main(int argc, char *argv[]) {
   a = nullptr; //program will crash now, so easy for programmer to clean up
 
   for (unsigned int i = 0; i < n; i++)
-    a[i] = i+3;
+    a[i] = i+3; 
 
   for (unsigned int i = 0; i < n; i++)
     std::cout << "a[" << i << "] = " << a[i] << std::endl;
@@ -702,11 +731,11 @@ int main(int argc, char *argv[]) {
 
   // Memory is now used by main()
   for (unsigned int i = 0; i < n; i++)
-    a[i] = i+3;
+    a[i] = i+3; 
   for (unsigned int i = 0; i < n; i++)
     std::cout << "a[" << i << "] = " << a[i] << std::endl;
 
-  delete[] a; // Memory is freed
+  delete[] a; // Memory is freed; memory leaks occur when you forget to free up memory
   a = NULL;
 
   return 0;
@@ -715,27 +744,40 @@ int main(int argc, char *argv[]) {
 
 Output:
 
+NOTE: nick doesnt know why theres a memory leak below. Should be freed and no problem (should be zero lost memory)
+It is advised to used nullptr instead of NULL
+
 ```
 $ g++ -std=c++11 -g -Wall -Wextra -Wconversion src/new4.cpp -o src/new4
+src/new4.cpp:13:20: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  unsigned int n = std::stoi(argv[1]);
+               ~   ^~~~~~~~~~~~~~~~~~
+1 warning generated.
 $ valgrind ./src/new4 4
-==29162== Memcheck, a memory error detector
-==29162== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
-==29162== Using Valgrind-3.10.1 and LibVEX; rerun with -h for copyright info
-==29162== Command: ./src/new4 4
-==29162==
+==61053== Memcheck, a memory error detector
+==61053== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==61053== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==61053== Command: ./src/new4 4
+==61053== 
 a[0] = 3
 a[1] = 4
 a[2] = 5
 a[3] = 6
-==29162==
-==29162== HEAP SUMMARY:
-==29162==     in use at exit: 0 bytes in 0 blocks
-==29162==   total heap usage: 2 allocs, 2 frees, 58 bytes allocated
-==29162==
-==29162== All heap blocks were freed -- no leaks are possible
-==29162==
-==29162== For counts of detected and suppressed errors, rerun with: -v
-==29162== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==61053== 
+==61053== HEAP SUMMARY:
+==61053==     in use at exit: 38,600 bytes in 193 blocks
+==61053==   total heap usage: 258 allocs, 65 frees, 44,344 bytes allocated
+==61053== 
+==61053== LEAK SUMMARY:
+==61053==    definitely lost: 80 bytes in 1 blocks
+==61053==    indirectly lost: 68 bytes in 2 blocks
+==61053==      possibly lost: 0 bytes in 0 blocks
+==61053==    still reachable: 16,384 bytes in 1 blocks
+==61053==         suppressed: 22,068 bytes in 189 blocks
+==61053== Rerun with --leak-check=full to see details of leaked memory
+==61053== 
+==61053== For counts of detected and suppressed errors, rerun with: -v
+==61053== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
 ```
 
 ### Memory leaks
@@ -749,12 +791,12 @@ a[3] = 6
 void ProcessData(double *a, unsigned int n) {
   // temporary allocation for processing a
   // Memory is allocated but never freed
-  double *tmp = new double[n];
+  double *tmp = new double[n]; 
   for (unsigned int i = 0; i < n; i++) tmp[i] = 0.;
 
   // Process a
   a[0] = tmp[0];
-
+  
   return;
 }
 
@@ -768,37 +810,42 @@ int main(int argc, char *argv[]) {
   ProcessData(a, n);
 
   delete[] a;
-  a = nullptr;
+  a = nullptr;//this is good since it finds the segmentation fault very quickly
 
   return 0;
 }
 ```
 
 Output:
+we never freed tmp memory
 
 ```
 $ g++ -std=c++11 -g -Wall -Wextra -Wconversion src/new5.cpp -o src/new5
+src/new5.cpp:18:20: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  unsigned int n = std::stoi(argv[1]);
+               ~   ^~~~~~~~~~~~~~~~~~
+1 warning generated.
 $ valgrind ./src/new5 4
-==29168== Memcheck, a memory error detector
-==29168== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
-==29168== Using Valgrind-3.10.1 and LibVEX; rerun with -h for copyright info
-==29168== Command: ./src/new5 4
-==29168==
-==29168==
-==29168== HEAP SUMMARY:
-==29168==     in use at exit: 32 bytes in 1 blocks
-==29168==   total heap usage: 3 allocs, 2 frees, 90 bytes allocated
-==29168==
-==29168== LEAK SUMMARY:
-==29168==    definitely lost: 32 bytes in 1 blocks
-==29168==    indirectly lost: 0 bytes in 0 blocks
-==29168==      possibly lost: 0 bytes in 0 blocks
-==29168==    still reachable: 0 bytes in 0 blocks
-==29168==         suppressed: 0 bytes in 0 blocks
-==29168== Rerun with --leak-check=full to see details of leaked memory
-==29168==
-==29168== For counts of detected and suppressed errors, rerun with: -v
-==29168== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==61060== Memcheck, a memory error detector
+==61060== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==61060== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==61060== Command: ./src/new5 4
+==61060== 
+==61060== 
+==61060== HEAP SUMMARY:
+==61060==     in use at exit: 22,100 bytes in 190 blocks
+==61060==   total heap usage: 255 allocs, 65 frees, 27,844 bytes allocated
+==61060== 
+==61060== LEAK SUMMARY:
+==61060==    definitely lost: 32 bytes in 1 blocks
+==61060==    indirectly lost: 0 bytes in 0 blocks
+==61060==      possibly lost: 0 bytes in 0 blocks
+==61060==    still reachable: 0 bytes in 0 blocks
+==61060==         suppressed: 22,068 bytes in 189 blocks
+==61060== Rerun with --leak-check=full to see details of leaked memory
+==61060== 
+==61060== For counts of detected and suppressed errors, rerun with: -v
+==61060== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
 ```
 
 ### C++ memory management
@@ -825,7 +872,7 @@ class MyVector
   unsigned int size;
   unsigned int capacity;
  public:
-  MyVector();
+  MyVector(); // constructor
   void push_back(int val);
   void print(void);
 };
@@ -852,7 +899,7 @@ void MyVector::push_back(int val) {
   else {
     // A real implementation would resize the capacity
     std::cerr << "Vector is full" << std::endl;
-    exit(1);
+    exit(1); 
   }
 }
 
@@ -905,34 +952,40 @@ $ ./src/main1
 
 ### Memory leak
 
+we did not free up memory that was allocated in constructor (need a destructor)
+
 Output:
 
 ```
 $ valgrind ./src/main1
-==29177== Memcheck, a memory error detector
-==29177== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
-==29177== Using Valgrind-3.10.1 and LibVEX; rerun with -h for copyright info
-==29177== Command: ./src/main1
-==29177==
+==61070== Memcheck, a memory error detector
+==61070== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==61070== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==61070== Command: ./src/main1
+==61070== 
 [7, 42]
-==29177==
-==29177== HEAP SUMMARY:
-==29177==     in use at exit: 40 bytes in 1 blocks
-==29177==   total heap usage: 1 allocs, 0 frees, 40 bytes allocated
-==29177==
-==29177== LEAK SUMMARY:
-==29177==    definitely lost: 40 bytes in 1 blocks
-==29177==    indirectly lost: 0 bytes in 0 blocks
-==29177==      possibly lost: 0 bytes in 0 blocks
-==29177==    still reachable: 0 bytes in 0 blocks
-==29177==         suppressed: 0 bytes in 0 blocks
-==29177== Rerun with --leak-check=full to see details of leaked memory
-==29177==
-==29177== For counts of detected and suppressed errors, rerun with: -v
-==29177== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==61070== 
+==61070== HEAP SUMMARY:
+==61070==     in use at exit: 38,492 bytes in 191 blocks
+==61070==   total heap usage: 255 allocs, 64 frees, 44,204 bytes allocated
+==61070== 
+==61070== LEAK SUMMARY:
+==61070==    definitely lost: 40 bytes in 1 blocks
+==61070==    indirectly lost: 0 bytes in 0 blocks
+==61070==      possibly lost: 0 bytes in 0 blocks
+==61070==    still reachable: 16,384 bytes in 1 blocks
+==61070==         suppressed: 22,068 bytes in 189 blocks
+==61070== Rerun with --leak-check=full to see details of leaked memory
+==61070== 
+==61070== For counts of detected and suppressed errors, rerun with: -v
+==61070== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
 ```
 
 ## Destructor
+
+Need to declare as ~<class Name>
+here is where we delete memory allocation to avoid memory leaks
+
 
 `src/MyVector2.hpp`:
 
@@ -969,21 +1022,27 @@ $ g++ -g -std=c++11 -Wall -Wextra -Wconversion src/main2.cpp src/MyVector2.cpp -
 $ ./src/main2
 [7, 42]
 $ valgrind ./src/main2
-==29192== Memcheck, a memory error detector
-==29192== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
-==29192== Using Valgrind-3.10.1 and LibVEX; rerun with -h for copyright info
-==29192== Command: ./src/main2
-==29192==
+==61080== Memcheck, a memory error detector
+==61080== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==61080== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==61080== Command: ./src/main2
+==61080== 
 [7, 42]
-==29192==
-==29192== HEAP SUMMARY:
-==29192==     in use at exit: 0 bytes in 0 blocks
-==29192==   total heap usage: 1 allocs, 1 frees, 40 bytes allocated
-==29192==
-==29192== All heap blocks were freed -- no leaks are possible
-==29192==
-==29192== For counts of detected and suppressed errors, rerun with: -v
-==29192== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==61080== 
+==61080== HEAP SUMMARY:
+==61080==     in use at exit: 38,452 bytes in 190 blocks
+==61080==   total heap usage: 255 allocs, 65 frees, 44,204 bytes allocated
+==61080== 
+==61080== LEAK SUMMARY:
+==61080==    definitely lost: 0 bytes in 0 blocks
+==61080==    indirectly lost: 0 bytes in 0 blocks
+==61080==      possibly lost: 0 bytes in 0 blocks
+==61080==    still reachable: 16,384 bytes in 1 blocks
+==61080==         suppressed: 22,068 bytes in 189 blocks
+==61080== Rerun with --leak-check=full to see details of leaked memory
+==61080== 
+==61080== For counts of detected and suppressed errors, rerun with: -v
+==61080== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
 ```
 
 ### C++ memory management
@@ -999,3 +1058,16 @@ $ valgrind ./src/main2
 * Section 12.2: Dynamic Arrays
 
 * Section 7.1.5: Destruction
+
+
+## Monday 11/30 Notes
+when adding two vectors,
+-pass by ref input vectors
+-dont push back
+-pass c=a+b, and pass vector c by ref too
+
+ex: void add_vec(const vec &a, const vec &b, vec &c), then do c=a + b (const says that a and b would not change)
+and make the fuction void
+can do c.resize(a.size())
+if (a.size() != b.size()) //handle error
+
