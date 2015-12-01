@@ -75,9 +75,9 @@ array([[ 7., 19., -3.],
 2
 >>> a.dtype
 dtype('float64')
->>> a.shape
+>>> a.shape #shape of matrix (rows, cols)
 (2, 3)
->>> a.size
+>>> a.size #finds total number of elements in array
 6
 >>>
 ```
@@ -121,6 +121,26 @@ array([[ 1.,  0.,  0.],
 array([[ 0.38009444,  0.03368697],
        [ 0.239883  ,  0.03853005],
        [ 0.30929021,  0.16703058]])
+
+```
+### Sum Across rows or columns
+```py
+>>> A
+array([[ 1,  4,  5],
+       [ 7, 10,  0],
+       [ 0,  1,  7]])
+
+#Sum across rows
+>>> A.sum(axis=1)
+array([10, 17,  8])
+>>> sum(A.transpose())
+array([10, 17,  8])
+
+#Sum across columns
+>>> A.sum(axis=0)
+array([ 8, 15, 12])
+>>> sum(A)
+array([ 8, 15, 12])
 
 ```
 
@@ -304,6 +324,11 @@ array([3, 4, 5, 6])
 array([0, 4, 5, 6])
 >>> a
 array([0, 1, 2, 3, 4, 5, 6, 7, 8])
+#or use shorthand
+>>> a=numpy.array([3,2,1])
+>>> b=numpy.zeros((1,3))
+>>> b[:]=a[:]
+
 ```
 
 ### Sum, Max, Min
