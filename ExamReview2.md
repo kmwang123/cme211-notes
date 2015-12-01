@@ -232,7 +232,9 @@ numpy behaves like fixed width integers
 
 ## Performance comparison
 
-sums integers from 0 to a million and time it
+* Program sums integers from 0 to a million
+* We time it and see that C++ is much faster
+   - can try using xrange to be faster in python, but still slower
 
 `code/summation.cpp`:
 
@@ -282,10 +284,6 @@ $ ./summation
 time = 9.53674e-07
 $
 ```
-python is a lot slower than C++
-can try using xrange to be faster in python
-
-Compile the C++ code with: `$ g++ summation.cpp -o summation`
 
 ### Python is kind of slow
 
@@ -295,21 +293,19 @@ or other lower level languages
 
 ![fig](lecture-10/fig/python-v-compiled.png)
 
-C++ sits much closer to hardwares; C compilers will inspect code and optimize it
+* C++ sits much closer to hardwares
+* C compilers will inspect code and optimize it
 
 ### Object overhead
+* Everything in python is an object, which creates lots of overhead
 
 ![fig](lecture-10/fig/object-overhead.png)
-
-everything in python is an object, and this creates lots of overhead
 
 ### Options
 
 * Python is great for quick projects, prototyping new ideas, etc.
 
-* What if you need better performance?
-
-* One option is to completely rewrite your program in something like C/C++
+* For better performance, rewrite program in C/C++
 
 ### Python C API
 
@@ -355,7 +351,7 @@ utilizing NumPy arrays
 like GNU Octave
 
 ### Python software stack
-numpy is a bit like compiled modules
+* numpy is a bit like compiled modules
 
 ![fig](lecture-10/fig/python-stack.png)
 
@@ -375,8 +371,10 @@ array([ 7, 19, -3])
 ```
 
 ### Arrays are not lists
-only store a SINGLE type of data; FIXED TYPE; allows most efficient code and mem representation
-we don't have append method to this array. you can concatenate it though
+* Only store a SINGLE type of data; FIXED TYPE; (homogenous)
+* allows most efficient code and memory representation
+* Size is fixed (no append()/remove())
+    - No append method to this array, but can concatenate
 ```py
 >>> a[0] = "hello"
 Traceback (most recent call last):
@@ -388,12 +386,6 @@ File "<stdin>", line 1, in <module>
 AttributeError: 'numpy.ndarray' object has no attribute 'append'
 >>>
 ```
-
-### NumPy arrays
-
-* NumPy arrays contain **homogeneous** data
-
-* Size is fixed, i.e. you can't append or remove
 
 ### Data types
 
