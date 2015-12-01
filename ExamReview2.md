@@ -1,22 +1,16 @@
 # CME 211: Lecture 10
 
-Monday, October 12, 2015
-
-Topic: Representation of numbers, Numpy overview
-
+Topics: Representation of numbers, Numpy overview
 
 ## Computer representation of data
 
-* Computers represent and store everything in *binary*
+* Computers represent and store everything in *binary* (base 2, 0s and 1s called binary digits or bits)
 
-* Binary, a base 2 number system, consists only of 0s and 1s called binary
-digits (bits)
-
-* There are 8 bits in a byte
+* Byte = 8 bits 
 
 ### Simplified model of computer
 
-![fig](lecture-11/fig/model-computer.png)
+![fig](lecture-10/fig/model-computer.png)
 
 large sequence of bytes: call that memory or DRAM. In diagram, each box represents a single byte, each byte in memory has an address; usually 0x00 (hexadecimal, base 16)
 fast computations done in registers
