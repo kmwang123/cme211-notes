@@ -12,12 +12,14 @@ Topics: Representation of numbers, Numpy overview
 
 ![fig](lecture-10/fig/model-computer.png)
 
-large sequence of bytes: call that memory or DRAM. In diagram, each box represents a single byte, each byte in memory has an address; usually 0x00 (hexadecimal, base 16)
-fast computations done in registers
-communication across memory bus is very slow compared to communication from register to alu
-nearby data is also brought along in memory bus, so it's ready to go in register
-temporal locality: likely i want data soon
-spatial locality: likely i want data nearby
+- Large sequence of bytes make up memory or DRAM. 
+- In diagram, each box = a single byte, each byte in memory has an address; usually 0x00 (hexadecimal, base 16)
+- Fast computations done in registers
+- Communication across memory bus is very slow compared to communication from register to alu
+- nearby data is also brought along in memory bus, so it's ready to go in register
+
+* temporal locality: likely i want data soon
+* spatial locality: likely i want data nearby
 
 
 ### Converting between bases
@@ -37,8 +39,8 @@ and decimal (base 10)
 |       6 |    110 |
 |       7 |    111 |
 ```
-if we have 8 bits, then largest number is 2^7+2^6...+2^0 = 255, so we have a range from 0-255 or can represent 256.
-For negative number, use negative two's compliment
+- if we have 8 bits, then largest number is 2^7+2^6...+2^0 = 255, so we have a range from 0-255 or can represent 256.
+- For negative number, use negative two's compliment
 
 ### Common prefixes
 
@@ -88,7 +90,7 @@ numbers
 
 ### Fixed storage widths
 
-![fig/bits.png](fig/bits.png)
+![Lecture10/fig/bits.png](Lecture10/fig/bits.png)
 
 all floating point numbers take same amount of memory (same bits)
 ### Integer representation
@@ -96,7 +98,7 @@ all floating point numbers take same amount of memory (same bits)
 * At the hardware level computers typically handle integers using 8, 16, 32, or
 64 bits
 
-![fig/dec-bin-table.png](fig/dec-bin-table.png)
+![Lecture10fig/dec-bin-table.png](Lecture10/fig/dec-bin-table.png)
 
 bit shift to left = multiplying the number
 bit shift to right = divide, but might lose remainder
@@ -129,7 +131,7 @@ cuts your positive values by a power of 2
 two representations of 0 and -0, not good
 causes hardware implementation to be more complicated
 
-![fig/sign-bit.png](fig/sign-bit.png)
+![Lecture10/fig/sign-bit.png](Lecture10/fig/sign-bit.png)
 
 * Reduces the range of the magnitude from `2^n` to `2^(n-1)`
 
