@@ -140,11 +140,10 @@ causes hardware implementation to be more complicated
 * Apply an offset or bias to reinterpret the conversion between binary and
 decimal
 
-![lecture-10/sign-offset.png](lecture-10/sign-offset.png)
+![lecture-10/fig/sign-offset.png](lecture-10/fig/sign-offset.png)
 
 * Again, effectively reduces the range of the magnitude
 
-LOOK at two's compliment- what's actually used in computers
 
 ### Unsigned integers
 
@@ -163,8 +162,8 @@ type will result in overflow/underflow
 * Overflow or underflow tend to cause wraparound, e.g. if adding together two
 signed numbers causes overflow the result is likely to be a negative number
 
-Ex: overflow causes 128+1 = -127
-Ex: underflow causes -127-1 = 128
+* Ex: overflow causes 128+1 = -127
+* Ex: underflow causes -127-1 = 128
 
 ```py
 >>> a = numpy.zeros(1,dtype=numpy.uint32)
@@ -178,7 +177,7 @@ shows that it wraps around
 
 ### Range of integer types
 
-![lecture-10/fig/int-range.png](lecture-10fig/int-range.png)
+![lecture-10/fig/int-range.png](lecture-10/fig/int-range.png)
 
 ### Floating point representation
 
