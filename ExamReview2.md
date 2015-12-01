@@ -6,13 +6,13 @@ Topics: Representation of numbers, Numpy overview
 
 * Computers represent and store everything in *binary* (base 2, 0s and 1s called binary digits or bits)
 
-* Byte = 8 bits 
+* Byte = 8 bits
 
 ### Simplified model of computer
 
 ![fig](lecture-10/fig/model-computer.png)
 
-- Large sequence of bytes make up memory or DRAM. 
+- Large sequence of bytes make up memory or DRAM.
 - In diagram, each box = a single byte, each byte in memory has an address; usually 0x00 (hexadecimal, base 16)
 - Fast computations done in registers
 - Communication across memory bus is very slow compared to communication from register to alu
@@ -90,7 +90,7 @@ numbers
 
 ### Fixed storage widths
 
-![Lecture10/fig/bits.png](Lecture10/fig/bits.png)
+![lecture-10/fig/bits.png](lecture-10/fig/bits.png)
 
 all floating point numbers take same amount of memory (same bits)
 ### Integer representation
@@ -98,7 +98,7 @@ all floating point numbers take same amount of memory (same bits)
 * At the hardware level computers typically handle integers using 8, 16, 32, or
 64 bits
 
-![Lecture10fig/dec-bin-table.png](Lecture10/fig/dec-bin-table.png)
+![lecture-10/fig/dec-bin-table.png](lecture-10/fig/dec-bin-table.png)
 
 bit shift to left = multiplying the number
 bit shift to right = divide, but might lose remainder
@@ -131,7 +131,7 @@ cuts your positive values by a power of 2
 two representations of 0 and -0, not good
 causes hardware implementation to be more complicated
 
-![Lecture10/fig/sign-bit.png](Lecture10/fig/sign-bit.png)
+![lecture-10/fig/sign-bit.png](lecture-10/fig/sign-bit.png)
 
 * Reduces the range of the magnitude from `2^n` to `2^(n-1)`
 
@@ -140,7 +140,7 @@ causes hardware implementation to be more complicated
 * Apply an offset or bias to reinterpret the conversion between binary and
 decimal
 
-![fig/sign-offset.png](fig/sign-offset.png)
+![lecture-10/sign-offset.png](lecture-10/sign-offset.png)
 
 * Again, effectively reduces the range of the magnitude
 
@@ -155,20 +155,16 @@ LOOK at two's compliment- what's actually used in computers
 * Can use this to your advantage to expand the effective range available if
 negative numbers don't need to be stored
 
-* But be careful...
-
 ### Overflow and underflow
 
-* Attempting to assign a value greater than what can be represented by the data
-type will result in overflow
-
-* Attempting to assigning a value less than what can be represented by the data
-type will result in underflow
+* Attempting to assign a value greater/less than what can be represented by the data
+type will result in overflow/underflow
 
 * Overflow or underflow tend to cause wraparound, e.g. if adding together two
 signed numbers causes overflow the result is likely to be a negative number
 
-overflow causes 128+1 = -127; same problem with -127-1 = 128
+Ex: overflow causes 128+1 = -127
+Ex: underflow causes -127-1 = 128
 
 ```py
 >>> a = numpy.zeros(1,dtype=numpy.uint32)
@@ -182,13 +178,13 @@ shows that it wraps around
 
 ### Range of integer types
 
-![fig/int-range.png](fig/int-range.png)
+![lecture-10/fig/int-range.png](lecture-10fig/int-range.png)
 
 ### Floating point representation
 
 * How do I represent a floating point value using bits?
 
-![fig/float.png](fig/float.png)
+![lecture-10/fig/float.png](lecture-10/fig/float.png)
 10-6 default, up to 6 accuracy
 
 ### Floating point standard
@@ -196,7 +192,7 @@ shows that it wraps around
 * IEEE (Institute of Electrical and Electronics Engineers) 754 is the technical
 standard for floating point used by all modern processors
 
-![fig](fig/float-table.png)
+![fig](lecture-10/fig/float-table.png)
 
 * Standard also specifies things like rounding modes, handling overflow, divide
 by zero, etc.
@@ -298,13 +294,13 @@ One of the main disadvantages of a higher level language is that, while
 comparatively easy to program, it is typically slow compared to C/C++, Fortran,
 or other lower level languages
 
-![fig](fig/python-v-compiled.png)
+![fig](lecture-10/fig/python-v-compiled.png)
 
 C++ sits much closer to hardwares; C compilers will inspect code and optimize it
 
 ### Object overhead
 
-![fig](fig/object-overhead.png)
+![fig](lecture-10/fig/object-overhead.png)
 
 everything in python is an object, and this creates lots of overhead
 
@@ -320,7 +316,7 @@ everything in python is an object, and this creates lots of overhead
 
 * Python has a C API which allows the use of compiled modules
 
-![fig](fig/python-c-interface.png)
+![fig](lecture-10/fig/python-c-interface.png)
 
 * The actual implementation of `string.find()` can be viewed at:
 
@@ -331,7 +327,7 @@ http://svn.python.org/view/python/trunk/Objects/stringlib/fastsearch.h
 * Python code in a `.py` file is actually executed in a hybrid approach by a mix
 of the interpreter and compiled modules that come with Python
 
-![fig](fig/python-compiled-modules.png)
+![fig](lecture-10/fig/python-compiled-modules.png)
 
 
 ### Extension modules
@@ -362,7 +358,7 @@ like GNU Octave
 ### Python software stack
 numpy is a bit like compiled modules
 
-![fig](fig/python-stack.png)
+![fig](lecture-10/fig/python-stack.png)
 
 ### NumPy
 use to represent arrays of number
@@ -469,7 +465,7 @@ same as matlab, first index is column, next is rows
 last index is contiguous in mem
 ### Internal representation
 
-![fig](fig/numpy-representation.png)
+![fig](lecture-10/fig/numpy-representation.png)
 
 contiguous block of memory- data is together, so high performance
 
