@@ -1,3 +1,5 @@
+//note: can see that a[i][j] == *(*(a+i)+j) since a[i] == *(a+i)
+
 #include <iostream>
 
 using std::cout;

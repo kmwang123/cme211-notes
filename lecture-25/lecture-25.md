@@ -1071,3 +1071,6 @@ and make the fuction void
 can do c.resize(a.size())
 if (a.size() != b.size()) //handle error
 
+3 short questions with 5 parts for C++
+1 num python (vectorized operations), 1 C++
+NO memory management
