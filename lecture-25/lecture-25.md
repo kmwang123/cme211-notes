@@ -1074,3 +1074,25 @@ if (a.size() != b.size()) //handle error
 3 short questions with 5 parts for C++
 1 num python (vectorized operations), 1 C++
 NO memory management
+
+
+numpy operations
+b[:] = 0 //initialize vector b 
+q[:] = g[:]
+np.dot(P,b) //dot product
+
+c = a + b is a vectorized operation for doing addition
+np.sum
+np.min
+np.linalg.norm() gives 2-norm of vector
+
+
+matrix A... do A = np.random.rand(5,5)
+to zero out 3rd column, do
+A[:,2] = 0
+
+to sum across rows, do A.sum(axis=1) #to sum over columns, axis = 0
+
+A[row,col] 
+
+to sum all entries greater than .5, can do A>= 0.5 to get a 2D boolean array, so A[A>=0.5] will give an array that fulfills this criteria 
