@@ -3746,9 +3746,6 @@ Compiler operates in stages:
 1. preprocess
 2. compile
 3. link
-g++ -Wall -Wextra -Wconversion main4.cpp sum4.cpp -o sum4
-this command links  main4.cpp sum4.cpp  together
-if don't include one of the program, this gives a "linker" or "link" error
 
 
 `src/main4.cpp`:
@@ -3756,7 +3753,7 @@ if don't include one of the program, this gives a "linker" or "link" error
 ```c++
 #include <iostream>
 
-int sum(int a, int b);
+int sum(int a, int b); //declare function in main
 
 int main() {
   int a = 2, b = 3;
@@ -3778,7 +3775,10 @@ int sum(int a, int b) {
 ```
 
 Output:
-
+g++ -Wall -Wextra -Wconversion main4.cpp sum4.cpp -o sum4
+- this command links  main4.cpp sum4.cpp  together
+- if don't include one of the program, this gives a "linker" or "link" error
+- don't need to #include sum4.cpp in main since linking it together will make C++ search for the file (also we declared function in main)
 ```
 $ g++ -Wall -Wextra -Wconversion main4.cpp sum4.cpp -o sum4
 $ ./sum4
@@ -3787,7 +3787,7 @@ $
 ```
 
 ### Maintaining consistency
-
+- our function declaration doesn't match the function we wrote, so we get a link time error.
 `src/main5.cpp`:
 
 ```c++
@@ -3824,7 +3824,7 @@ collect2: error: ld returned 1 exit status
 $
 ```
 
-Can overload a function based on input arguments, not output
+- **Can overload a function based on input arguments, not output**
 
 ## The preprocessor and `#include`
 
@@ -3885,7 +3885,7 @@ Goodbye!
 
 ### Compilation process
 
-![fig](fig/compilation.png)
+![fig](lecture-18/fig/compilation.png)
 
 ### Standard decomposition
 
