@@ -635,8 +635,7 @@ sometimes also .cc or .cxx or others. Some are standard so that C++ compiler wil
 if you pass in .c file, interpreter will compile that as standard C
 
 ```c++
-#include <iostream> // input/output stream
-//these are like import in python
+#include <iostream> // input/output stream, these are like import in python
 
 int main() // input arguments in main to put in command line arguments, int is the return type
 {
@@ -650,27 +649,9 @@ int main() // input arguments in main to put in command line arguments, int is t
 //std cout is the output string, we're sending it the string "hello world" and
 //endl forces text to be displayed
 
-  return 0; // Return value of the function
+  return 0; // Return value of the function. In this case, we return an "int"
 }
 ```
-
-* `#include` statments are analogous to Python `import` statements.  This is how
-  functionality from other source files and libraries is made available to this
-  program.  `<iostream>` has standard C++ input output functionality.
-
-* The `main` function is the entry point into the program.  Code from the `main`
-function body will be executed upon starting the program.
-
-* The `return` keyword returns a value from the function.  The type of the
-  return value must match the specified output type of the function (`int` in
-  this case).
-
-* There are two forms of comments in C++
-
-  * Text between an `/*` and an `*/` is a comment, this can span multiple lines
-
-  * Text after a `//` is also a comment, these comments go to the end of the
-  line
 
 ### Compilation
 
@@ -697,22 +678,19 @@ machines (Linux, Windows, Mac) the executables are specific to an operating
 system and underlying processor
 
 ```
-DN0a225536:src babagoatkw$ g++ hello.cpp -o hello <-- can name the compiled code to something different
+DN0a225536:src babagoatkw$ g++ hello.cpp -o hello #can name the compiled code to something different
 DN0a225536:src babagoatkw$ ls
 a.out		hello		hello.cpp	string.cpp	variables.cpp
 DN0a225536:src babagoatkw$ ./hello
 Hello world
 ```
 
-### Compiling on corn
-
-* We will use the GNU (GNU's Not Unix) compilers that should be available with
-any Linux distribution
+### Compiling on corn (use g++ for GNU's)
 
 ```
 [nwh@icme-nwh src] $ ls
 hello.cpp
-[nwh@icme-nwh src] $ g++ -Wall -Wconversion -Wextra hello.cpp <--- "-W" tells compiler to give us warnings (they are flags). If we are compiling with these flags and it's producing warnings, fix those warnings
+[nwh@icme-nwh src] $ g++ -Wall -Wconversion -Wextra hello.cpp
 [nwh@icme-nwh src] $ ls
 a.out  hello.cpp
 ```
@@ -722,7 +700,7 @@ Details:
 * `g++`: GNU C++ compiler program
 
 * `-Wall`, `-Wconversion`, `-Wextra` are flags to enable all warnings
-
+ - "-W" tells compiler to give us warnings (they are flags). If we are compiling with these flags and it's producing warnings, fix those warnings
 * `hello.cpp` is the name of the C++ source file to compile
 
 ### Running Hello world
@@ -797,10 +775,10 @@ int main() {
 ```
 
 ```
-$ g++ -Wall -Wconversion -Wextra hello.cpp -o newline
-$ ./newline
-Hello world
-$
+kmwang14@corn29:~/CME211/Cplusplus$ g++ -std=c++11 -Wall -Wconversion -Wextra helloWarning.cpp
+helloWarning.cpp: In function 'int main()':
+helloWarning.cpp:5:16: warning: 'a' is used uninitialized in this function [-Wuninitialized]
+   std::cout << a << std::endl;
 ```
 
 ## Include (header) files
@@ -812,7 +790,6 @@ giving us access to functionality defined in another file
 screen requires specifying the proper include file(s)
 
 * Include files in C++ work a bit differently when it comes to namespaces
-
 
 * However, namespaces in C++ still generally serve the same purpose as
 namespaces in Python
@@ -854,65 +831,6 @@ C++ language
 or by inspecting the include file
 
 * Will talk about namespaces more when we start writing our own include files
-
-### Common mistakes
-
-Forgetting to `#include <iostream>`:
-
-```c++
-int main() {
-  std::cout << "Hello world" << std::endl;
-  return 0;
-}
-```
-
-```
-[nwh@icme-nwh src] $ g++ -Wall -Wconversion -Wextra hello.cpp -o hello
-hello.cpp: In function ‘int main()’:
-hello.cpp:11:3: error: ‘cout’ is not a member of ‘std’
-   std::cout << "Hello world" << std::endl;
-   ^
-hello.cpp:11:33: error: ‘endl’ is not a member of ‘std’
-   std::cout << "Hello world" << std::endl;
-                                 ^
-[nwh@icme-nwh src] $
-```
-
-### Common mistakes
-
-Forgetting the `std` namespace:
-
-```cpp
-#include <iostream>
-
-int main() {
-  cout << "Hello world" << endl;
-  return 0;
-}
-```
-
-```
-[nwh@icme-nwh src] $ g++ -Wall -Wconversion -Wextra hello.cpp -o hello
-hello.cpp: In function ‘int main()’:
-hello.cpp:11:3: error: ‘cout’ was not declared in this scope
-   cout << "Hello world" << endl;
-   ^
-hello.cpp:11:3: note: suggested alternative:
-In file included from hello.cpp:1:0:
-/usr/include/c++/4.9.2/iostream:61:18: note:   ‘std::cout’
-   extern ostream cout;  /// Linked to standard output
-                  ^
-hello.cpp:11:28: error: ‘endl’ was not declared in this scope
-   cout << "Hello world" << endl;
-                            ^
-hello.cpp:11:28: note: suggested alternative:
-In file included from /usr/include/c++/4.9.2/iostream:39:0,
-                 from hello.cpp:1:
-/usr/include/c++/4.9.2/ostream:564:5: note:   ‘std::endl’
-     endl(basic_ostream<_CharT, _Traits>& __os)
-     ^
-[nwh@icme-nwh src] $
-```
 
 ### Another namespace option
 
@@ -969,29 +887,6 @@ Hello world
 $
 ```
 
-### Bracket style
-
-```cpp
-#include <iostream>
-
-int main()
-{
-  /* Hello world program*/
-  std::cout << "Hello world" << std::endl;
-  return 0;
-}
-```
-
-```cpp
-#include <iostream>
-
-int main() {
-  /* Hello world program*/
-  std::cout << "Hello world" << std::endl;
-  return 0;
-}
-```
-
 ### Return value from `main()`
 
 ```cpp
@@ -1003,7 +898,7 @@ int main() {
   return 7;
 }
 ```
-* returning a positve number represents an error
+* returning a positive number represents an error
 ```
 [nwh@icme-nwh src] $ g++ -Wall -Wconversion -Wextra hello.cpp -o hello
 [nwh@icme-nwh src] $ ./hello
@@ -1018,82 +913,6 @@ a.out  hello  hello.cpp
 
 * Unix standard: programs return `0` under normal conditions and other numbers
   on error conditions
-
-## Variables
-
-File: `src/variables.cpp`
-* code below won't compile since 'a' hasn't been declared (you didn't tell me what type variable is going to correspond to). need to specify type
-```cpp
-#include <iostream>
-
-int main() {
-  a = 2;
-  b = 3;
-  c = a + b;
-
-  std::cout << "c = " << c << std::endl;
-
-  return 0;
-}
-```
-
-Output:
-
-```
-[nwh@icme-nwh src] $ g++ -Wall -Wconversion -Wextra variables.cpp -o variables
-variables.cpp: In function ‘int main()’:
-variables.cpp:4:3: error: ‘a’ was not declared in this scope
-   a = 2;
-   ^
-variables.cpp:5:3: error: ‘b’ was not declared in this scope
-   b = 3;
-   ^
-variables.cpp:6:3: error: ‘c’ was not declared in this scope
-   c = a + b;
-   ^
-```
-
-### Declaring variables
-
-```cpp
-#include <iostream>
-
-int main() {
-  int a;
-  int b, c;
-
-  c = a + b;
-
-  std::cout << "c = " << c << std::endl;
-
-  return 0;
-}
-```
-
-```
-$ g++ variables.cpp -o variables
-$ ./variables
-c = 32767  <-- this is dangerous since it assigns a,b random ints that were already in mem
-$
-```
-
-### Compiler warnings
-
-```
-[nwh@icme-nwh src] $ g++ -Wall -Wconversion -Wextra variables.cpp -o variables
-variables.cpp: In function ‘int main()’:
-variables.cpp:9:12: warning: ‘a’ is used uninitialized in this function [-Wuninitialized]
-   c = a + b;
-            ^
-variables.cpp:9:12: warning: ‘b’ is used uninitialized in this function [-Wuninitialized]
-```
-
-* Enable them, read them, and fix them
-
-* We will not have any sympathy if you have bugs that would have been caught by
-enabling warnings
-
-* You will lose points if compilation of your program generates warnings
 
 ### Initializing variables
 
@@ -1119,28 +938,6 @@ int main() {
 c = 5
 ```
 
-### Type errors
-
-```cpp
-#include <iostream>
-
-int main() {
-  int a;
-  a = "hello";
-
-  std::cout << "a = " << a << std::endl;
-
-  return 0;
-}
-```
-
-```
-[nwh@icme-nwh src] $ g++ -Wall -Wconversion -Wextra variables.cpp -o variables
-variables.cpp: In function ‘int main()’:
-variables.cpp:10:5: error: invalid conversion from ‘const char*’ to ‘int’ [-fpermissive]
-   a = "hello";
-     ^
-```
 
 ### Mixed number types
 
@@ -1196,13 +993,14 @@ c = 5
 ```
 
 ### Double precision floating point
+* Double has 2x the precision of float (64 bits instead of 32)
 
 ```cpp
 #include <iostream>
 
 int main() {
   int a;
-  double b = 3.14; // 64 bit floating point number (higher precision); float is 32 bit floating point number
+  double b = 3.14;
 
   a = 2;
   double c = a*b;
@@ -1212,7 +1010,6 @@ int main() {
   return 0;
 }
 ```
-
 ```
 $ g++ -Wall -Wconversion -Wextra variables.cpp -o variables
 $ ./variables6
@@ -1355,7 +1152,7 @@ int main() {
   std::string hello = "Hello";
   std::string lo = "lo";
 
-  std::cout << hello.find(lo) << std::endl;
+  std::cout << hello.find(lo) << std::endl; //first index found
 
   return 0;
 }
@@ -1367,6 +1164,12 @@ $ ./string
 3
 $
 ```
+### Compiler flags
+* -Wall: Enable "all" warnings
+* -o: specify name of output (executable) file
+* -g: include debugging information for debugger or Valgrind
+* -std=c++11: Enable use of C++ 2011 Standard
+* -03: Do extensive optimizations (slower compilation, faster execution)
 
 ## Required reading
 
@@ -1388,6 +1191,7 @@ $
 * <http://www.cplusplus.com>
 
 * <http://www.linfo.org/index.html>
+
 # CME 211: Lecture 15
 
 Monday, October 26, 2015
@@ -1399,6 +1203,7 @@ Topics:
 * looping
 
 Coliru.stacked-crooked.com is a handy website that you can write C++ code in and compile.
+
 ## Static arrays
 
 The size (length) of static arrays is known at compile time.  See `src/array.cpp`:
@@ -1407,7 +1212,7 @@ The size (length) of static arrays is known at compile time.  See `src/array.cpp
 #include <iostream>
 
 int main() {
-  int a[3]; // Array referenced via a with 3, integer elements (array with 3 elements)
+  int a[3]; //array with 3 elements
 
   a[0] = 0;
   a[1] = a[0] + 1;
@@ -1511,81 +1316,10 @@ Notes:
 
 * In `bash` the `\` character allows line continuation
 
-### Testing Address Sanitizer
-
-```
-$ ./array
-=================================================================
-==23777== ERROR: AddressSanitizer: stack-buffer-overflow on address 0x7fff6e11364c at pc 0x400c64 bp 0x7fff6e113610 sp 0x7fff6e113608
-WRITE of size 4 at 0x7fff6e11364c thread T0
-    #0 0x400c63 (/afs/ir.stanford.edu/users/n/w/nwh/git/cme211-notes/lecture-15/src/array+0x400c63)
-    #1 0x7f1dbf75dec4 (/lib/x86_64-linux-gnu/libc-2.19.so+0x21ec4)
-    #2 0x400a58 (/afs/ir.stanford.edu/users/n/w/nwh/git/cme211-notes/lecture-15/src/array+0x400a58)
-Address 0x7fff6e11364c is located at offset 44 in frame <main> of T0's stack:
-  This frame has 1 object(s):
-    [32, 44) 'a'
-HINT: this may be a false positive if your program uses some custom stack unwind mechanism or swapcontext
-      (longjmp and C++ exceptions *are* supported)
-Shadow bytes around the buggy address:
-  0x10006dc1a670: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x10006dc1a680: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x10006dc1a690: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x10006dc1a6a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x10006dc1a6b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-=>0x10006dc1a6c0: 00 00 00 00 f1 f1 f1 f1 00[04]f4 f4 f3 f3 f3 f3
-  0x10006dc1a6d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x10006dc1a6e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x10006dc1a6f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x10006dc1a700: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-  0x10006dc1a710: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-Shadow byte legend (one shadow byte represents 8 application bytes):
-  Addressable:           00
-  Partially addressable: 01 02 03 04 05 06 07
-  Heap left redzone:     fa
-  Heap righ redzone:     fb
-  Freed Heap region:     fd
-  Stack left redzone:    f1
-  Stack mid redzone:     f2
-  Stack right redzone:   f3
-  Stack partial redzone: f4
-  Stack after return:    f5
-  Stack use after scope: f8
-  Global redzone:        f9
-  Global init order:     f6
-  Poisoned by user:      f7
-  ASan internal:         fe
-==23777== ABORTING
-```
-
 ### Address Sanitizer and `gdb`
 
 We can use the GNU debugger `gdb` to get more precise information about the
-error:
-
-```
-$ export ASAN_OPTIONS=abort_on_error=1
-$ gdb ./array
-...
-(gdb) run
-Starting program:
-/afs/ir.stanford.edu/users/n/w/nwh/git/cme211-notes/lecture-15/src/array
-... [lots of output] ...
-(gdb) backtrace
-#0  0x00007ffff47b8cc9 in __GI_raise (sig=sig@entry=6) at
-../nptl/sysdeps/unix/sysv/linux/raise.c:56
-#1  0x00007ffff47bc0d8 in __GI_abort () at abort.c:89
-#2  0x00007ffff4e66829 in ?? () from /usr/lib/x86_64-linux-gnu/libasan.so.0
-#3  0x00007ffff4e5d3ec in ?? () from /usr/lib/x86_64-linux-gnu/libasan.so.0
-#4  0x00007ffff4e64012 in ?? () from /usr/lib/x86_64-linux-gnu/libasan.so.0
-#5  0x00007ffff4e63121 in __asan_report_error () from
-/usr/lib/x86_64-linux-gnu/libasan.so.0
-#6  0x00007ffff4e5d7f7 in __asan_report_store4 () from
-/usr/lib/x86_64-linux-gnu/libasan.so.0
-#7  0x0000000000400c64 in main () at array.cpp:12
-(gdb) q
-```
-'#7  0x0000000000400c64 in main () at array.cpp:12
-(gdb) q' this is an important line since it tells you what line of code is causing the crash
+error
 
 ## Multidimensional static arrays
 
@@ -1603,7 +1337,7 @@ int main() {
   a[0][1] = 2;
   a[1][1] = 3;
 
-  std::cout << "a = " << a << std::endl;
+  std::cout << "a = " << a << std::endl; //prints the memory address of a
 
   std::cout << "a[0][0] = " << a[0][0] << std::endl;
   std::cout << "a[1][0] = " << a[1][0] << std::endl;
@@ -1626,8 +1360,6 @@ a[0][1] = 2
 a[1][1] = 3
 $
 ```
-
-Note: the first output line prints the memory address.
 
 ### Array operations
 
@@ -1694,8 +1426,8 @@ int main() {
   {
     int n = 5;
   }
- //compile time error since n is outside the scope and we are trying to print it
-  std::cout << "n = " << n << std::endl;
+
+  std::cout << "n = " << n << std::endl; //compile time error since n is outside the scope and we are trying to print it
 
   return 0;
 }
@@ -1876,29 +1608,32 @@ n = 2
 Example (`src/increment2.cpp`):
 
 ```cpp
-#include <iostream>
+Pseudocode:
+a=1
+print(a)
+print(return a++)
+print(a)
 
-int main() {
-  int a = 1;
-  std::cout << "            a: " << a   << std::endl;
-  std::cout << "return of a++: " << a++ << std::endl;
-  std::cout << "            a: " << a   << std::endl;
-  std::cout << "return of ++a: " << ++a << std::endl;
-  std::cout << "            a: " << a   << std::endl;
-  return 0;
-}
+a=1
+print(a)
+print(return ++a)
+print(a)
+
 ```
 
 Output:
 
 ```
-            a: 1
-return of a++: 1 //copy value of a, store it, then increment
-            a: 2
-return of ++a: 3 //increment first, then store and returns
-            a: 3
+a: 1
+Test postfix: //copy value of a, store it, then increment
+return of a++: 1 //return original value
+a: 2
+Now test prefix: //increment first, then store and returns
+return of ++a: 2 //return incremented value
+a: 2
 ```
-Postfix is more expensive
+* Postfix is more expensive
+
 ### Iterating through an array
 
 `src/for_loop3.cpp`:
@@ -1969,6 +1704,8 @@ int main() {
 
 ### Infinite loops
 
+No termination condition given
+
 See `src/inf_loop.cpp`:
 
 ```cpp
@@ -2009,7 +1746,7 @@ int main() {
 
 ### Common mistake
 
-```
+```cpp
 #include <iostream>
 
 int main() {
@@ -2028,18 +1765,22 @@ int main() {
   return 0;
 }
 ```
-
-
-### Common mistake
+Output:
+```cpp
+sum = 55
+product = 11 //this wasn't included in for loops
 
 ```
+
+### Common mistake
+```cpp
 #include <iostream>
 
 int main() {
   int n;
 
   int sum = 0;
-  for (n = 0; n < 101; n++); // no loop body
+  for (n = 0; n < 101; n++); // no loop body since there's a semicolon here
   {
     sum += n;
   }
@@ -2049,6 +1790,13 @@ int main() {
   return 0;
 }
 ```
+Output:
+
+```cpp
+sum = 101 (since n gets incremented all the way to 101 before we do sum += n)
+
+```
+
 
 ### Nested loops example
 
@@ -2081,6 +1829,24 @@ int main() {
 }
 ```
 
+### Read in unknown number of inputs using for loop
+
+```cpp
+#include <iostream>
+int main() {
+  int sum = 0, value = 0;
+  while (std::cin >> value)
+      sum += value;
+  std::cout << "Sum is: " << sum << std::endl;
+  return0;
+}
+
+```
+Output:
+```
+Sum is: 18
+```
+
 ### `while` loop
 
 ```cpp
@@ -2097,8 +1863,13 @@ int main() {
   return 0;
 }
 ```
-
+Output:
+```
+sum = 5050
+```
 ### Common mistake
+
+* This gets stuck in an infinite loop since n will always be <= 100 since n is not being incremented
 
 ```cpp
 #include <iostream>
@@ -2116,6 +1887,7 @@ int main() {
   return 0;
 }
 ```
+
 
 ### `do`-`while` loop
 
@@ -2142,12 +1914,10 @@ Note the semicolon at the very end!
 * Chapter 1: Getting Started, Sections 1.4.1 and 1.4.2 (while and for)
 
 * Chapter 3: Strings, Vectors, and Arrays: Sections 3.5 and 3.6 (arrays)
+
 # CME 211: Lecture 16
 
 Wednesday, October 27, 2015
-
-Announcements:
-68% of class will get A- or above
 
 Topics:
 
@@ -2190,8 +1960,7 @@ n is positive
 $
 ```
 
-Note: brackets `{...}` are not needed for a single line `if` block.  However, I
-recommend always putting them in.
+Note: brackets `{...}` are not needed for a single line `if` block.  However, I recommend always putting them in.
 
 ### `else if`
 
@@ -2251,21 +2020,44 @@ n = 0
 n is zero
 $
 ```
+### Read in numbers and print out occurence
+input is 42 42 42 42 42 55 55 62 100 100 100
+This only works if numbers are in order (can use algorithm to sort)
+output should be:
+42 occurs 5 times
+55 occurs 2 times
+62 occurs 1 times
+100 occurs 3 times
 
+```cpp
+#include <iostream>
+int main() {
+  int currVal = 0, val = 0;
+  if (std::cin >> currVal) {
+    int cnt = 1; //store count for current value we're processing
+    while (std::cin >> val) {
+       if (val == currVal)
+          ++cnt;
+       else {
+          std::cout << currVal << " occurs "
+                    << cnt << " times" << std::endl;
+          currVal = val;
+          cnt = 1;
+       }
+    } //end while loop
+    //print count for the last value in file
+    std::cout << currVal << " occurs "
+              << cnt << " times" << std::endl;
+  }
+  return 0;
+}
+```
 ### Common mistakes
 
-Empty `if` due to extraneous semi-colon:
-
-```
-if (n < 0);
-  std::cout << "n is negative" << std::endl;
-```
-
-Assignment in the conditional expression:
-This gives an compiler error if assigned for a conditional
-If no error, code may not run properly
-```
-if (n = 0)
+* Empty `if` due to extraneous semi-colon
+* Assignment in the conditional expression. This gives an compiler error if assigned for a conditional. If no error, code may not run properly
+```cpp
+if (n = 0) //instead of if (n == 0)
   std::cout << "n is zero" << std::endl;
 ```
 Can also switch order of variable to force noncompile (ex: if(0 == n)), called a yoda condition
@@ -2365,7 +2157,7 @@ $
 ```
 
 ### `0` is false, everything else is true
-use cpp.reference to see how to print format with precision
+use cpp reference to see how to print format with precision
 
 ```cpp
 #include <iostream>
@@ -2396,7 +2188,6 @@ $
 ### Bitwise results
 common mistake: doing bitwise and instead of logical
 
-
 ```cpp
 #include <iostream>
 
@@ -2414,7 +2205,7 @@ int main() {
   else
     std::cout << "b is false" << std::endl;
 
-  if (a & b)
+  if (a & b) //this is a bitwise comparison
     std::cout << "a & b is true" << std::endl;
   else
     std::cout << "a & b is false" << std::endl;
@@ -2439,25 +2230,10 @@ $
 
 * Can use a switch statement instead:
 
-```cpp
-if (choice == `C')
-  clearRecord();
-else if (choice == `D')
-  deleteRecord();
-else if (choice == `A')
-  addRecord();
-else if (choice == `P')
-  printRecord();
-else
-  std::cout << "Bad choice\n";
-```
+- DONT FORGET to add BREAK! Otherwise other cases will be executed
+- default is executed if choice not equal to any other cases
 
-Becomes:
-each case needs to end with a break
-say we're in case C, execute function, then break goes to end of switch block
-if neglected to put break, control would keep going down and execute other cases
-default is executed if choice is not equal to any of the other cases
-```
+```cpp
 switch (choice) {
   case `C': clearRecord(); break;
   case `D': deleteRecord(); break;
@@ -2513,56 +2289,8 @@ you are going right
 $
 ```
 
-### Advantage
 
-Compiler warnings will tell you if you are missing some cases.
-
-```cpp
-switch (d)
-{
-  case left:
-    txt += "left"; break;
-  case right:
-    txt += "right"; break;
-  case down:
-    txt += "down"; break;
-}
-```
-
-```
-$ g++ -Wall -Wconversion -Wextra switch2.cpp -o switch2
-switch2.cpp: In function 'int main()':
-switch2.cpp:16:10: warning: enumeration value 'up' not handled in switch [-Wswitch]
-switch (d)
-^
-$
-```
-
-### Common mistake
-
-Neglecting to add `break` in each case.
-
-```cpp
-std::string txt = "you are going ";
-switch (d) {
-  case left:
-    txt += "left";
-  case right:
-    txt += "right";
-  case up:
-    txt += "up";
-  case down:
-    txt += "down";
-}
-std::cout << txt << std::endl;
-```
-
-```
-$ g++ -Wall -Wconversion -Wextra switch3.cpp -o switch3
-$ ./switch3
-you are going rightupdown
-$
-```
+- Compiler warnings will tell you if you are missing some cases.
 
 ### Ternary operator
 
@@ -2592,23 +2320,7 @@ Anatomy:
 
 ### `goto`
 
-"If you find yourself using a `goto` statement within a program, then you have not
-thought about the problem and its implementation for long enough"
-
-See: <http://xkcd.com/292/>
-
-![fig](fig/goto.png)
-
-## File I/O
-
-File I/O in Python:
-
-![fig](fig/SoundOfMusic.jpg)
-
-File I/O in C++:
-
-![fig](fig/plumbing.jpg)
-
+"If you find yourself using a `goto` statement within a program, then you have not thought about the problem and its implementation for long enough"
 
 ### C++ file I/O
 
