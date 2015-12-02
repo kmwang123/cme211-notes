@@ -1180,6 +1180,8 @@ $
 ```
 
 ### String functions
+Pg. 128
+string.empty() is useful
 ![fig](MidtermRev/strings.png)
 
 ### Compiler flags
@@ -2583,11 +2585,10 @@ int main(int argc, char *argv[]) {
     std::cout << " " << argv[0] << " <filename> <param1> <param2>" << std::endl;
     return 0;
   }
-  // easy for strings
+
   std::string filename = argv[1];
   // conversion functions (from char array to numbers) comes from <string>
-  //noted by someone in class: should use stod instead of stof since we're assigning it to a double
-  double param1 = std::stof(argv[2]); //stof gives a floating point number
+  double param1 = std::stod(argv[2]); //stof gives a double number
   int param2 = std::stoi(argv[3]);   //stoi gives an int
 
   std::cout << "filename = " << filename << std::endl;
@@ -2675,6 +2676,7 @@ $
 ```
 
 ### Controlling decimal places
+- note: the int is still just 4
 
 ```c++
 #include <iostream>
@@ -2706,6 +2708,7 @@ $
 ```
 
 ### Scientific notation
+- note: the int is still just 4
 
 ```cpp
 int main() {
@@ -2785,8 +2788,48 @@ $ ./formatting7
 02
 ...
 ```
+### Left and Right Justify
 
-### `cout` and files work the same
+```cpp
+#include <iomanip>
+#include <iostream>
+
+int main() {
+
+  std::cout.fill('0');
+
+  //left justify
+  std::cout << "Left Justify: " << std::endl;
+  for(int n = 0; n < 3; n++) {
+    std::cout << std::left;
+    std::cout << std::setw(12) << n << std::endl;
+  }
+
+  //right justify
+  std::cout << "Right Justify: " << std::endl;
+  for(int n = 0; n < 3; n++) {
+    std::cout << std::right;
+    std::cout << std::setw(12) << n << std::endl;
+  }
+
+
+  return 0;
+}
+```
+Output:
+```
+kmwang14@corn20:~/CME211/Cplusplus/lecture-17$ ./a.out
+Left Justify:
+000000000000
+100000000000
+200000000000
+Right Justify:
+000000000000
+000000000001
+000000000002
+```
+### Output for Files
+- cout and files work the same
 
 ```cpp
 #include <iostream>
@@ -2837,9 +2880,11 @@ $ cat u.data
 ```
 
 ### Same data on each line
-Macs use clang++ (different compiler compared to corn)
-then,
-make file1 (this is to rerun)
+Note: Macs use clang++ (different compiler compared to corn)
+- from inputstream f, read into uid, mid, rating, and time
+- reads in a single line at a time and delimit by whitespace, then store info in those variables
+- >> stream operator converts what it reads from file into an integer
+- if we don't include >> time, it messes up the column since now it doesn't read in the time stamp
 ```cpp
 #include <fstream>
 #include <iostream>
@@ -2850,12 +2895,8 @@ int main() {
   f.open("u.data");
   if (f.is_open()) {
     int uid, mid, rating, time;
-    //from inputstream f, read into uid, mid, rating, and time
-    //reads in a single line at a time and delimit by whitespace, then store info in those variables
-    // >> stream operator converts what it reads from file into an interger
-    // if we don't include >> time, it messes up the column since now it doesn't read in the time stamp
-    if we force "int uid,mid,rating,time", and the conversion doesn't work, it returns false and the loop terminates
-    while (f >> uid >> mid >> rating >> time) { //all these in while loop since it returns false at end of file
+
+    while (f >> uid >> mid >> rating >> time) { //returns false at end of file
       std::cout << "user = " << uid;
       std::cout << ", movie = " << mid;
       std::cout << ", rating = " << rating << std::endl;
@@ -3043,6 +3084,9 @@ $
 ```
 
 ### Convert argument to number
+- use 'std::stoi' for string to int
+- use 'std::stof' for string to Float
+- use 'std::stod' for string to double
 
 ```cpp
 #include <limits>
@@ -3050,7 +3094,7 @@ $
 int main(int argc, char *argv[]) {
   if (argc < 2) {
     std::cout << "Usage:" << std::endl;
-    std::cout << " " << argv[0] << " <name data> [nnames]" << std::endl << std::endl; //nnames is number of names we will process and this is an optional argument, so we want a default number
+    std::cout << " " << argv[0] << " <name data> [nnames]" << std::endl << std::endl;
     std::cout << " Read at most nnames (optional)" << std::endl;
     return 0;
   }
@@ -3155,6 +3199,7 @@ $
 * Chapter 8: The IO Library
 
 * Chapter 17: Specialized Library Facilities: Section 17.5.1
+
 # CME 211: Lecture 18
 
 Wednesday, November 4, 2015
@@ -3169,14 +3214,6 @@ Topics:
 * Functions allow us to decompose a program into smaller components
 
 * It is easier to implement, test, and debug portions of a program in isolation
-
-* Allows work to be spread among many people working mostly independently
-
-* If done properly it can make your program easier to understand and maintain
-
-  * Eliminate duplicated code
-
-  * Reuse functions across multiple programs
 
 ### C/C++ function
 
@@ -3281,7 +3318,7 @@ $
 #include <iostream>
 
 // Forward declaration or prototype
-int sum(int a, int b); // tells compiler that there is an implementation for this function and it exists somewhere
+int sum(int a, int b); // tells compiler that there is an implementation for this function and it exists somewhere (can put in separate .hpp file)
 
 int main() {
   int a = 2, b = 3;
@@ -3620,6 +3657,8 @@ $
 ```
 
 ### Passing arguments
+- a is incremented in the function, which only has a local scope
+- thus, when a is printed after the function increment(), its value remains the same as it was initialized
 
 `src/passing1.cpp`:
 
@@ -3652,6 +3691,7 @@ $
 ```
 
 ### Passing arguments
+- when passing a static array, the pointer is passed so values are modified
 
 `src/passing2.cpp`:
 
@@ -3661,17 +3701,15 @@ $
 void increment(int a[2]) {
   a[0]++;
   a[1]++;
-  std::cout << "a[0] = " << a[0] << ", " << "a[1] = " << a[1]<< std::endl;
-
+  std::cout << "a[0] = " << a[0]<<", " << "a[1] = " << a[1] << std::endl;
 }
 
 int main() {
   int a[2] = {2, 3};
 
-  std::cout << "a[0] = " << a[0] << ", " << "a[1] = " << a[1]<< std::endl;
-  increment(a); // passes a pointer so that we can still modify this array
-  std::cout << "a[0] = " << a[0] << ", " << "a[1] = " << a[1]<< std::endl;
-
+  std::cout << "a[0] = " << a[0]<<", " << "a[1] = " << a[1] << std::endl;
+  increment(a);
+  std::cout << "a[0] = " << a[0]<<", " << "a[1] = " << a[1] << std::endl;
   return 0;
 }
 ```
@@ -3681,16 +3719,15 @@ Output:
 ```
 $ g++ -Wall -Wextra -Wconversion passing2.cpp -o passing2
 $ ./passing2
-a[0] = 2, a[1] = 3
-a[0] = 3, a[1] = 4
-a[0] = 3, a[1] = 4
+a[0] = 2, a[1] = 3 //before function
+a[0] = 3, a[1] = 4 //in function
+a[0] = 3, a[1] = 4 //after function
 $
 ```
 
 ### Pass by value
 
-* C/C++ default to pass by value, which means that when calling a function the
-arguments are copied
+* C/C++ default to pass by value, which means that when calling a function the arguments are **copied**
 
 * However, you need to be careful and recognize what is being copied
 
