@@ -865,7 +865,7 @@ int main() {
 }
 ```
 ### C++ types
-![Quiz2Review/cppTypes.png](Quiz2Review/cppTypes.png)
+![MidtermRev/cppTypes.png](MidtermRev/cppTypes.png)
 
 ### Blocks of code
 
