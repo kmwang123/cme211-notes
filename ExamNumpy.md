@@ -330,6 +330,30 @@ array([0, 1, 2, 3, 4, 5, 6, 7, 8])
 >>> b[:]=a[:]
 
 ```
+### Concatenating Matrices
+
+```py
+import numpy as np
+a = np.array([[1, 2], [3, 4]])
+b = np.array([[5, 6]])
+
+
+print(np.concatenate((a, b), axis=0))
+print('\n')
+print(np.concatenate((a, b.T), axis=1))
+```
+Output:
+
+```
+array([[1, 2],
+       [3, 4],
+       [5, 6]])
+
+array([[1, 2, 5],
+       [3, 4, 6]])
+
+```
+
 
 ### Sum, Max, Min
 ```py
@@ -420,10 +444,12 @@ array([[ 1],
 array([[ 0.,  1.,  2.],
        [ 3.,  4.,  5.],
        [ 6.,  7.,  8.]])
+
 >>> a.transpose()
 array([[ 0.,  3.,  6.],
        [ 1.,  4.,  7.],
        [ 2.,  5.,  8.]])
+#NOTE: can also do a.T for same result
 >>> numpy.trace(a)
 12.0
 >>> a*a # element wise multiplication
