@@ -4018,7 +4018,8 @@ b = 4
 $
 ```
 
-### Be careful
+### Be careful to include  `()`
+- with no `()`, we got a+ `3*a +3 = 11` instead of `(a+3)*(a+3) = 25`
 
 `src/define3.cpp`:
 
@@ -4038,7 +4039,6 @@ int main() {
 ```
 
 Output:
-
 ```
 $ g++ -Wall -Wextra -Wconversion define3.cpp -o define3
 $ ./define3
@@ -4071,6 +4071,7 @@ $
 ```
 
 ### Conditional compilation
+- specify debug on command line to run `-D` is predefined variable
 
 `src/conditional.cpp`:
 
@@ -4115,6 +4116,7 @@ $
 * **C++ Primer, Fifth Edition** by Lippman et al.
 
 * Chapter 6: Functions: Sections 6.1 - 6.3
+
 # CME 211: Lecture 19
 
 Friday, November 6, 2015
@@ -4147,7 +4149,8 @@ addition or removal of items
 
 * Unlike Python lists, the vector is restricted to containing homogeneous data
 
-### Our first vector
+### Vectors: size.(), empty(), push_back()
+- Note: can use emplace_back() if we #include <tuple>
 
 `src/vector1.cpp`:
 
@@ -4193,43 +4196,6 @@ $
 
 ### Printing a vector
 
-C++ does not have a built-in facility to print out a `vector`.
-
-`src/vector2.cpp`:
-
-```c++
-#include <iostream>
-#include <vector>
-
-int main()
-{
-  std::vector<int> v;
-  v.push_back(42);
-
-  std::cout << "v = " << v << std::endl; // will give error since you cant print vector like this
-
-  return 0;
-}
-```
-
-Output:
-
-```
-$ g++ -std=c++11 -Wall -Wextra -Wconversion    vector2.cpp   -o vector2
-vector2.cpp: In function ‘int main()’:
-vector2.cpp:9:13: error: cannot bind ‘std::basic_ostream<char>’ lvalue to ‘std::basic_ostream<char>&&’
-   std::cout << "v = " << v << std::endl;
-             ^
-In file included from /usr/include/c++/4.9.2/iostream:39:0,
-                 from vector2.cpp:1:
-/usr/include/c++/4.9.2/ostream:602:5: note: initializing argument 1 of ‘std::basic_ostream<_CharT, _Traits>& std::operator<<(std::basic_ostream<_CharT, _Traits>&&, const _Tp&) [with _CharT = char; _Traits = std::char_traits<char>; _Tp = std::vector<int>]’
-     operator<<(basic_ostream<_CharT, _Traits>&& __os, const _Tp& __x)
-     ^
-<builtin>: recipe for target 'vector2' failed
-```
-
-### Printing a vector
-
 We must write our own loop to print a vector.  We use square brackets `[]` to
 access an item of a `vector`.
 
@@ -4270,102 +4236,15 @@ On C++ containers, like `vector`, the square brakets `[]` are called
 For now, we just need to use them for `vector`s.
 
 Valid `vector` indices for a vector named `v` are in the range
-`[0,v.size())`.  Attempting to access element outside of those bounds leads to undefined behavior.  Next halloween, I am going to dress up as "undefined behavior".  It is a particulary scary thing.
+`[0,v.size())`.  Attempting to access element outside of those bounds leads to undefined behavior.  
 
-`src/vector4a.cpp`:
+### Vector Access Out of Bounds
+- Leads to undefined behavior, but no error
+- Look at file `src/vector4a.cpp` for example of this
+- Can check for access out of bounds using `-fsanitize=address` compiler flag
+- Sometimes address sanitizer won't give a fault, but we get junk output for undefined behavior (like accessing v[3] when vector is only {1 2 3})
 
-```c++
-#include <iostream>
-#include <vector>
-
-int main()
-{
-  std::vector<int> v;
-  // add three elements to vector
-  v.push_back(42);
-  v.push_back(-7);
-  v.push_back(19);
-  // access vector out of bounds
-  std::cout << "v[-1] = " << v[-1] << std::endl;
-  std::cout << "v[3] = " << v[3] << std::endl;
-
-  return 0;
-}
-```
-
-Output:
-No error, but will hurt your later. Hard to find bugs later.
-```
-$ g++ -std=c++11 -Wall -Wextra -Wconversion    vector4a.cpp   -o vector4a
-$ ./vector4a
-v[-1] = 0
-v[3] = 0
-```
-
-Hmm, not thing bad happened yet!  It is hard to track down these bugs.
-
-### `operator[]`
-
-Let's explore this a little bit further.  In the file `src/vector4b.cpp` we are
-only going to attempt accessing `v[-1]` and use the `-fsanitize=address`
-compiler flag.
-
-Part of `src/vector4b.cpp`
-
-```c++
-  std::cout << "v[-1] = " << v[-1] << std::endl;
-```
-
-Output:
-
-```
-$ g++ -std=c++11 -Wall -Wextra -Wconversion -g -fsanitize=address    vector4b.cpp   -o vector4b
-$ ./vector4b
-=================================================================
-==7470==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x60200000efac at pc 0x40131c bp 0x7ffc8700eb50 sp 0x7ffc8700eb40
-READ of size 4 at 0x60200000efac thread T0
-    #0 0x40131b in main /home/nwh/Dropbox/courses/2015-Q4-cme211/lecture-prep/lecture-19-work/src/vector4b.cpp:11
-    #1 0x7f77d9383fdf in __libc_start_main (/lib64/libc.so.6+0x1ffdf)
-    #2 0x401118 (/home/nwh/Dropbox/courses/2015-Q4-cme211/lecture-prep/lecture-19-work/src/vector4b+0x401118)
-...
-```
-
-Ok, that told us something.  Now, in the file `src/vector4c.cpp` we are going to
-attempt accessing `v[3]` with `-fsanitize=address` and see what happens.
-
-Part of `src/vector4c.cpp`
-
-```c++
-#include <iostream>
-#include <vector>
-
-int main()
-{
-  std::vector<int> v;
-  v.push_back(42);
-  v.push_back(-7);
-  v.push_back(19);
-
-  std::cout << "v[3] = " << v[3] << std::endl;
-
-  return 0;
-}
-```
-
-Output:
-No address sanitizer fault
-
-```
-$ g++ -std=c++11 -Wall -Wextra -Wconversion -g -fsanitize=address    vector4c.cpp   -o vector4c
-$ ./vector4c
-v[3] = -1094795586
-```
-
-The program compiled and ran with no problem.  Of course we got junk output for
-`v[3]` because that part of memory had not been initialized.
-
-What happened here:
-
+- Explanation of above:
 * When a `vector` is declared in C++, some amount of memory is allocated for the
   storage of the element.  Often, more storage is allocated than initially
   needed by the vector to allow for efficient addition of new items at the end
@@ -4375,12 +4254,11 @@ What happened here:
   bounds from the context of the lower level memory allocation, but is still
   undefined behavior.  There is not guarantee that there will be extra space.
 
-* `operator[]` for `vector` takes in an unsigned integer as its argument.  There
-  for in `v[-1]` the `-1` is converted to a very large positive integer, which
+* `operator[]` for `vector` takes in an **unsigned integer** as its argument.  Therefore in `v[-1]` the `-1` is converted to a very large positive integer, which
   turns out to be out of range of the allocated memory for the vector.  This
   leads to the address sanitizer churning out error messages.
 
-### `at()`
+### `at()` for bounds checking
 
 The `at()` method for a vector performs bounds checking.  As a result `at()` is
 slower than `operator[]`.
@@ -4451,50 +4329,12 @@ v[0] = 42
 v[1] = 73
 v[2] = 19
 ```
-### Insert
-
-`src/vector7.cpp`:
-
-```c++
-#include <iostream>
-#include <vector>
-
-int main()
-{
-  std::vector<int> v;
-  v.push_back(42);
-  v.push_back(-7);
-  v.push_back(19);
-
-  v.insert(1, 73);
-
-  for(unsigned int n = 0; n < v.size(); n++)
-    std::cout << "v[" << n << "] = " << v[n] << std::endl;
-
-  return 0;
-}
-```
-
-Output:
-
-```
-clang++ -std=c++11 -Wall -Wextra -Wconversion -g -fsanitize=address    vector7.cpp   -o vector7
-vector7.cpp:11:5: error: no matching member function for call to 'insert'
-  v.insert(1, 73);
-  ~~^~~~~~
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/vector:709:14: note:
-      candidate function not viable: no known conversion from 'int' to
-      'const_iterator' (aka '__wrap_iter<const_pointer>') for 1st argument
-    iterator insert(const_iterator __position, value_type&& __x);
-             ^
-```
-
-C++ `vector` does not allow insertion at an integer index.
-
-### Iterator
+### Iterators (see below for examples): insert, erase, sort, accumulate, begin(), end()
+### Insert into vector: need to use an **Iterator**
 
 We have to us an **iterator** for this.
-
+- C++ `vector` does not allow insertion at an integer index.
+- think of iterator like a reference/pointer to a particular location to a vector
 `src/vector8.cpp`:
 
 ```c++
@@ -4512,7 +4352,6 @@ int main()
   std::vector<int>::iterator iter;
 
   // Set iterator to start of vector
-  // think of like a reference/pointer to a particular location to a vector
   iter = v.begin(); //points to start of vector
 
   // Advance iterator by two positions
@@ -4541,7 +4380,7 @@ v[2] = 73
 v[3] = 19
 ```
 
-### Erase
+### Erase: Need to use **Iterator**
 
 The `erase()` method also uses an iterator.
 Below example, we want to remove the fourth element
@@ -4582,7 +4421,9 @@ v[2] = 19
 v[3] = 0
 ```
 
-### Sort
+### Sort, begin(), end(): Need to use **Iterator**
+- Need to `#include <algorithm>` to use std::sort
+- v.begin() and v.end() returns an iterator pointing to the first/last element in vector
 
 `src/sort.cpp`:
 
@@ -4622,7 +4463,7 @@ v[3] = 42
 v[4] = 73
 ```
 
-### Accumulate
+### Accumulate: Need to use **Iterator**
 Need to include numeric algorithm. Need to pass it iterators of the beginning and end. Check reference for waht 0 is doing.
 This is equivalent to python sum()
 
@@ -4657,46 +4498,10 @@ sum = 127
 $
 ```
 
-### Copy or reference?
+### Copies
+- writing `std::vector<int> v2 = v1;` for two vectors gives a COPY
+- see `src/vector10.cpp` for example
 
-`src/vector10.cpp`:
-
-```c++
-#include <iostream>
-#include <vector>
-
-int main()
-{
-  std::vector<int> v1;
-  v1.push_back(42);
-  v1.push_back(-7);
-  v1.push_back(19);
-
-  std::vector<int> v2 = v1;
-  v2[1] = 73;
-
-  for (unsigned int n = 0; n < v1.size(); n++) {
-    std::cout << "v1[" << n << "] = " << v1[n] << std::endl;
-  }
-  for (unsigned int n = 0; n < v2.size(); n++) {
-    std::cout << "v2[" << n << "] = " << v2[n] << std::endl;
-  }
-  return 0;
-}
-```
-
-Output:
-
-```
-$ clang++ -std=c++11 -Wall -Wextra -Wconversion -g -fsanitize=address    vector10.cpp   -o vector10
-$ ./vector10
-v1[0] = 42
-v1[1] = -7
-v1[2] = 19
-v2[0] = 42
-v2[1] = 73
-v2[2] = 19
-```
 ### Function that returns a vector
 
 `src/vector11.cpp`:
@@ -4743,7 +4548,7 @@ v[3] = 73
 $
 ```
 
-### Copy or reference?
+### Passing vector into a function makes a COPY
 
 `src/vector12.cpp`:
 
@@ -4787,7 +4592,7 @@ v[2] = 19
 $
 ```
 
-### Pass by reference
+### Passing values by REFERENCE
 This is faster as the previous example
 `src/passing.cpp`:
 
@@ -4820,7 +4625,7 @@ a = 3
 $
 ```
 
-### Pass by reference
+### Passing vector by REFERENCE
 
 `src/vector13.cpp`:
 
@@ -4874,7 +4679,8 @@ $
 * Elements need not be homogeneous, but the data types cannot be changed after
 you create the tuple
 
-### Our first tuple
+### Tuple Example
+- Don't forget to `#include <tuple>`
 
 `src/tuple1.cpp`:
 
@@ -4915,6 +4721,7 @@ $
 ```
 
 ### Vector of tuples
+- Tuple library includes `emplace_back()` function, which allows you to append different variable types in a list instead of just one type
 
 `src/tuple2.cpp`:
 
@@ -5695,7 +5502,7 @@ stored contiguously
 
 * But this allows for insertion and removal operations in constant time
 
-![fig](fig/linked-list.png)
+![fig](lecture-20/fig/linked-list.png)
 
 ### List example
 
