@@ -457,6 +457,61 @@ array([[ 42.,   1.,   2.],
        [  6.,   7.,   8.]])
 >>>
 ```
+### For Fun, Conjugate Gradient Method
+
+```py
+import numpy as np
+import scipy
+file = np.loadtxt('matrix1Karen.dat')
+row = file[:,0]
+col = file[:,1]
+val = file[:,2]
+#print(file)
+#print(row)
+#print(col)
+#print(val)
+M = 2
+N = 2
+#print(M)
+#print(N)
+#A = scipy.sparse.coo_matrix((val, (row, col)), shape=(M, N)).toarray()
+b = np.zeros((M,1))
+#x = np.linalg.solve(A,b)
+#print(x)
+
+####
+#CG Method
+x = np.ones((M,1))
+r = b - np.dot(A,x)
+L2norm0 = np.linalg.norm(r,2)
+p = r.copy()
+niter = 0
+
+nitermax = 1000
+tol = 1e-5
+L2normr = 0
+alpha=0
+beta=0
+dotprodr=0
+
+
+while (niter < nitermax):
+  niter += 1
+  dotprodr = np.vdot(r,r)
+  alpha = dotprodr/(np.vdot(p,np.dot(A,p)))
+  x += alpha*p
+  r -= alpha*np.dot(A,p)
+  L2normr = np.linalg.norm(r,2)
+  if (L2normr/L2norm0) < tol:
+      break
+  beta = np.vdot(r,r)/dotprodr
+  print(beta)
+  p = r + beta*p
+
+print(x)
+print("SUCCESS: CG solver converged in {} iterations").format(niter)
+
+```
 
 
 ### NumPy, SciPy, matplotlib
