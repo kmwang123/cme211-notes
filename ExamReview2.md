@@ -5734,8 +5734,7 @@ v[2][2] = 8
 
 ### Layout in memory
 
-
-![fig](lecture-20/fig/vector-of-vectors.png)
+![fig](lecture-21/fig/vector-of-vectors.png)
 
 ### Contiguous memory
 Source of programmer error (getting something wrong in the indexing)
