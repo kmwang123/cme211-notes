@@ -2333,36 +2333,7 @@ Anatomy:
 
   * `fstream`: file stream (i.e. read or write)
 
-### `ofstream`
-
-```cpp
-#include <iostream>
-#include <fstream>
-
-int main() {
-  std::ofstream f; //this stream is specifically for output
-
-  f.open("hello.txt");
-  if (f.is_open()) { //test to make sure file is open
-    f << "Hello" << std::endl; //normally, we put stdcout
-    f.close();
-  }
-  else {
-    std::cout << "Failed to open file" << std::endl;
-  }
-
-  return 0;
-}
-```
-
-```
-$ g++ -Wall -Wconversion -Wextra ofstream1.cpp -o ofstream1
-$ rm -f hello.txt
-$ ./ofstream1
-$ cat hello.txt
-```
-
-### Using a variable for the filename
+### Writing to file using `ofstream`
 
 Code:
 
@@ -2374,9 +2345,9 @@ Code:
 int main() {
   std::string filename = "file.txt";
 
-  std::ofstream f;
+  std::ofstream f; //use ofstream for output
   f.open(filename);
-  if (f.is_open()) {
+  if (f.is_open()) { //test to make sure file is open
     f << "Hello" << std::endl;
     f.close();
   }
@@ -2388,68 +2359,20 @@ int main() {
 }
 ```
 
-Output:
-open method doesn't support (new feature in C++ 11)
-can convert back to older one by using .cstr()
-```
-$ g++ -Wall -Wconversion -Wextra ofstream2.cpp -o ofstream2
-ofstream2.cpp: In function 'int main()':
-ofstream2.cpp:10:18: error: no matching function for call to
-'std::basic_ofstream<char>::open(std::string&)'
-f.open(filename);
-^
-ofstream2.cpp:10:18: note: candidate is:
-In file included from ofstream2.cpp:2:0:
-/usr/include/c++/4.8/fstream:713:7: note: void std::basic_ofstream<_CharT,
-_Traits>::open(const char*, std::ios_base::openmode) [with _CharT = char; _Traits =
-std::char_traits<char>; std::ios_base::openmode = std::_Ios_Openmode]
-open(const char* __s,
-^
-/usr/include/c++/4.8/fstream:713:7: note:
-no known conversion for argument 1 from
-'std::string {aka std::basic_string<char>}' to 'const char*'
-$
-```
-
-Change to:
+## Writing an array of values
 
 ```cpp
-  f.open(filename.c_str());
-```
-Or see below, convert to C++ 2011 standard
-```
-$ g++ -Wall -Wconversion -Wextra ofstream3.cpp -o ofstream3
-$ rm -f file.txt
-$ ./ofstream3
-$ cat file.txt
-```
-
-### C++ 2011 standard
-Our homeworks will all be in C++ 2011
-
-Specify usage of the C++ 2011 standard.  Passing an `std::string` to `f.open` is supported:
-
-```
-g++ -std=c++11 -Wall -Wconversion -Wextra ofstream2.cpp -o ofstream2
-rm -f file.txt
-./ofstream2
-cat file.txt
-```
-
-### Writing an array of values
-
-```
 #include <iostream>
-
+#include <string>
+#include <fstream>
 //  Define constants to size the static array
 #define ni 2  // anytime you see a "ni", replace it with a 2
 #define nj 3  // anytime you see a "nj", replace it with a 3
 
 int main() {
   int a[ni][nj];
-
-  // Initialize the array values
   int n = 0;
+  //Initialize the array values to 0, 1, 2...
   for (int i = 0; i < ni; i++) {
     for (int j = 0; j < nj; j++) {
       a[i][j] = n;
@@ -2458,7 +2381,9 @@ int main() {
   }
 
   // Store the array values in a file
-  std::ofstream f("array.txt");
+  std::string filename = "array.txt";
+  std::ofstream f;
+  f.open(filename);
   if (f.is_open()) {
     f << ni << " " << nj << std::endl;
       for (int i = 0; i < ni; i++) {
@@ -2474,7 +2399,98 @@ int main() {
 }
 ```
 
-### `fstream`
+### Reading from a file
+
+* Not as easy or convenient as in Python
+
+* We will start by looking at how to read the simple array file we previously
+wrote
+
+### Reading files using `ifstream`
+
+```
+#include <fstream>
+#include <iostream>
+
+int main() {
+  std::ifstream f;
+  f.open("array.txt");
+  int val;
+  while (f >> val) {
+    std::cout << val << std::endl;
+  }
+  f.close();
+
+  return 0;
+}
+```
+
+Output:
+
+```
+$ g++ -std=c++11 -Wall -Wconversion -Wextra ifstream1.cpp -o ifstream1
+$ ./ifstream1
+2
+3
+0
+1
+2
+3
+4
+5
+$
+```
+
+### Reading into an array
+
+```cpp
+#include <fstream>
+#include <iostream>
+
+int main() {
+  std::ifstream f;
+  f.open("array.txt");
+  int nx, ny;
+  f >> nx >> ny; //read in size of array
+
+  int a[nx][ny];
+  for (int i = 0; i < nx; i++) {
+    for (int j = 0; j < ny; j++) {
+       f >> a[i][j];
+    }
+  }
+  f.close();
+
+  //print out values in array
+  for (int i = 0; i < nx; i++) {
+    for (int j = 0; j < ny; j++) {
+       std::cout << "a[" << i << "]"
+                 << "[" <<j<<"] = " <<  a[i][j] << std::endl;
+    }
+  }
+
+  return 0;
+
+}
+```
+Inputfile Looks like:
+```
+kmwang14@corn21:~/CME211/Cplusplus/lecture-17$ cat array.txt
+2 3
+0 1 2
+3 4 5
+```
+Output:
+```
+kmwang14@corn21:~/CME211/Cplusplus/lecture-17$ ./a.out
+a[0][0] = 0
+a[0][1] = 1
+a[0][2] = 2
+a[1][0] = 3
+a[1][1] = 4
+a[1][2] = 5
+```
+### Reading and Writing files using `fstream`
 
 Can read and write using fstream
 
@@ -2499,81 +2515,13 @@ int main() {
 }
 ```
 
-### Reading from a file
-
-* Not as easy or convenient as in Python
-
-* We will start by looking at how to read the simple array file we previously
-wrote
-
-### `ifstream`
-
-```
-#include <iostream>
-#include <fstream>
-
-int main() {
-  // Read the array values from the file
-  std::ifstream f("array.txt"); //creates object and opens it in the same line
-  if (f.is_open()) {
-    int i;
-    while (f >> i) { // Stream extraction operator
-      std::cout << i << std::endl;
-    }
-    f.close();
-  }
-  return 0;
-}
-```
-
-Output:
-
-```
-$ g++ -std=c++11 -Wall -Wconversion -Wextra ifstream1.cpp -o ifstream1
-$ ./ifstream1
-2
-3
-0
-1
-2
-3
-4
-5
-$
-```
-
-### Reading the array
-
-```cpp
-// Read the array values from the file
-std::ifstream f("array.txt");
-
-if (f.is_open()) {
-  // Read the size of the data and make sure storage is sufficient
-  int nif, njf; // Values of ni and nj read to be read from file
-  f >> nif >> njf; // read in size of the file to make sure we have enough storage for the size of that array
-  if (nif > ni or njf > nj) {
-    std::cout << "Not enough storage available" << std::endl;
-    return 0; // quit the program
-  }
-
-  // Read the data and populate the array
-  for (int i = 0; i < nif; i++) {
-    for (int j = 0; j < njf; j++) {
-      f >> a[i][j]; // reads in data from file into the array
-    }
-  }
-  f.close();
-}
-```
-
 ## Reading
 
 * **C++ Primer, Fifth Edition** by Lippman et al.
 
 * Chapter 1: Conditional Statements: Sections 5.3 - 5.5
-
 * Chapter 8: The IO Library: Section 8.2
+
 # CME 211: Lecture 17
 
 Friday, October 30, 2015
