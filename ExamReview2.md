@@ -3928,22 +3928,14 @@ $
 
 ### `#include` syntax
 
-
 * The `.hpp` file extension denotes a C++ header file
 
-* `<` `>` around the file name means that the preprocessor should search for an
-include file in a system dependent or default directory
+* for `#include <iostream>`, (or anything with `<blah>`), preprocessor searches for an include file in a system dependent or default directory
 
-* These are typically include files that come with the compiler like `iostream`,
-`fstream`, `string`, etc.
-
-* Usually these files are somewhere in `/usr/include` with the GNU compilers on
-Linux
+  -  Usually these files are somewhere in `/usr/include` with the GNU compilers on Linux
 
 * `"header.hpp"` means that the preprocessor should first search in the user directory,
 followed by a search in a system dependent or default directory if necessary
-*  Quotes within the same file
-* Brackets for system directory
 
 
 ### `#define`
