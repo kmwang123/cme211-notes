@@ -109,21 +109,6 @@ bit shift to right = divide, but might lose remainder
 
 * This limits the range of what can be represented with a fixed number of bits
 
-```
-unsigned
-2^8  = 256
-2^16 = 65536
-2^32 = 4,294,967,296
-2^64 = 18,446,744,073,709,551,616
-
-signed
-2^8 gives  -127 to 128
-2^16 gives -2^15+1 to 2^15 (-32767 to 32768)
-2^32 gives -2^31+1 to 2^31
-2^64 gives -2^63+1 to 2^63
-
-```
-
 ### Sign bit
 
 * Use one bit for sign and remaining bits for magnitude
@@ -176,6 +161,21 @@ using numpy, give uint (unsigned integer of 32 bits, and subtract 1 to get large
 shows that it wraps around
 
 ### Range of integer types
+
+```
+unsigned
+2^8  = 256
+2^16 = 65536
+2^32 = 4,294,967,296
+2^64 = 18,446,744,073,709,551,616
+
+signed
+2^8 gives  -127 to 128
+2^16 gives -2^15+1 to 2^15 (-32767 to 32768)
+2^32 gives -2^31+1 to 2^31
+2^64 gives -2^63+1 to 2^63
+
+```
 
 ![lecture-10/fig/int-range.png](lecture-10/fig/int-range.png)
 
