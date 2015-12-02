@@ -802,11 +802,9 @@ in the file is automatically in that one namespace
 * A C++ include file might contain functions, classes, etc. that are not in a
 namespace at all
 
-* An include file could also contain functions, classes, etc. from multiple
-namespaces
+* An include file could also contain functions, classes, etc. from multiple namespaces
 
-* Namespaces can also span multiple include files, like for the C++ standard
-library
+* Namespaces can also span multiple include files, like for the C++ standard library
 
 ### C++ Standard Library
 
@@ -817,8 +815,7 @@ C++ language
 
 * `iostream` contains `cout` in the `std` namespace
 
-* By default, when using `cout`, we need to specify the namespace and fully
-  qualify the symbol as `std::cout`
+* By default, when using `cout`, we need to specify the namespace and fully qualify the symbol as `std::cout`
 
 ### Scope resolution operator
 
@@ -867,6 +864,8 @@ int main() {
   return 0;
 }
 ```
+### C++ types
+![Quiz2Review/cppTypes.png](Quiz2Review/cppTypes.png)
 
 ### Blocks of code
 
