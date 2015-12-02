@@ -5610,7 +5610,7 @@ Topics:
 
 ## Layout in memory for `vector`
 
-![fig](fig/vector-memory.png)
+![fig](lecture-21/fig/vector-memory.png)
 
 * Memory for `std::vector` has 2 parts:
 
