@@ -461,23 +461,17 @@ array([[ 42.,   1.,   2.],
 
 ```py
 import numpy as np
-import scipy
+from scipy.sparse import coo_matrix
+
 file = np.loadtxt('matrix1Karen.dat')
 row = file[:,0]
 col = file[:,1]
 val = file[:,2]
-#print(file)
-#print(row)
-#print(col)
-#print(val)
 M = 2
 N = 2
-#print(M)
-#print(N)
-#A = scipy.sparse.coo_matrix((val, (row, col)), shape=(M, N)).toarray()
+A = coo_matrix((val, (row, col)), shape=(M, N)).toarray()
 b = np.zeros((M,1))
-#x = np.linalg.solve(A,b)
-#print(x)
+x = np.linalg.solve(A,b)
 
 ####
 #CG Method
