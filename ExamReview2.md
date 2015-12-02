@@ -6535,7 +6535,6 @@ compilation process.
 
 
 ### Make
-
 * Automation tool for expressing how your C/C++/Fortran code should be compiled
 
 * Good for small projects
@@ -6551,1088 +6550,767 @@ compilation process.
   projects.
 
 # CME 211: Lecture 23
+
 Monday, November 16, 2015
 
 Topic: C++ Object Oriented Programming
 
-  ## Initial Discussion
-  - Every class defines a type (type name is the same as the class)
-  - we can define a variable of a class type (this variable is an object of the class)
+## A simple class
 
-  ## A simple class
+`src/class1.cpp`:
 
-  `src/class1.cpp`:
+```c++
+#include <string>
 
-  ```c++
-  #include <string>
+class user {
+  // data members (members of the types)
+  int id;
+  std::string name;
+}; //REQUIRED SEMICOLON!!
 
-  class user {
-    // data members (members of the types)
-    int id;
-    std::string name;
-  }; //REQUIRED SEMICOLON!!
+int main()
+{
+  user u; // object (instance of the class)
+  return 0; //creates object in memory, doesn't do anything
+}
+```
 
-  int main()
-  {
-    user u; // object (instance of the class)
-    return 0; //creates object in memory, doesn't do anything
-  }
-  ```
+Output:
 
-  Output:
-
-  ```
-  $ clang++ -Wall -Wextra -Wconversion src/class1.cpp -o src/class1
-  src/class1.cpp:5:7: warning: private field 'id' is not used [-Wunused-private-field]
-    int id;
-        ^
-  1 warning generated.
-  $ ./src/class1
-  ```
-
-  ### Member access
-
-  `src/class2.cpp`:
-
-  ```c++
-  #include <iostream>
-  #include <string>
-
-  class user
-  {
-    int id;
-    std::string name;
-  };
-
-  int main()
-  {
-    user u; //create object u of class user
-    u.id = 7; // Member access via dot notation
-    std::cout << "u.id = " << u.id << std::endl;
-    return 0; //code does NOT compile- everything is private; cannot access data inside class
-  }
-  ```
-
-  Output:
-
-  ```
-  $ clang++ -Wall -Wextra -Wconversion src/class2.cpp -o src/class2
-  src/class2.cpp:13:5: error: 'id' is a private member of 'user'
-    u.id = 7; // Member access via dot notation
+```
+$ clang++ -Wall -Wextra -Wconversion src/class1.cpp -o src/class1
+src/class1.cpp:5:7: warning: private field 'id' is not used [-Wunused-private-field]
+  int id;
       ^
-  src/class2.cpp:6:7: note: implicitly declared private here
-    int id;
-        ^
-  src/class2.cpp:14:31: error: 'id' is a private member of 'user'
-    std::cout << "u.id = " << u.id << std::endl;
-                                ^
-  src/class2.cpp:6:7: note: implicitly declared private here
-    int id;
-        ^
-  2 errors generated.
-  ```
-
-  ### Member access
-
-  `src/struct1.cpp`:
-
-  ```c++
-  #include <iostream>
-  #include <string>
-
-  struct user //default access is public
-  {
-    int id;
-    std::string name;
-  };
-
-  int main()
-  {
-    user u;
-    u.id = 7; //similar to python code we've seen before
-    std::cout << "u.id = " << u.id << std::endl;
-    return 0;
-  }
-  ```
-
-  Output:
-
-  ```
-  $ clang++ -Wall -Wextra -Wconversion src/struct1.cpp -o src/struct1
-  $ ./src/struct1
-  u.id = 7
-  ```
-
-  ### Member access
-
-  * C++ is strict about member access
-
-  * Need to know about default behavior
-
-  * And how to override defaults via access specifiers
-
-  ### Access specifiers
-
-  * `private`: data or method member only accessible from within member(s) of the
-  same class
-
-  * `public`: data or method member accessible by anyone using dot notation
-
-  * Default access specifier for `class` is `private`
-
-  * Default access specifier for `struct` is `public`
-
-  ### Overriding default access
-
-  `src/class3.cpp`:
-
-  ```c++
-  #include <iostream>
-  #include <string>
-
-  class user {
-   public: // everything after this will be public
-    int id;
-    std::string name;
-  };
-
-  int main() {
-    user u;
-    u.id = 7;
-    u.name = "Leland";
-    std::cout << "u.id = " << u.id << std::endl;
-    std::cout << "u.name = " << u.name << std::endl;
-    return 0;
-  }
-  ```
-
-  Output:
-
-  ```
-  $ clang++ -Wall -Wextra -Wconversion src/class3.cpp -o src/class3
-  $ ./src/class3
-  u.id = 7
-  u.name = Leland
-  ```
-
-  ### Overriding default access
-
-  `src/struct2.cpp`:
-
-  ```c++
-  #include <iostream>
-  #include <string>
-
-  struct user {
-    int id;
-   private: // everything after this will be private
-    std::string name;
-  };
-
-  int main() {
-    user u;
-    u.id = 7;
-    u.name = "Leland";
-    std::cout << "u.id = " << u.id << std::endl;
-    std::cout << "u.name = " << u.name << std::endl;
-    return 0;
-  }
-  ```
-
-  Output:
-
-  ```
-  $ clang++ -Wall -Wextra -Wconversion src/struct2.cpp -o src/struct2
-  src/struct2.cpp:13:5: error: 'name' is a private member of 'user'
-    u.name = "Leland";
-      ^
-  src/struct2.cpp:7:15: note: declared private here
-    std::string name;
-                ^
-  src/struct2.cpp:15:33: error: 'name' is a private member of 'user'
-    std::cout << "u.name = " << u.name << std::endl;
-                                  ^
-  src/struct2.cpp:7:15: note: declared private here
-    std::string name;
-                ^
-  2 errors generated.
-  ```
-
-  ### Mix and match
-
-  `src/class4.cpp`:
-
-  ```c++
-  #include <iostream>
-  #include <string>
-
-  class user {
-    int id;
-   public:
-    std::string name;
-   private:
-    int age;
-  };
-
-  int main() {
-    user u;
-    u.id = 7; //this is private (will give compile time errors)
-    u.name = "Leland";
-    u.age = 12; //this is private
-
-    std::cout << "u.id = " << u.id << std::endl;
-    std::cout << "u.name = " << u.name << std::endl;
-    std::cout << "u.age = " << u.age << std::endl;
-
-    return 0;
-  }
-  ```
-
-  Output:
-
-  ```
-  $ clang++ -Wall -Wextra -Wconversion src/class4.cpp -o src/class4
-  src/class4.cpp:14:5: error: 'id' is a private member of 'user'
-    u.id = 7;
-      ^
-  src/class4.cpp:5:7: note: implicitly declared private here
-    int id;
-        ^
-  src/class4.cpp:16:5: error: 'age' is a private member of 'user'
-    u.age = 12;
-      ^
-  src/class4.cpp:9:7: note: declared private here
-    int age;
-        ^
-  src/class4.cpp:18:31: error: 'id' is a private member of 'user'
-    std::cout << "u.id = " << u.id << std::endl;
-                                ^
-  src/class4.cpp:5:7: note: implicitly declared private here
-    int id;
-        ^
-  src/class4.cpp:20:32: error: 'age' is a private member of 'user'
-    std::cout << "u.age = " << u.age << std::endl;
-                                 ^
-  src/class4.cpp:9:7: note: declared private here
-    int age;
-        ^
-  4 errors generated.
-  ```
-
-  ### "Adding" a member
-
-  `src/struct3.cpp`:
-
-  ```c++
-  #include <iostream>
-
-  struct user {
-    int id;
-  };
-
-  int main() {
-    user u;
-    u.id = 7;
-    u.age = 12; //age wasn't declared in struct user
-    return 0;
-  }
-  ```
-
-  Output:
-
-  ```
-  $ clang++ -Wall -Wextra -Wconversion src/struct3.cpp -o src/struct3
-  src/struct3.cpp:10:5: error: no member named 'age' in 'user'
-    u.age = 12;
-    ~ ^
-  1 error generated.
-  ```
-
-  ### Our first method
-
-  `src/class5.cpp`:
-
-  ```c++
-  #include <iostream>
-
-  class user {
-    // data member initialization is a C++11 feature
-    int id = 7; //data member initialization
-    int getId(void) {//define a function inside a class (note:don't need self)
-      return id;
-    }
-  };
-
-  int main() {
-    user u;
-    std::cout << "u.getId() = " << u.getId() << std::endl;
-    return 0;
-  }
-  ```
-
-  Output:
-
-  ```
-  $ clang++ -std=c++11 -Wall -Wextra -Wconversion src/class5.cpp -o src/class5
-  src/class5.cpp:13:36: error: 'getId' is a private member of 'user'
-    std::cout << "u.getId() = " << u.getId() << std::endl;
-                                     ^
-  src/class5.cpp:6:7: note: implicitly declared private here
-    int getId(void) {
-        ^
-  1 error generated.
-  ```
-
-  ### Our first method
-
-  `src/class6.cpp`:
-
-  ```c++
-  #include <iostream>
-
-  class user {
-    int id = 7; //this is private, user cannot modify
-   public:
-    int getId(void) { //getter method (read only method for that variable)
-      return id;
-    }
-  };
-
-  int main() {
-    user u;
-    std::cout << "u.getId() = " << u.getId() << std::endl;
-    return 0;
-  }
-  ```
-
-  Output:
-
-  ```
-  $ clang++ -std=c++11 -Wall -Wextra -Wconversion src/class6.cpp -o src/class6
-  $ ./src/class6
-  u.getId() = 7
-  ```
-
-  ### Naming
-
-  `src/class7.cpp`:
-
-  ```c++
-  #include <iostream>
-
-  class user {
-    int id = 1;
-   public:
-    int getId(void) { return id; }
-    void setId(int id) { id = id; } //user can set it, but id = id clashes with int id (this is ambiguous). id refers to id from argument, and this causes errors
-  };
-
-  int main() {
-    user u;
-    u.setId(7);
-    std::cout << "u.getId() = " << u.getId() << std::endl;
-    u.setId(42);
-    std::cout << "u.getId() = " << u.getId() << std::endl;
-    return 0;
-  }
-  ```
-
-  Output:
-
-  ```
-  $ clang++ -std=c++11 -Wall -Wextra -Wconversion src/class7.cpp -o src/class7
-  src/class7.cpp:7:27: warning: explicitly assigning value of variable of type 'int' to itself [-Wself-assign]
-    void setId(int id) { id = id; }
-                         ~~ ^ ~~
-  1 warning generated.
-  $ ./src/class7
-  u.getId() = 1
-  u.getId() = 1
-  ```
-
-  ### One solution
-
-  google.github style guide
-
-  `src/class8.cpp`:
-
-  ```c++
-  #include <iostream>
-
-  class user {
-    int id = 1;
-   public:
-    int getId(void) { return id; }
-    void setId(int id_) { id = id_; } // id_ refers to argument
-  };
-
-  int main()
-  {
-    user u;
-    u.setId(7);
-    std::cout << "u.getId() = " << u.getId() << std::endl;
-    u.setId(42);
-    std::cout << "u.getId() = " << u.getId() << std::endl;
-    return 0;
-  }
-  ```
-
-  Output:
-
-  ```
-  $ clang++ -std=c++11 -Wall -Wextra -Wconversion src/class8.cpp -o src/class8
-  $ ./src/class8
-  u.getId() = 7
-  u.getId() = 42
-  ```
-
-  ### `this`
-
-  `src/class9.cpp`:
-
-  ```c++
-  #include <iostream>
-
-  class user {
-    int id = 1;
-   public:
-    int getId(void) { return id; }
-    void setId(int id) { this->id = id; } //this is analogous to self in python; "this" is the pointer to the object. when we want to access data id, this-> get acces to data member
-  };
-
-  int main() {
-    user u;
-    u.setId(7);
-    std::cout << "u.getId() = " << u.getId() << std::endl;
-    u.setId(42);
-    std::cout << "u.getId() = " << u.getId() << std::endl;
-    return 0;
-  }
-  ```
-
-  Output:
-
-  ```
-  $ clang++ -std=c++11 -Wall -Wextra -Wconversion src/class9.cpp -o src/class9
-  $ ./src/class9
-  u.getId() = 7
-  u.getId() = 42
-  ```
-
-  ## Constructor
-
-  * Special method called when a new object of the class is created
-
-  * C++ provides a default constructor that takes no arguments
-
-  * You can replace the default constructor with a custom constructor by defining
-  a method name with the same name as the class
-
-  * Like other methods, the constructor can take arguments
-
-  * Does not return anything, not even void
-
-  ### Constructor example
-
-  `src/class10.cpp`:
-
-  ```c++
-  #include <iostream>
-
-  class user {
-    int id;
-   public://in most cases, you want the constructor to be public
-    user(int id) { this->id = id; }
-    int getId(void) { return id; }
-  };
-
-  int main() {
-    user u(13);
-    std::cout << "u.getId() = " << u.getId() << std::endl;
-    return 0;
-  }
-  ```
-
-  Output:
-
-  ```
-  $ clang++ -std=c++11 -Wall -Wextra -Wconversion src/class10.cpp -o src/class10
-  $ ./src/class10
-  u.getId() = 13
-  ```
-
-  ### Constructor example
-  `src/class11.cpp`:
-
-  ```c++
-  #include <iostream>
-
-  class user {
-    int id;
-   public:
-    user(int id) { this->id = id; }
-    int getId(void) { return id; }
-  };
-
-  int main() {
-    user u; //calls default constructor, but doesn't exit -> need to declare on its own(for ex, set id=0 in constructor)
-    std::cout << "u.getId() = " << u.getId() << std::endl;
-    return 0;
-  }
-  ```
-
-  Output:
-
-  ```
-  $ clang++ -std=c++11 -Wall -Wextra -Wconversion src/class11.cpp -o src/class11
-  src/class11.cpp:11:8: error: no matching constructor for initialization of 'user'
-    user u;
-         ^
-  src/class11.cpp:6:3: note: candidate constructor not viable: requires single argument 'id', but no arguments were provided
-    user(int id) { this->id = id; }
+1 warning generated.
+$ ./src/class1
+```
+
+### Member access
+
+`src/class2.cpp`:
+
+```c++
+#include <iostream>
+#include <string>
+
+class user
+{
+  int id;
+  std::string name;
+};
+
+int main()
+{
+  user u; //create object u of class user
+  u.id = 7; // Member access via dot notation
+  std::cout << "u.id = " << u.id << std::endl;
+  return 0; //code does NOT compile- everything is private; cannot access data inside class
+}
+```
+
+Output:
+
+```
+$ clang++ -Wall -Wextra -Wconversion src/class2.cpp -o src/class2
+src/class2.cpp:13:5: error: 'id' is a private member of 'user'
+  u.id = 7; // Member access via dot notation
     ^
-  src/class11.cpp:3:7: note: candidate constructor (the implicit copy constructor) not viable: requires 1 argument, but 0 were provided
-  class user {
-        ^
-  src/class11.cpp:3:7: note: candidate constructor (the implicit move constructor) not viable: requires 1 argument, but 0 were provided
-  1 error generated.
-  ```
+src/class2.cpp:6:7: note: implicitly declared private here
+  int id;
+      ^
+src/class2.cpp:14:31: error: 'id' is a private member of 'user'
+  std::cout << "u.id = " << u.id << std::endl;
+                              ^
+src/class2.cpp:6:7: note: implicitly declared private here
+  int id;
+      ^
+2 errors generated.
+```
 
-  ## Circle example
+### Member access
 
-  `src/circle1.cpp`:
+`src/struct1.cpp`:
 
-  ```c++
-  #include <cmath>
-  #include <iostream>
+```c++
+#include <iostream>
+#include <string>
 
-  class circle {
-    double x, y, r;
-   public:
-    circle(double x, double y, double r) {
-      this->x = x;
-      this->y = y;
-      this->r = r;
-    }
-    double getArea(void) {
-      return M_PI*r*r;
-    }
-  };
+struct user //default access is public
+{
+  int id;
+  std::string name;
+};
 
-  int main() {
-    circle c(1.2, 3.4, 2.);
-    std::cout << "c.getArea() = " << c.getArea() << std::endl;
-    return 0;
+int main()
+{
+  user u;
+  u.id = 7; //similar to python code we've seen before
+  std::cout << "u.id = " << u.id << std::endl;
+  return 0;
+}
+```
+
+Output:
+
+```
+$ clang++ -Wall -Wextra -Wconversion src/struct1.cpp -o src/struct1
+$ ./src/struct1
+u.id = 7
+```
+
+### Member access
+
+* C++ is strict about member access
+
+* Need to know about default behavior
+
+* And how to override defaults via access specifiers
+
+### Access specifiers
+
+* `private`: data or method member only accessible from within member(s) of the
+same class
+
+* `public`: data or method member accessible by anyone using dot notation
+
+* Default access specifier for `class` is `private`
+
+* Default access specifier for `struct` is `public`
+
+### Overriding default access
+
+`src/class3.cpp`:
+
+```c++
+#include <iostream>
+#include <string>
+
+class user {
+ public: // everything after this will be public
+  int id;
+  std::string name;
+};
+
+int main() {
+  user u;
+  u.id = 7;
+  u.name = "Leland";
+  std::cout << "u.id = " << u.id << std::endl;
+  std::cout << "u.name = " << u.name << std::endl;
+  return 0;
+}
+```
+
+Output:
+
+```
+$ clang++ -Wall -Wextra -Wconversion src/class3.cpp -o src/class3
+$ ./src/class3
+u.id = 7
+u.name = Leland
+```
+
+### Overriding default access
+
+`src/struct2.cpp`:
+
+```c++
+#include <iostream>
+#include <string>
+
+struct user {
+  int id;
+ private: // everything after this will be private
+  std::string name;
+};
+
+int main() {
+  user u;
+  u.id = 7;
+  u.name = "Leland";
+  std::cout << "u.id = " << u.id << std::endl;
+  std::cout << "u.name = " << u.name << std::endl;
+  return 0;
+}
+```
+
+Output:
+
+```
+$ clang++ -Wall -Wextra -Wconversion src/struct2.cpp -o src/struct2
+src/struct2.cpp:13:5: error: 'name' is a private member of 'user'
+  u.name = "Leland";
+    ^
+src/struct2.cpp:7:15: note: declared private here
+  std::string name;
+              ^
+src/struct2.cpp:15:33: error: 'name' is a private member of 'user'
+  std::cout << "u.name = " << u.name << std::endl;
+                                ^
+src/struct2.cpp:7:15: note: declared private here
+  std::string name;
+              ^
+2 errors generated.
+```
+
+### Mix and match
+
+`src/class4.cpp`:
+
+```c++
+#include <iostream>
+#include <string>
+
+class user {
+  int id;
+ public:
+  std::string name;
+ private:
+  int age;
+};
+
+int main() {
+  user u;
+  u.id = 7; //this is private (will give compile time errors)
+  u.name = "Leland";
+  u.age = 12; //this is private
+
+  std::cout << "u.id = " << u.id << std::endl;
+  std::cout << "u.name = " << u.name << std::endl;
+  std::cout << "u.age = " << u.age << std::endl;
+
+  return 0;
+}
+```
+
+Output:
+
+```
+$ clang++ -Wall -Wextra -Wconversion src/class4.cpp -o src/class4
+src/class4.cpp:14:5: error: 'id' is a private member of 'user'
+  u.id = 7;
+    ^
+src/class4.cpp:5:7: note: implicitly declared private here
+  int id;
+      ^
+src/class4.cpp:16:5: error: 'age' is a private member of 'user'
+  u.age = 12;
+    ^
+src/class4.cpp:9:7: note: declared private here
+  int age;
+      ^
+src/class4.cpp:18:31: error: 'id' is a private member of 'user'
+  std::cout << "u.id = " << u.id << std::endl;
+                              ^
+src/class4.cpp:5:7: note: implicitly declared private here
+  int id;
+      ^
+src/class4.cpp:20:32: error: 'age' is a private member of 'user'
+  std::cout << "u.age = " << u.age << std::endl;
+                               ^
+src/class4.cpp:9:7: note: declared private here
+  int age;
+      ^
+4 errors generated.
+```
+
+### "Adding" a member
+
+`src/struct3.cpp`:
+
+```c++
+#include <iostream>
+
+struct user {
+  int id;
+};
+
+int main() {
+  user u;
+  u.id = 7;
+  u.age = 12; //age wasn't declared in struct user
+  return 0;
+}
+```
+
+Output:
+
+```
+$ clang++ -Wall -Wextra -Wconversion src/struct3.cpp -o src/struct3
+src/struct3.cpp:10:5: error: no member named 'age' in 'user'
+  u.age = 12;
+  ~ ^
+1 error generated.
+```
+
+### Our first method
+
+`src/class5.cpp`:
+
+```c++
+#include <iostream>
+
+class user {
+  // data member initialization is a C++11 feature
+  int id = 7; //data member initialization
+  int getId(void) {//define a function inside a class (note:don't need self)
+    return id;
   }
-  ```
+};
 
-  Output:
+int main() {
+  user u;
+  std::cout << "u.getId() = " << u.getId() << std::endl;
+  return 0;
+}
+```
 
-  ```
-  $ clang++ -Wall -Wextra -Wconversion src/circle1.cpp -o src/circle1
-  $ ./src/circle1
-  c.getArea() = 12.5664
-  ```
+Output:
 
-  ## Multiple files
+```
+$ clang++ -std=c++11 -Wall -Wextra -Wconversion src/class5.cpp -o src/class5
+src/class5.cpp:13:36: error: 'getId' is a private member of 'user'
+  std::cout << "u.getId() = " << u.getId() << std::endl;
+                                   ^
+src/class5.cpp:6:7: note: implicitly declared private here
+  int getId(void) {
+      ^
+1 error generated.
+```
 
-  `src/circle2.hpp`:
+### Our first method
 
-  ```c++
-  //header gaurds
-  #ifndef CIRCLE2_HPP
-  #define CIRCLE2_HPP
+`src/class6.cpp`:
 
-  class circle {
-    double x, y, r;
-   public:
-    circle(double x, double y, double r);
-    double getArea(void);
-  };
+```c++
+#include <iostream>
 
-  #endif /* CIRCLE2_HPP */
-  ```
+class user {
+  int id = 7; //this is private, user cannot modify
+ public:
+  int getId(void) { //getter method (read only method for that variable)
+    return id;
+  }
+};
 
-  `src/circle2.cpp`:
+int main() {
+  user u;
+  std::cout << "u.getId() = " << u.getId() << std::endl;
+  return 0;
+}
+```
 
-  ```c++
-  #include <cmath>
+Output:
 
-  #include "circle2.hpp" //header has class definition that we'll need later in the function
+```
+$ clang++ -std=c++11 -Wall -Wextra -Wconversion src/class6.cpp -o src/class6
+$ ./src/class6
+u.getId() = 7
+```
 
-  circle::circle(double x, double y, double r) { //member funcitons sit inside class namespace
+### Naming
+
+`src/class7.cpp`:
+
+```c++
+#include <iostream>
+
+class user {
+  int id = 1;
+ public:
+  int getId(void) { return id; }
+  void setId(int id) { id = id; } //user can set it, but id = id clashes with int id (this is ambiguous). id refers to id from argument, and this causes errors
+};
+
+int main() {
+  user u;
+  u.setId(7);
+  std::cout << "u.getId() = " << u.getId() << std::endl;
+  u.setId(42);
+  std::cout << "u.getId() = " << u.getId() << std::endl;
+  return 0;
+}
+```
+
+Output:
+
+```
+$ clang++ -std=c++11 -Wall -Wextra -Wconversion src/class7.cpp -o src/class7
+src/class7.cpp:7:27: warning: explicitly assigning value of variable of type 'int' to itself [-Wself-assign]
+  void setId(int id) { id = id; }
+                       ~~ ^ ~~
+1 warning generated.
+$ ./src/class7
+u.getId() = 1
+u.getId() = 1
+```
+
+### One solution
+
+google.github style guide
+
+`src/class8.cpp`:
+
+```c++
+#include <iostream>
+
+class user {
+  int id = 1;
+ public:
+  int getId(void) { return id; }
+  void setId(int id_) { id = id_; } // id_ refers to argument
+};
+
+int main()
+{
+  user u;
+  u.setId(7);
+  std::cout << "u.getId() = " << u.getId() << std::endl;
+  u.setId(42);
+  std::cout << "u.getId() = " << u.getId() << std::endl;
+  return 0;
+}
+```
+
+Output:
+
+```
+$ clang++ -std=c++11 -Wall -Wextra -Wconversion src/class8.cpp -o src/class8
+$ ./src/class8
+u.getId() = 7
+u.getId() = 42
+```
+
+### `this`
+
+`src/class9.cpp`:
+
+```c++
+#include <iostream>
+
+class user {
+  int id = 1;
+ public:
+  int getId(void) { return id; }
+  void setId(int id) { this->id = id; } //this is analogous to self in python; "this" is the pointer to the object. when we want to access data id, this-> get acces to data member
+};
+
+int main() {
+  user u;
+  u.setId(7);
+  std::cout << "u.getId() = " << u.getId() << std::endl;
+  u.setId(42);
+  std::cout << "u.getId() = " << u.getId() << std::endl;
+  return 0;
+}
+```
+
+Output:
+
+```
+$ clang++ -std=c++11 -Wall -Wextra -Wconversion src/class9.cpp -o src/class9
+$ ./src/class9
+u.getId() = 7
+u.getId() = 42
+```
+
+## Constructor
+
+* Special method called when a new object of the class is created
+
+* C++ provides a default constructor that takes no arguments
+
+* You can replace the default constructor with a custom constructor by defining
+a method name with the same name as the class
+
+* Like other methods, the constructor can take arguments
+
+* Does not return anything, not even void
+
+### Constructor example
+
+`src/class10.cpp`:
+
+```c++
+#include <iostream>
+
+class user {
+  int id;
+ public://in most cases, you want the constructor to be public
+  user(int id) { this->id = id; }
+  int getId(void) { return id; }
+};
+
+int main() {
+  user u(13);
+  std::cout << "u.getId() = " << u.getId() << std::endl;
+  return 0;
+}
+```
+
+Output:
+
+```
+$ clang++ -std=c++11 -Wall -Wextra -Wconversion src/class10.cpp -o src/class10
+$ ./src/class10
+u.getId() = 13
+```
+
+### Constructor example
+`src/class11.cpp`:
+
+```c++
+#include <iostream>
+
+class user {
+  int id;
+ public:
+  user(int id) { this->id = id; }
+  int getId(void) { return id; }
+};
+
+int main() {
+  user u; //calls default constructor, but doesn't exit -> need to declare on its own(for ex, set id=0 in constructor)
+  std::cout << "u.getId() = " << u.getId() << std::endl;
+  return 0;
+}
+```
+
+Output:
+
+```
+$ clang++ -std=c++11 -Wall -Wextra -Wconversion src/class11.cpp -o src/class11
+src/class11.cpp:11:8: error: no matching constructor for initialization of 'user'
+  user u;
+       ^
+src/class11.cpp:6:3: note: candidate constructor not viable: requires single argument 'id', but no arguments were provided
+  user(int id) { this->id = id; }
+  ^
+src/class11.cpp:3:7: note: candidate constructor (the implicit copy constructor) not viable: requires 1 argument, but 0 were provided
+class user {
+      ^
+src/class11.cpp:3:7: note: candidate constructor (the implicit move constructor) not viable: requires 1 argument, but 0 were provided
+1 error generated.
+```
+
+## Circle example
+
+`src/circle1.cpp`:
+
+```c++
+#include <cmath>
+#include <iostream>
+
+class circle {
+  double x, y, r;
+ public:
+  circle(double x, double y, double r) {
     this->x = x;
     this->y = y;
     this->r = r;
   }
-
-  double circle::getArea(void) { //member functions have different name
+  double getArea(void) {
     return M_PI*r*r;
   }
-  ```
+};
 
-  `src/main2.cpp`:
+int main() {
+  circle c(1.2, 3.4, 2.);
+  std::cout << "c.getArea() = " << c.getArea() << std::endl;
+  return 0;
+}
+```
 
-  ```c++
-  #include <iostream>
+Output:
 
-  #include "circle2.hpp"
+```
+$ clang++ -Wall -Wextra -Wconversion src/circle1.cpp -o src/circle1
+$ ./src/circle1
+c.getArea() = 12.5664
+```
 
-  int main() {
-    circle c(1.2, 3.4, 2.);
+## Multiple files
+
+`src/circle2.hpp`:
+
+```c++
+//header gaurds
+#ifndef CIRCLE2_HPP
+#define CIRCLE2_HPP
+
+class circle {
+  double x, y, r;
+ public:
+  circle(double x, double y, double r);
+  double getArea(void);
+};
+
+#endif /* CIRCLE2_HPP */
+```
+
+`src/circle2.cpp`:
+
+```c++
+#include <cmath>
+
+#include "circle2.hpp" //header has class definition that we'll need later in the function
+
+circle::circle(double x, double y, double r) { //member funcitons sit inside class namespace
+  this->x = x;
+  this->y = y;
+  this->r = r;
+}
+
+double circle::getArea(void) { //member functions have different name
+  return M_PI*r*r;
+}
+```
+
+`src/main2.cpp`:
+
+```c++
+#include <iostream>
+
+#include "circle2.hpp"
+
+int main() {
+  circle c(1.2, 3.4, 2.);
+  std::cout << "c.getArea() = " << c.getArea() << std::endl;
+  return 0;
+}
+```
+
+Output:
+
+```
+$ clang++ -Wall -Wextra -Wconversion src/circle2.cpp src/main2.cpp -o src/main2 -I./src
+$ ./src/main2
+c.getArea() = 12.5664
+```
+
+### Multiple files, example 2
+
+`src/circle3.hpp`:
+
+```c++
+#ifndef CIRCLE3_HPP
+#define CIRCLE3_HPP
+
+namespace geometry { //namespace can access everything inside geometry (defining this namespace)
+
+class circle {
+  double x, y, r;
+ public:
+  circle(double x, double y, double r);
+  double getArea(void);
+  double getPerimeter(void);
+};
+
+}
+
+#endif /* CIRCLE3_HPP */
+```
+
+`src/circle3a.cpp`:
+
+```c++
+#include <cmath>
+
+#include "circle3.hpp"
+
+namespace geometry {
+
+circle::circle(double x, double y, double r) {
+  this->x = x;
+  this->y = y;
+  this->r = r;
+}
+
+double circle::getArea(void) {
+  return M_PI*r*r;
+}
+
+}
+
+```
+
+`src/circle3b.cpp`:
+
+```c++
+#include <cmath>
+
+#include "circle3.hpp"
+
+namespace geometry {
+
+double circle::getPerimeter(void) {
+  return 2.*M_PI*r;
+}
+
+}
+```
+
+`src/main3.cpp`:
+
+```c++
+#include <iostream>
+
+#include "circle3.hpp"
+
+int main() {
+  geometry::circle c(1.2, 3.4, 1.8); // namespace is geometry
+  std::cout << "c.getArea() = " << c.getArea() << std::endl;
+  std::cout << "c.getPerimeter() = " << c.getPerimeter() << std::endl;
+  return 0;
+}
+```
+
+Output:
+
+```
+$ clang++ -Wall -Wextra -Wconversion src/circle3a.cpp src/circle3b.cpp src/main3.cpp -o src/main3 -I./src
+$ ./src/main3
+c.getArea() = 10.1788
+c.getPerimeter() = 11.3097
+```
+
+## Objects and containers
+
+`src/container.cpp`:
+
+```c++
+#include <iostream>
+#include <vector>
+
+#include "circle3.hpp"
+
+int main() {
+  std::vector<geometry::circle> circles; //vector is gonna contain circles
+  circles.emplace_back(8.3, 4.7, 0.5); //push them at the end of vector (emplace does it inplace instead of push_back, which makes copies
+  circles.emplace_back(4.1, 2.3, 1.4);
+  circles.emplace_back(-3.2, 0.8, 14.4);
+
+  for(auto& c : circles) {
     std::cout << "c.getArea() = " << c.getArea() << std::endl;
-    return 0;
-  }
-  ```
-
-  Output:
-
-  ```
-  $ clang++ -Wall -Wextra -Wconversion src/circle2.cpp src/main2.cpp -o src/main2 -I./src
-  $ ./src/main2
-  c.getArea() = 12.5664
-  ```
-
-  ### Multiple files, example 2
-
-  `src/circle3.hpp`:
-
-  ```c++
-  #ifndef CIRCLE3_HPP
-  #define CIRCLE3_HPP
-
-  namespace geometry { //namespace can access everything inside geometry (defining this namespace)
-
-  class circle {
-    double x, y, r;
-   public:
-    circle(double x, double y, double r);
-    double getArea(void);
-    double getPerimeter(void);
-  };
-
   }
 
-  #endif /* CIRCLE3_HPP */
-  ```
+  return 0;
+}
+```
 
-  `src/circle3a.cpp`:
+Output:
 
-  ```c++
-  #include <cmath>
+```
+$ clang++ -std=c++11 -Wall -Wextra -Wconversion src/circle3a.cpp src/circle3b.cpp src/container.cpp -o src/container -I./src
+$ ./src/container
+c.getArea() = 0.785398
+c.getArea() = 6.15752
+c.getArea() = 651.441
+```
 
-  #include "circle3.hpp"
+## Reading
 
-  namespace geometry {
+**C++ Primer, Fifth Edition** by Lippman et al.
 
-  circle::circle(double x, double y, double r) {
-    this->x = x;
-    this->y = y;
-    this->r = r;
-  }
-
-  double circle::getArea(void) {
-    return M_PI*r*r;
-  }
-
-  }
-
-  ```
-
-  `src/circle3b.cpp`:
-
-  ```c++
-  #include <cmath>
-
-  #include "circle3.hpp"
-
-  namespace geometry {
-
-  double circle::getPerimeter(void) {
-    return 2.*M_PI*r;
-  }
-
-  }
-  ```
-
-  `src/main3.cpp`:
-
-  ```c++
-  #include <iostream>
-
-  #include "circle3.hpp"
-
-  int main() {
-    geometry::circle c(1.2, 3.4, 1.8); // namespace is geometry
-    std::cout << "c.getArea() = " << c.getArea() << std::endl;
-    std::cout << "c.getPerimeter() = " << c.getPerimeter() << std::endl;
-    return 0;
-  }
-  ```
-
-  Output:
-
-  ```
-  $ clang++ -Wall -Wextra -Wconversion src/circle3a.cpp src/circle3b.cpp src/main3.cpp -o src/main3 -I./src
-  $ ./src/main3
-  c.getArea() = 10.1788
-  c.getPerimeter() = 11.3097
-  ```
-
-  ## Objects and containers
-
-  `src/container.cpp`:
-
-  ```c++
-  #include <iostream>
-  #include <vector>
-
-  #include "circle3.hpp"
-
-  int main() {
-    std::vector<geometry::circle> circles; //vector is gonna contain circles
-    circles.emplace_back(8.3, 4.7, 0.5); //push them at the end of vector (emplace does it inplace instead of push_back, which makes copies
-    circles.emplace_back(4.1, 2.3, 1.4);
-    circles.emplace_back(-3.2, 0.8, 14.4);
-
-    for(auto& c : circles) {
-      std::cout << "c.getArea() = " << c.getArea() << std::endl;
-    }
-
-    return 0;
-  }
-  ```
-
-  Output:
-
-  ```
-  $ clang++ -std=c++11 -Wall -Wextra -Wconversion src/circle3a.cpp src/circle3b.cpp src/container.cpp -o src/container -I./src
-  $ ./src/container
-  c.getArea() = 0.785398
-  c.getArea() = 6.15752
-  c.getArea() = 651.441
-  ```
-
-  ## Reading
-
-  **C++ Primer, Fifth Edition** by Lippman et al.
-
-  * Section 1.5: Introducing Classes
-  # CME 211: Lecture 24
-
-  Wednesday, November 18, 2015
-
-  Topic: C++ Object Oriented Programming, Part Duex
-
-  ## Example 1: name algorithm
-
-  `../lecture-09/code/names.py`:
-
-  ```py
-  class NameClassifier:
-      def __init__(self, femalefile, malefile):
-          self.LoadNameData(femalefile, malefile)
-
-      def LoadNameData(self, femalefile, malefile):
-          # Creates a dictionary with the name data from the two input files
-          self.namedata = {}
-          f = open(femalefile,'r')
-          for line in f:
-              self.namedata[line.split()[0]] = 1.0
-          f.close()
-
-          f = open(malefile,'r')
-          for line in f:
-              name = line.split()[0]
-          if name in self.namedata:
-              # Just assume a 50/50 distribution for names on both lists
-              self.namedata[name] = 0.5
-          else:
-              self.namedata[name] = 0.0
-          f.close()
-
-      def ClassifyName(self, name):
-          if name in self.namedata:
-              return self.namedata[name]
-          else:
-              # Don't have this name in our data
-              return 0.5
-  ```
-
-  `../lecture-09/code/main.py`:
-
-  ```py
-  import names
-
-  # Create an instance of the name classifier
-  classifier = names.NameClassifier('dist.female.first', 'dist.male.first')
-
-  # Setup test data
-  testdata = ['PETER', 'LOIS', 'STEWIE', 'BRIAN', 'MEG', 'CHRIS']
-
-  # Invoke the ClassifyName() method
-  for name in testdata:
-      print('{}: {}'.format(name, classifier.ClassifyName(name)))
-  ```
-
-  Output:
-
-  ```
-  $ python main.py
-  PETER: 1.0
-  LOIS: 1.0
-  STEWIE: 0.5
-  BRIAN: 1.0
-  MEG: 1.0
-  CHRIS: 1.0
-  $
-  ```
-
-  ### Top level
-
-  `name/main.cpp`:
-
-  ```c++
-  #include <iostream>
-  #include <string>
-  #include <vector>
-
-  #include "names.hpp"
-
-  int main(int argc, char* argv[]) {
-    std::string female_file = "dist.female.first";
-    std::string male_file = "dist.male.first";
-    if (argc == 3) {
-      female_file = argv[1];
-      male_file = argv[2];
-    }
-
-    auto classifier = NameClassifier(female_file,male_file);
-    std::cout << "There are " << classifier.getNumberNames();
-    std::cout << " names in our reference data." << std::endl;
-
-    std::vector<std::string> testdata;
-    testdata.push_back("PETER");
-    testdata.push_back("LOIS");
-    testdata.push_back("STEWIE");
-    testdata.push_back("BRIAN");
-    testdata.push_back("MEG");
-    testdata.push_back("CHRIS");
-
-    for (auto& name : testdata) {
-      std::cout << name << ": " << classifier.classifyName(name) << std::endl;
-    }
-
-    return 0;
-  }
-  ```
-
-  ### Interface
-
-  `name/names.hpp`:
-
-  ```c++
-  #ifndef NAMES_HPP
-  #define NAMES_HPP
-
-  #include <string>
-  #include <tuple>
-  #include <unordered_map>
-  // namemap is the alias for this very long type
-  typedef std::unordered_map<std::string,std::tuple<double,double,unsigned int>> namemap;
-
-  class NameClassifier
-  {//these are all private (default), not accessible outside of class
-    namemap female; //data members with the namemap type defined above (using alias)
-    namemap male;
-
-    void readData(std::string filename, namemap &names);
-  //this are all public: the constructor is public (data we need to create object of this class)
-   public:
-    NameClassifier(std::string female, std::string male);
-    double classifyName(std::string name);
-    namemap::size_type getNumberNames(void);
-    namemap::size_type getNumberFemaleNames(void);
-    namemap::size_type getNumberMaleNames(void);
-  };
-
-  #endif /* NAMES_HPP */
-  ```
-
-  ### Implementation
-
-  `name/names.cpp`:
-
-  ```c++
-  #include <fstream>
-  #include <iostream>
-  #include <string>
-  #include <tuple>
-
-  #include "names.hpp"
-
-  NameClassifier::NameClassifier(std::string file_female, std::string file_male) {
-    // Read each of the files
-    readData(file_female, female);
-    readData(file_male, male);
-  }
-
-  void NameClassifier::readData(std::string file, namemap& names) {
-    std::ifstream f(file);
-    if (not f.is_open()) {
-      std::cerr << "ERROR: Could not open file " << file << std::endl;
-      exit(1);
-    }
-
-    std::string name;
-    double perc1, perc2;
-    unsigned int rank;
-    while (f >> name >> perc1 >> perc2 >> rank) {
-      names[name] = std::make_tuple(perc1, perc2, rank);
-    }
-
-    f.close();
-  }
-
-  double NameClassifier::classifyName(std::string name) {
-    auto f = female.find(name);
-    auto m = male.find(name);
-
-    // name was not found
-    if (f == female.end() and m == male.end()) return 0.5;
-
-    // definitely male or female
-    if (f == female.end()) return 0.; //end method returns an iterator that is one past the end (indicates that name was not found in this map)
-    if (m == male.end()) return 1.;
-
-    // somewhere in between (f-> second corresponds to value, f-> first corresponds to key)
-    return std::get<0>(f->second)/(std::get<0>(f->second) + std::get<0>(m->second)); //get<0> is index column?
-  }
-
-  namemap::size_type NameClassifier::getNumberNames(void) {
-    return getNumberFemaleNames() + getNumberMaleNames();
-  }
-
-  namemap::size_type NameClassifier::getNumberFemaleNames(void) {
-    return female.size(); //note that this is type size_type (will it work if we change to int? probably not, but you can try it)
-  }
-
-  namemap::size_type NameClassifier::getNumberMaleNames(void) {
-    return male.size();
-  }
-  ```
-
-  ### Putting it together
-  //pass name of main and names source files
-  Output:
-
-  ```
-  $ make -C name clean
-  make: Entering directory '/home/nwh/Dropbox/courses/2015-Q4-cme211/lecture-prep/lecture-24/name'
-  rm -f main
-  make: Leaving directory '/home/nwh/Dropbox/courses/2015-Q4-cme211/lecture-prep/lecture-24/name'
-  $ make -C name main
-  make: Entering directory '/home/nwh/Dropbox/courses/2015-Q4-cme211/lecture-prep/lecture-24/name'
-  g++ -std=c++11 -Wall -Wextra -Wconversion main.cpp names.cpp -o main
-  make: Leaving directory '/home/nwh/Dropbox/courses/2015-Q4-cme211/lecture-prep/lecture-24/name'
-  $ ./name/main name/dist.female.first name/dist.male.first
-  There are 5494 names in our reference data.
-  PETER: 0.0026178
-  LOIS: 1
-  STEWIE: 0.5
-  BRIAN: 0.00135685
-  MEG: 1
-  CHRIS: 0.108597
-  ```
-
-  ## Example 2: user similarity
-
-  * Homework 2
-
-  * Uses MovieLens dataset
-
-  * Computes user similarities based on Pearson Correlation Coefficient (PCC)
-
-  ### Python performance
-
-  On my workstation.
-
-  ```
-  $ python similarity.py u.data sim_cpy.txt
-  Input MovieLens file: u.data
-  Output file for similarity data: sim_cpy.txt
-  Minimum number of common users: 5
-  Read 100000 lines with total of 1682 movies and 943 users
-  Computed similarities in 39.075 seconds
-  ```
-
-  ### C++ implementation
-
-  * Uses same algorithm and data structures
-
-  * Only difference is high level versus low level language
-
-  * Let's review the implementation...
-
-  - there's c standard includes
-  - c++ standard includes
-  - any of my own includes
-  - declare types for data (typedef uint32_t MovieId;); used typedef for easier read, also more flexible when you need to make changes
-  - Nick's preference is to make types with capital letters and everything else lowercase with underscores
-  - pass large data structures by reference
-
-  ### C++ performance
-
-  ```
-  $ g++ -std=c++11 -O3 -Wall -Wextra -Wconversion similarity.cpp -o similarity
-  ./similarity u.data sim_cpp.txt
-  Input MovieLens file: u.data
-  Output file for similarity data: sim_cpp.txt
-  Minimum number of common users: 5
-  Read 100000 lines with total of 1682 movies and 943 users
-  Computed similarities in 4.83 seconds
-  ```
-
-  ### Easier options?
-
-  There are alternatives to pure Python or pure C++:
-
-  * PyPy: Implementation of Python that uses Just-in-Time compilation to improve
-  performance (see: <http://pypy.org/>).
-
-  * Numba: Uses annotations in Python code to speed up your application using
-  compilation (see: <http://numba.pydata.org/>).  This seems to work best on
-  operations with NumPy arrays.
-
-  * Cython: Extends Python with C like constructs to create compiled extensions
-    (see: <http://cython.org/>).
-
-  We will look at PyPy.
-
-  **Warnings**:
-
-  * Not all of these options support code that uses NumPy
-
-  * Also, they tend to be more experimental so you will need to retest if your
-  code works properly
-
-  ### PyPy performance
-
-  ```
-  $ pypy similarity.py u.data sim_pypy.txt
-  Input MovieLens file: u.data
-  Output file for similarity data: sim_pypy.txt
-  Minimum number of common users: 5
-  Read 100000 lines with total of 1682 movies and 943 users
-  Computed similarities in 19.097 seconds
-  ```
-
-  ### Performance summary
-
-  * CPython: 39.1 seconds
-
-  * PyPy: 19.1 seconds
-
-  * C++: 4.83 seconds (with `-O3`)
-
-  (On Nick's workstation)
+* Section 1.5: Introducing Classes
