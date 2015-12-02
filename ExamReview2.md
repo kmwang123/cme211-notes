@@ -865,7 +865,15 @@ int main() {
 }
 ```
 ### C++ types
+Rules of thumb (pg. 63)
+- Usually use int for integer arithmetic. Short is usually too small and in practice, long often has same size as int. If your data values are larger than the min size of an int, use long
+- Don't use plain char or bool in arithmetic expressions (use them to hold characters or truth values)
+- Use double for floating-point computation; float usu doesn't have enough precision, and cost of double-precision calculations versus single-precision is negligible
 ![MidtermRev/cppTypes.png](MidtermRev/cppTypes.png)
+```cpp
+unsigned char c = -1; // assuming 8-bit chars, c has value 255
+bool b = 42; // b is true
+int i = b; // i has value 1
 
 ### Blocks of code
 
@@ -1115,6 +1123,13 @@ $ ./string
 Hello world
 $
 ```
+### String initialization
+```cpp
+string s1; // default initialization; s1 is empty string
+string s2 = s1; // s2 is copy of s1
+string s3 = "hiya"; // s3 is copy of string literal
+string s4(10, 'c'); // s4 is cccccccccc
+```
 
 ### String concatenation
 
@@ -1163,6 +1178,10 @@ $ ./string
 3
 $
 ```
+
+### String functions
+![fig](MidtermRev/strings.png)
+
 ### Compiler flags
 * -Wall: Enable "all" warnings
 * -o: specify name of output (executable) file
@@ -2526,12 +2545,11 @@ int main() {
 
 Friday, October 30, 2015
 
-Topic: Additional file I/O options in C++
-C++ is zero based indexing
 ### Command line arguments
-Argc is the number if input arguments
-float returns 32 bit floating point
-double returns a 64 bit floating point
+- Argc is the number of input arguments
+- Float returns 32 bit floating point
+- Double returns a 64 bit floating point
+
 ```cpp
 #include <iostream>
 
