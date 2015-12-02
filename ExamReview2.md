@@ -6049,72 +6049,7 @@ $ clang++ -std=c++11 -Wall -Wextra -Wconversion src/array3b.cpp -o src/array3b
 $ ./src/array3b
 $ clang++ -std=c++11 -g -fsanitize=address -Wall -Wextra -Wconversion src/array3b.cpp -o src/array3b
 $ ./src/array3b
-=================================================================
-==22629==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x60700000dd00 at pc 0x00010a53d131 bp 0x7fff556c3710 sp 0x7fff556c3708
-WRITE of size 8 at 0x60700000dd00 thread T0
-==22629==atos returned: An admin user name and password is required to enter Developer Mode.
-    #0 0x10a53d130 in main (/Users/nwh/Dropbox/courses/2015-Q4-cme211/lecture-prep/lecture-21-work/./src/array3b+0x100001130)
-    #1 0x7fff9147f5c8 in start (/usr/lib/system/libdyld.dylib+0x35c8)
-    #2 0x0  (<unknown module>)
-
-0x60700000dd00 is located 16 bytes to the left of 67-byte region [0x60700000dd10,0x60700000dd53)
-allocated by thread T0 here:
-    #0 0x10a591bb0 in wrap_malloc (/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/7.0.0/lib/darwin/libclang_rt.asan_osx_dynamic.dylib+0x42bb0)
-    #1 0x7fff83776441 in _xpc_malloc (/usr/lib/system/libxpc.dylib+0x2441)
-    #2 0x7fff8377631d in _xpc_dictionary_insert (/usr/lib/system/libxpc.dylib+0x231d)
-    #3 0x7fff83778a95 in xpc_dictionary_set_string (/usr/lib/system/libxpc.dylib+0x4a95)
-    #4 0x7fff83778993 in _xpc_collect_environment (/usr/lib/system/libxpc.dylib+0x4993)
-    #5 0x7fff83775acb in _libxpc_initializer (/usr/lib/system/libxpc.dylib+0x1acb)
-    #6 0x7fff902d4a94 in libSystem_initializer (/usr/lib/libSystem.B.dylib+0x1a94)
-    #7 0x7fff6f3e1d0a  (<unknown module>)
-    #8 0x7fff6f3e1e97  (<unknown module>)
-    #9 0x7fff6f3de890  (<unknown module>)
-    #10 0x7fff6f3de825  (<unknown module>)
-    #11 0x7fff6f3de825  (<unknown module>)
-    #12 0x7fff6f3de825  (<unknown module>)
-    #13 0x7fff6f3de717  (<unknown module>)
-    #14 0x7fff6f3de988  (<unknown module>)
-    #15 0x7fff6f3d1244  (<unknown module>)
-    #16 0x7fff6f3d4c18  (<unknown module>)
-    #17 0x7fff6f3d0275  (<unknown module>)
-    #18 0x7fff6f3d0035  (<unknown module>)
-    #19 0x0  (<unknown module>)
-
-SUMMARY: AddressSanitizer: heap-buffer-overflow ??:0 main
-Shadow bytes around the buggy address:
-  0x1c0e00001b50: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
-  0x1c0e00001b60: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
-  0x1c0e00001b70: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
-  0x1c0e00001b80: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
-  0x1c0e00001b90: fa fa fa fa 00 00 00 00 00 00 00 00 00 fa fa fa
-=>0x1c0e00001ba0:[fa]fa 00 00 00 00 00 00 00 00 03 fa fa fa fa fa
-  0x1c0e00001bb0: 00 00 00 00 00 00 00 00 00 fa fa fa fa fa 00 00
-  0x1c0e00001bc0: 00 00 00 00 00 00 00 00 fa fa fa fa fd fd fd fd
-  0x1c0e00001bd0: fd fd fd fd fd fd fa fa fa fa fd fd fd fd fd fd
-  0x1c0e00001be0: fd fd fd fd fa fa fa fa fd fd fd fd fd fd fd fd
-  0x1c0e00001bf0: fd fd fa fa fa fa fd fd fd fd fd fd fd fd fd fd
-Shadow byte legend (one shadow byte represents 8 application bytes):
-  Addressable:           00
-  Partially addressable: 01 02 03 04 05 06 07
-  Heap left redzone:       fa
-  Heap right redzone:      fb
-  Freed heap region:       fd
-  Stack left redzone:      f1
-  Stack mid redzone:       f2
-  Stack right redzone:     f3
-  Stack partial redzone:   f4
-  Stack after return:      f5
-  Stack use after scope:   f8
-  Global redzone:          f9
-  Global init order:       f6
-  Poisoned by user:        f7
-  Container overflow:      fc
-  Array cookie:            ac
-  Intra object redzone:    bb
-  ASan internal:           fe
-  Left alloca redzone:     ca
-  Right alloca redzone:    cb
-==22629==ABORTING
+...blah blah...
 ```
 
 ### Range checking
@@ -6131,28 +6066,7 @@ Output:
 $ clang++ -g -Wall -Wextra -Wconversion src/array3b.cpp -o src/array3b
 $ valgrind ./src/array3b
 ==22635== Memcheck, a memory error detector
-==22635== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
-==22635== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
-==22635== Command: ./src/array3b
-==22635==
-==22635== Invalid write of size 8
-==22635==    at 0x10000093D: main (array3b.cpp:7)
-==22635==  Address 0x100809650 is 16 bytes after a block of size 80 in arena "client"
-==22635==
-==22635==
-==22635== HEAP SUMMARY:
-==22635==     in use at exit: 34,725 bytes in 422 blocks
-==22635==   total heap usage: 510 allocs, 88 frees, 41,197 bytes allocated
-==22635==
-==22635== LEAK SUMMARY:
-==22635==    definitely lost: 0 bytes in 0 blocks
-==22635==    indirectly lost: 0 bytes in 0 blocks
-==22635==      possibly lost: 0 bytes in 0 blocks
-==22635==    still reachable: 0 bytes in 0 blocks
-==22635==         suppressed: 34,725 bytes in 422 blocks
-==22635==
-==22635== For counts of detected and suppressed errors, rerun with: -v
-==22635== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+...blah blah...
 ```
 
 ### Elementwise comparison
@@ -6192,8 +6106,8 @@ a < b: 1
 a > b: 0
 ```
 
-### Copy or reference?
-
+### COPYING
+- the assignment operator = is COPYING the array
 `src/array6a.cpp`:
 
 ```cpp
@@ -6230,8 +6144,6 @@ int main() {
 ```
 
 Output:
-
-They are different! So the assignment operator = is COPYING the array
 ```
 $ clang++ -std=c++11 -Wall -Wextra -Wconversion src/array6a.cpp -o src/array6a
 $ ./src/array6a
@@ -6248,9 +6160,9 @@ a b
 2 1
 ```
 
-### Passing an array to a function
+### Passing an array to a function: Passes by COPY
 
-This convention is pass by copy or value
+This convention is pass by COPY
 
 `src/array6b.cpp`:
 
@@ -6277,6 +6189,8 @@ int main() {
 
   increment(a);
 
+  std::cout << "After increment function" << std::endl;
+
   for (unsigned int i = 0; i < 3; i++) {
     for (unsigned int j = 0; j < 3; j++) {
       std::cout << a[i][j] << std::endl;
@@ -6289,8 +6203,9 @@ int main() {
 Output:
 
 ```
-$ clang++ -std=c++11 -Wall -Wextra -Wconversion src/array6b.cpp -o src/array6b
-$ ./src/array6b
+kmwang14@corn20:~/CME211/Cplusplus/lecture-21$ g++ -std=c++11 -Wall -Wextra -Wconversion array6b.cpp
+kmwang14@corn20:~/CME211/Cplusplus/lecture-21$ ./a.out
+After increment function
 1
 1
 1
@@ -6300,9 +6215,10 @@ $ ./src/array6b
 1
 1
 1
+
 ```
 
-### Passing by reference
+### Passing a boost multi_array by REFERENCE
 
 Specify by the & (reference to the data type)
 
@@ -6321,17 +6237,18 @@ void increment(boost::multi_array<double, 2>& b) {
 Output:
 
 ```
-$ clang++ -std=c++11 -Wall -Wextra -Wconversion src/array6b.cpp -o src/array6b
-$ ./src/array6b
-1
-1
-1
-1
-1
-1
-1
-1
-1
+kmwang14@corn20:~/CME211/Cplusplus/lecture-21$ g++ -std=c++11 -Wall -Wextra -Wconversion array6c.cpp
+kmwang14@corn20:~/CME211/Cplusplus/lecture-21$ ./a.out
+After increment function
+2
+2
+2
+2
+2
+2
+2
+2
+2
 ```
 
 ### Array operations?
@@ -6571,6 +6488,7 @@ then maybe look for something else.
 ### Challenge problem: how to do exp() function using python?
 Hint: use the taylor series expansion around 0
 Plot the error versus n based on how many terms you include/truncate
+
 # CME 211: Lecture 22
 
 Friday, November 13, 2015
@@ -6599,346 +6517,6 @@ invoke the appropriate tools to perform these steps
 * This is a high level overview.  The compilation process also includes
   optimization phases during compilation and linking.
 
-### Behind the scenes
-
-We can inspect the compilation process in more detail with the `-v` compiler
-argument.  `-v` typically stands for "verbose".
-
-Output:
-
-```
-$ g++ -v -Wall -Wextra -Wconversion src/hello1.cpp -o src/hello1
-Using built-in specs.
-COLLECT_GCC=/usr/bin/g++
-COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-redhat-linux/4.9.2/lto-wrapper
-Target: x86_64-redhat-linux
-Configured with: ../configure --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-bootstrap --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-linker-hash-style=gnu --enable-languages=c,c++,objc,obj-c++,fortran,ada,go,lto --enable-plugin --enable-initfini-array --disable-libgcj --with-isl=/builddir/build/BUILD/gcc-4.9.2-20150212/obj-x86_64-redhat-linux/isl-install --with-cloog=/builddir/build/BUILD/gcc-4.9.2-20150212/obj-x86_64-redhat-linux/cloog-install --enable-gnu-indirect-function --with-tune=generic --with-arch_32=i686 --build=x86_64-redhat-linux
-Thread model: posix
-gcc version 4.9.2 20150212 (Red Hat 4.9.2-6) (GCC)
-COLLECT_GCC_OPTIONS='-v' '-Wall' '-Wextra' '-Wconversion' '-o' 'src/hello1' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
- /usr/libexec/gcc/x86_64-redhat-linux/4.9.2/cc1plus -quiet -v -D_GNU_SOURCE src/hello1.cpp -quiet -dumpbase hello1.cpp -mtune=generic -march=x86-64 -auxbase hello1 -Wall -Wextra -Wconversion -version -o /tmp/ccgejI6U.s
-GNU C++ (GCC) version 4.9.2 20150212 (Red Hat 4.9.2-6) (x86_64-redhat-linux)
-	compiled by GNU C version 4.9.2 20150212 (Red Hat 4.9.2-6), GMP version 6.0.0, MPFR version 3.1.2, MPC version 1.0.2
-GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
-ignoring nonexistent directory "/usr/lib/gcc/x86_64-redhat-linux/4.9.2/include-fixed"
-ignoring nonexistent directory "/usr/lib/gcc/x86_64-redhat-linux/4.9.2/../../../../x86_64-redhat-linux/include"
-#include "..." search starts here:
-#include <...> search starts here:
- /usr/lib/gcc/x86_64-redhat-linux/4.9.2/../../../../include/c++/4.9.2
- /usr/lib/gcc/x86_64-redhat-linux/4.9.2/../../../../include/c++/4.9.2/x86_64-redhat-linux
- /usr/lib/gcc/x86_64-redhat-linux/4.9.2/../../../../include/c++/4.9.2/backward
- /usr/lib/gcc/x86_64-redhat-linux/4.9.2/include
- /usr/local/include
- /usr/include
-End of search list.
-GNU C++ (GCC) version 4.9.2 20150212 (Red Hat 4.9.2-6) (x86_64-redhat-linux)
-	compiled by GNU C version 4.9.2 20150212 (Red Hat 4.9.2-6), GMP version 6.0.0, MPFR version 3.1.2, MPC version 1.0.2
-GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
-Compiler executable checksum: 954ba53e83b294b646fa1b6b73a69682
-COLLECT_GCC_OPTIONS='-v' '-Wall' '-Wextra' '-Wconversion' '-o' 'src/hello1' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
- as -v --64 -o /tmp/ccHWfZ3W.o /tmp/ccgejI6U.s
-GNU assembler version 2.24 (x86_64-redhat-linux) using BFD version version 2.24
-COMPILER_PATH=/usr/libexec/gcc/x86_64-redhat-linux/4.9.2/:/usr/libexec/gcc/x86_64-redhat-linux/4.9.2/:/usr/libexec/gcc/x86_64-redhat-linux/:/usr/lib/gcc/x86_64-redhat-linux/4.9.2/:/usr/lib/gcc/x86_64-redhat-linux/
-LIBRARY_PATH=/usr/lib/gcc/x86_64-redhat-linux/4.9.2/:/usr/lib/gcc/x86_64-redhat-linux/4.9.2/../../../../lib64/:/lib/../lib64/:/usr/lib/../lib64/:/usr/lib/gcc/x86_64-redhat-linux/4.9.2/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-Wall' '-Wextra' '-Wconversion' '-o' 'src/hello1' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
- /usr/libexec/gcc/x86_64-redhat-linux/4.9.2/collect2 -plugin /usr/libexec/gcc/x86_64-redhat-linux/4.9.2/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/x86_64-redhat-linux/4.9.2/lto-wrapper -plugin-opt=-fresolution=/tmp/ccK49X1Y.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --no-add-needed --eh-frame-hdr --hash-style=gnu -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o src/hello1 /usr/lib/gcc/x86_64-redhat-linux/4.9.2/../../../../lib64/crt1.o /usr/lib/gcc/x86_64-redhat-linux/4.9.2/../../../../lib64/crti.o /usr/lib/gcc/x86_64-redhat-linux/4.9.2/crtbegin.o -L/usr/lib/gcc/x86_64-redhat-linux/4.9.2 -L/usr/lib/gcc/x86_64-redhat-linux/4.9.2/../../../../lib64 -L/lib/../lib64 -L/usr/lib/../lib64 -L/usr/lib/gcc/x86_64-redhat-linux/4.9.2/../../.. /tmp/ccHWfZ3W.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-redhat-linux/4.9.2/crtend.o /usr/lib/gcc/x86_64-redhat-linux/4.9.2/../../../../lib64/crtn.o
-```
-
-### Splitting up the steps manually
-
-GNU compiler flags:
-
-* `-E`: preprocess
-* `-S`: compile
-* `-c`: assemble
-
-Output:
-
-```
-$ cat src/hello1.cpp
-#include <iostream>
-
-int main() {
-  std::cout << "Hello, CME 211!" << std::endl;
-  return 0;
-}
-$ g++ -E -o src/hello1.i src/hello1.cpp //just preprocess and do '.i'
-$ g++ -S -o src/hello1.s src/hello1.i //compiles into assembly language (source to assembly)
-$ g++ -c -o src/hello1.o src/hello1.s //assemble process (produces object file)
-$ g++ -o src/hello1 src/hello1.o //linking happens by default
-$ ./src/hello1
-Hello, CME 211!
-```
-
-### Preprocessing
-
-* The preprocessor handles the lines that start with `#`
-
-  * `#include`
-  * `#define`
-  * `#if`
-  * etc.
-
-* You can invoke the preprocessor with the `cpp` command
-
-### Preprocessed file
-
-From `src/hello1.i`:
-
-```
-# 1 "hello1.cpp"
-# 1 "<command-line>"
-# 1 "/usr/include/stdc-predef.h" 1 3 4
-# 30 "/usr/include/stdc-predef.h" 3 4
-# 1 "/usr/include/x86_64-linux-gnu/bits/predefs.h" 1 3 4
-# 31 "/usr/include/stdc-predef.h" 2 3 4
-# 1 "<command-line>" 2
-# 1 "hello1.cpp"
-# 1 "/usr/include/c++/4.8/iostream" 1 3
-# 36 "/usr/include/c++/4.8/iostream" 3
-
-...
-
-int main()
-{
-std::cout << "Hello" << std::endl;
-return 0;
-}
-```
-
-Approximately 17,500 lines omitted!
-
-### Compilation
-
-* Compilation is the process of translating source code to assembly commands
-
-* The assembly commands are still human readable text (if the human knows
-assembly)
-
-From `src/hello.s`:
-
-```
-main:
-.LFB1020:
-	.cfi_startproc
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	movl	$.LC0, %esi
-	movl	$_ZSt4cout, %edi
-	call	_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
-	movl	$_ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_, %esi
-	movq	%rax, %rdi
-	call	_ZNSolsEPFRSoS_E
-	movl	$0, %eax
-	popq	%rbp
-	.cfi_def_cfa 7, 8
-	ret
-	.cfi_endproc
-```
-
-### Assembly
-
-* This step translates the text representation of the assembly instructions into
-the binary machine code in a `.o` file
-
-* `.o` files are called object files (binary file so you cant read it)
-
-* Linux uses the Executable and Linkable Format (ELF) for these files
-
-* If you try to look at these files with a normal text editor you will just see
-garbage, intermixed with a few strings
-
-* Sometimes it is helpful to inspect object files with the `nm` command to see
-  what symbols are defined:
-
-Output:
-
-```
-$ nm ./src/hello1.o //inspect symbols inside an object file using 'nm'
-                 U __cxa_atexit
-                 U __dso_handle
-0000000000000064 t _GLOBAL__sub_I_main
-0000000000000000 T main (THIS CORRESPONDS TO OUR MAIN FUNCTION)
-0000000000000027 t _Z41__static_initialization_and_destruction_0ii
-                 U _ZNSolsEPFRSoS_E (THESE ARE C++ mangled symbols)
-                 U _ZNSt8ios_base4InitC1Ev (Us are unresolved symbols)
-                 U _ZNSt8ios_base4InitD1Ev
-                 U _ZSt4cout
-                 U _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_
-0000000000000000 b _ZStL8__ioinit
-                 U _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
-```
-
-### Linking
-
-* Linking is the process of building the final executable by combining (linking)
-the `.o` file(s), and possibly library files as well (resolving all those unresolved symbols)
-
-* The linker makes sure all of the required functions are present
-
-* If for example `foo.o` contains a call to a function called `bar()`, there has
-to be another `.o` file or library file that provides the implementation of the
-`bar()` function
-
-### Linking example
-
-`src/foobar.hpp`:
-
-```c++
-#pragma once
-
-void bar(void);
-void foo(void);
-```
-
-`src/foo.cpp`:
-
-```c++
-#include <iostream>
-
-void foo(void) {
-  std::cout << "Hello from foo" << std::endl;
-}
-```
-
-`src/bar.cpp`:
-
-```c++
-#include <iostream>
-
-void bar(void) {
-  std::cout << "Hello from bar" << std::endl;
-}
-```
-
-`src/main.cpp`:
-
-```c++
-#include "foobar.hpp"
-
-int main() {
-  foo();
-  bar();
-  return 0;
-}
-```
-
-### Linking example
-
-Inspect the files:
-
-Output:
-
-```
-$ ls src
-bar.cpp
-bar.o
-ex1
-ex2
-ex3
-ex4
-foobar.hpp
-foo.cpp
-foo.o
-hello1
-hello1.cpp
-hello1.i
-hello1.o
-hello1.s
-hw6
-hw6.cpp
-hw6.hpp
-main
-main.cpp
-main.o
-stanford.jpg
-test.jpg
-```
-
-Compile and assemble source files, but don't link:
-
-Output:
-
-```
-$ g++ -c src/foo.cpp -o src/foo.o //covert object files into cpp files
-$ g++ -c src/bar.cpp -o src/bar.o //note -c means compile and assemble
-$ g++ -c src/main.cpp -o src/main.o
-```
-
-Let's inspect the output:
-
-Output:
-
-```
-$ ls src/*.o
-ls: cannot access src/*.o: No such file or directory
-```
-
-What symbols are present in the object files?
-
-Output:
-
-```
-$ nm src/foo.o //inspect the object file
-                 U __cxa_atexit
-                 U __dso_handle
-000000000000005f t _GLOBAL__sub_I__Z3foov
-0000000000000000 T _Z3foov (THIS corresponds to object file)
-0000000000000022 t _Z41__static_initialization_and_destruction_0ii
-                 U _ZNSolsEPFRSoS_E
-                 U _ZNSt8ios_base4InitC1Ev
-                 U _ZNSt8ios_base4InitD1Ev
-                 U _ZSt4cout
-                 U _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_
-0000000000000000 b _ZStL8__ioinit
-                 U _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
-$ nm src/bar.o
-                 U __cxa_atexit
-                 U __dso_handle
-000000000000005f t _GLOBAL__sub_I__Z3barv
-0000000000000000 T _Z3barv (BAR OBJECT FILE)
-0000000000000022 t _Z41__static_initialization_and_destruction_0ii
-                 U _ZNSolsEPFRSoS_E
-                 U _ZNSt8ios_base4InitC1Ev
-                 U _ZNSt8ios_base4InitD1Ev
-                 U _ZSt4cout
-                 U _ZSt4endlIcSt11char_traitsIcEERSt13basic_ostreamIT_T0_ES6_
-0000000000000000 b _ZStL8__ioinit
-                 U _ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_PKc
-$ nm src/main.o //object file for main
-0000000000000000 T main //provides function main
-                 U _Z3barv //we have two undefined references to bar and foo
-                 U _Z3foov
-```
-
-What happens if we try to link `main.o` into an executable with out pointing to
-the other object files?
-
-Output:
-
-```
-$ g++ src/main.o -o src/main
-src/main.o: In function `main':
-main.cpp:(.text+0x5): undefined reference to `foo()'
-main.cpp:(.text+0xa): undefined reference to `bar()'
-collect2: error: ld returned 1 exit status
-```
-
-Ahhh, linker errors!  Let's do it right:
-
-Output:
-provide compiler wiht all the object files
-
-```
-$ g++ src/main.o src/foo.o src/bar.o -o src/main
-$ ./src/main
-Hello from foo
-Hello from bar
-```
-
 ### Libraries
 
 * Libraries are really just a file that contain one or more `.o` files
@@ -6955,369 +6533,6 @@ compilation process.
 
 * Shared (dynamic) libraries are loaded up at run time.
 
-### JPEG Example
-
-From `src/hw6.cpp`:
-
-```c++
-...
-
-#include <jpeglib.h> //look in standard system locations
-
-#include "hw6.hpp"
-
-
-void ReadGrayscaleJPEG(std::string filename, boost::multi_array<unsigned char,2> &img)
-{
-  /* Open the file, read the header, and allocate memory */
-
-  FILE *f = fopen(filename.c_str(), "rb");
-  if (not f)
-  {
-    std::stringstream s;
-    s << __func__ << ": Failed to open file " << filename;
-    throw std::runtime_error(s.str());
-  }
-  ...
-}
-
-...
-
-#ifdef DEBUG
-int main()
-{
-  boost::multi_array<unsigned char,2> img;
-  ReadGrayscaleJPEG("stanford.jpg", img);
-  WriteGrayscaleJPEG("test.jpg", img);
-
-  return 0;
-}
-#endif /* DEBUG */
-```
-
-Let's try to compile:
-main is protected by DEBUG, so we need to add that
-we dont have references to jpeg library (header should provide header declarations, but since main isn't defined, we don't have access to library calls to jpeg library)
-Output:
-
-```
-$ g++ -std=c++11 -Wall -Wextra -Wconversion src/hw6.cpp -o src/hw6
-/usr/lib/gcc/x86_64-redhat-linux/4.9.2/../../../../lib64/crt1.o: In function `_start':
-(.text+0x20): undefined reference to `main'
-/tmp/ccoFK0Eq.o: In function `ReadGrayscaleJPEG(std::string, boost::multi_array<unsigned char, 2ul, std::allocator<unsigned char> >&)':
-hw6.cpp:(.text+0xfe): undefined reference to `jpeg_std_error'
-hw6.cpp:(.text+0x11e): undefined reference to `jpeg_CreateDecompress'
-hw6.cpp:(.text+0x134): undefined reference to `jpeg_stdio_src'
-hw6.cpp:(.text+0x148): undefined reference to `jpeg_read_header'
-hw6.cpp:(.text+0x281): undefined reference to `jpeg_start_decompress'
-hw6.cpp:(.text+0x2c9): undefined reference to `jpeg_read_scanlines'
-hw6.cpp:(.text+0x32e): undefined reference to `jpeg_finish_decompress'
-hw6.cpp:(.text+0x33d): undefined reference to `jpeg_destroy_decompress'
-/tmp/ccoFK0Eq.o: In function `WriteGrayscaleJPEG(std::string, boost::multi_array<unsigned char, 2ul, std::allocator<unsigned char> >&)':
-hw6.cpp:(.text+0x4e4): undefined reference to `jpeg_std_error'
-hw6.cpp:(.text+0x504): undefined reference to `jpeg_CreateCompress'
-hw6.cpp:(.text+0x51a): undefined reference to `jpeg_stdio_dest'
-hw6.cpp:(.text+0x56e): undefined reference to `jpeg_set_defaults'
-hw6.cpp:(.text+0x587): undefined reference to `jpeg_set_quality'
-hw6.cpp:(.text+0x59b): undefined reference to `jpeg_start_compress'
-hw6.cpp:(.text+0x5e7): undefined reference to `jpeg_write_scanlines'
-hw6.cpp:(.text+0x606): undefined reference to `jpeg_finish_compress'
-collect2: error: ld returned 1 exit status
-```
-
-That did not work.  The linker looks for the `main` symbol when trying to build
-and executable.  This linker also cannot find all of the symbols from the JPEG
-library.
-
-Let's find the `jpeglib.h` header file:
-
-Output:
-
-header files should go in here (standard location)
-
-```
-$ ls -l /usr/include/jpeglib.h
--rw-r--r--. 1 root root 50298 Feb 24  2015 /usr/include/jpeglib.h
-```
-
-Let's find `libjpeg`:
-
-Output:
-
-```
-$ ls -l /usr/lib/libjpeg.*
-ls: cannot access /usr/lib/libjpeg.*: No such file or directory
-$ ls -l /usr/lib64/libjpeg.*
-ls: cannot access /usr/lib64/libjpeg.*: No such file or directory
-```
-
-Note that the library files may be in a different location on your system.
-
-Now let's compile:
--DDEBUG includes main in the compilation
-then, specify include and library file
--ljpeg link against libjpeg
-Output:
-
-```
-$ g++ -std=c++11 -Wall -Wextra -Wconversion src/hw6.cpp -o src/hw6 -DDEBUG -I/usr/include -L/usr/lib64 -ljpeg
-$ ./src/hw6
-```
-
-* `-I/usr/include`: look in this directory for include files (optional in this case)
-* `-L/usr/lib64`: look in this directory for library files (optional in this case)
-* `-ljpeg`: link to the `libjpeg.{a,so}` file (not optional here)
-
-## Make
-
-* Utility that compiles programs based on rules read in from a file called
-Makefile
-
-* Widely used on Linux/Unix platforms
-
-* Setup and maintenance of Makefile(s) can become rather complicated for major
-projects
-
-* We will look at a few simple examples
-
-### Example source files
-
-`src/ex1/sum.cpp`:
-
-```c++
-#include "sum.hpp"
-
-double sum(double a, double b) {
-  double c = a + b;
-  return c;
-}
-```
-
-`src/ex1/sum.hpp`:
-
-```c++
-#pragma once //header guard
-
-double sum(double a, double b);
-```
-
-`src/ex1/main.cpp`:
-
-```c++
-#include <iostream> //need to include header file
-
-#include "sum.hpp"
-
-int main() {
-  double a = 2., b = 3., c;
-
-  c = sum(a,b);
-  std::cout << "c = " << c << std::endl;
-
-  return 0;
-}
-```
-
-### Example `makefile`
-
-`src/ex1/makefile`:
-
-```makefile
-main: main.cpp sum.cpp sum.hpp
-	g++ -Wall -Wextra -Wconversion -o main main.cpp sum.cpp
-```
-
-Anatomy of a `make` rule:
-
-```
-target: dependencies
-    build_command //make requires a tab! not a space
-```
-
-* `target`: is the thing you want the rule to create.  The target should be a
-  file that will be created in the file system.  For example, the final
-  executable or intermediate object file.
-
-* `dependencies`: space separated list files that the target depends on
-  (typically source or header files)
-
-* `build_command`: a **tab-indented** shell command (or sequence) to build the
-  target from dependencies.
-
-### Let's run the example
-
-Let's run make!
-
-```
-[nwh@icme-nwh ex1] $ ls
-main.cpp  makefile  sum.cpp  sum.hpp
-[nwh@icme-nwh ex1] $ make //runs first rule in file
-g++ -Wall -Wextra -Wconversion -o main main.cpp sum.cpp
-[nwh@icme-nwh ex1] $ ls
-main  main.cpp	makefile  sum.cpp  sum.hpp
-[nwh@icme-nwh ex1] $ make
-make: 'main' is up to date.
-[nwh@icme-nwh ex1] $
-```
-
-### File changes
-
-* Make looks at time stamps on files to know when changes have been made and
-will recompile accordingly
-
-* have one make file for a project
-
-```
-[nwh@icme-nwh ex1] $ make
-make: 'main' is up to date.
-[nwh@icme-nwh ex1] $ touch main.cpp //change timestamp
-[nwh@icme-nwh ex1] $ make //recompiles
-g++ -Wall -Wextra -Wconversion -o main main.cpp sum.cpp
-[nwh@icme-nwh ex1] $ touch sum.hpp
-[nwh@icme-nwh ex1] $ make
-g++ -Wall -Wextra -Wconversion -o main main.cpp sum.cpp
-[nwh@icme-nwh ex1] $ make
-make: 'main' is up to date.
-[nwh@icme-nwh ex1] $
-```
-
-### Make variables, multiple targets, and comments
-
-`src/ex2/makefile`:
-
-```makefile
-# this is a makefile variable, note := for direct assignment
-CXX := g++ //C++ compiler
-
-# this is a makefile comment
-#CXXFLAGS := -Wall -Wextra -Wconversion
-#CXXFLAGS := -Wall -Wextra -Wconversion -g Commented out
-CXXFLAGS := -Wall -Wextra -Wconversion -fsanitize=address
-
-main: main.cpp sum.cpp sum.hpp
-	$(CXX) $(CXXFLAGS) -o main main.cpp sum.cpp
-
-# here is a target to clean up the output of the build process
-.PHONY: clean //delete everything that you have compiled (target that doesnt produce a file .PHONY)
-clean:
-	$(RM) main
-```
-
-Output:
-
-```
-[nwh@icme-nwh ex2] $ ls
-main.cpp  makefile  sum.cpp  sum.hpp
-[nwh@icme-nwh ex2] $ make
-g++ -Wall -Wextra -Wconversion -fsanitize=address -o main main.cpp sum.cpp
-[nwh@icme-nwh ex2] $ ls
-main  main.cpp	makefile  sum.cpp  sum.hpp
-[nwh@icme-nwh ex2] $ make clean
-rm -f main
-[nwh@icme-nwh ex2] $ ls
-main.cpp  makefile  sum.cpp  sum.hpp
-[nwh@icme-nwh ex2] $
-```
-
-### Individual compilation of object files
-
-`src/ex3/makefile`:
-
-```makefile
-CXX := g++
-CXXFLAGS := -O3 -Wall -Wextra -Wconversion -std=c++11
-
-TARGET := main
-OBJS := main.o sum.o foo.o bar.o
-INCS := sum.hpp foobar.hpp
-
-$(TARGET): $(OBJS)
-	$(CXX) -o $(TARGET) $(OBJS)
-
-# this is a make pattern rule
-%.o: %.cpp $(INCS)
-	$(CXX) -c -o $@ $< $(CXXFLAGS)
-
-.PHONY: clean
-clean:
-	$(RM) $(OBJS) $(TARGET)
-```
-
-Output:
-
-```
-[nwh@icme-nwh ex3] $ ls
-bar.cpp  foobar.hpp  foo.cpp  main.cpp	makefile  sum.cpp  sum.hpp
-[nwh@icme-nwh ex3] $ make
-g++ -c -o main.o main.cpp -O3 -Wall -Wextra -Wconversion -std=c++11
-g++ -c -o sum.o sum.cpp -O3 -Wall -Wextra -Wconversion -std=c++11
-g++ -c -o foo.o foo.cpp -O3 -Wall -Wextra -Wconversion -std=c++11
-g++ -c -o bar.o bar.cpp -O3 -Wall -Wextra -Wconversion -std=c++11
-g++ -o main main.o sum.o foo.o bar.o
-[nwh@icme-nwh ex3] $ ls
-bar.cpp  bar.o	foobar.hpp  foo.cpp  foo.o  main  main.cpp  main.o  makefile  sum.cpp  sum.hpp	sum.o
-[nwh@icme-nwh ex3] $ make clean
-rm -f main.o sum.o foo.o bar.o main
-[nwh@icme-nwh ex3] $ ls
-bar.cpp  foobar.hpp  foo.cpp  main.cpp	makefile  sum.cpp  sum.hpp
-[nwh@icme-nwh ex3] $
-```
-
-### Linking to a library & `run` targets
-
-`src/ex4/makefile`:
-
-```makefile
-# conventional variable for c++ compiler
-CXX := g++
-
-# conventional variable for C preprocessor
-CPPFLAGS := -DDEBUG
-
-# conventional variable for C++ compiler flags
-CXXFLAGS := -O3 -std=c++11 -Wall -Wextra -Wconversion
-
-# conventional variable for linker flags
-LDFLAGS := -ljpeg
-
-TARGET := hw6
-OBJS := hw6.o
-INCS := hw6.hpp
-
-$(TARGET): $(OBJS)
-	$(CXX) -o $(TARGET) $(OBJS) $(LDFLAGS) //use for hw 6
-
-%.o: %.cpp $(INCS)
-	$(CXX) -c -o $@ $< $(CPPFLAGS) $(CXXFLAGS)
-
-# use .PHONY for targets that do not produce a file
-.PHONY: clean
-clean:
-	rm -f $(OBJS) $(TARGET) *~
-
-.PHONY: run
-run: $(TARGET)
-	./$(TARGET)
-```
-
-Output:
-
-```
-[nwh@icme-nwh ex4] $ ls
-hw6.cpp  hw6.hpp  makefile  stanford.jpg
-[nwh@icme-nwh ex4] $ make
-g++ -c -o hw6.o hw6.cpp -DDEBUG -O3 -std=c++11 -Wall -Wextra -Wconversion
-g++ -o hw6 hw6.o -ljpeg
-[nwh@icme-nwh ex4] $ ./hw6
-[nwh@icme-nwh ex4] $ make clean
-rm -f hw6.o hw6 *~
-[nwh@icme-nwh ex4] $ make run
-g++ -c -o hw6.o hw6.cpp -DDEBUG -O3 -std=c++11 -Wall -Wextra -Wconversion
-g++ -o hw6 hw6.o -ljpeg
-./hw6
-[nwh@icme-nwh ex4] $ ls
-hw6  hw6.cpp  hw6.hpp  hw6.o  makefile	stanford.jpg  test.jpg
-```
 
 ### Make
 
@@ -7334,11 +6549,11 @@ hw6  hw6.cpp  hw6.hpp  hw6.o  makefile	stanford.jpg  test.jpg
 * With discipline, I believe that Make is a good tool for large projects.  This
   is what I use.  Sometimes CMake and other tools make it harder to build
   projects.
-  # CME 211: Lecture 23
 
-  Monday, November 16, 2015
+# CME 211: Lecture 23
+Monday, November 16, 2015
 
-  Topic: C++ Object Oriented Programming
+Topic: C++ Object Oriented Programming
 
   ## Initial Discussion
   - Every class defines a type (type name is the same as the class)
